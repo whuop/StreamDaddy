@@ -1,0 +1,35 @@
+ManifestFileVersion: 0
+CRC: 454613362
+Hashes:
+  AssetFileHash:
+    serializedVersion: 2
+    Hash: b37e36df082ecf568b1a3f08793cb5d6
+  TypeTreeHash:
+    serializedVersion: 2
+    Hash: 3df2a160ef53750a76ec49b064bd9a2a
+HashAppended: 0
+ClassTypes:
+- Class: 1
+  Script: {instanceID: 0}
+- Class: 4
+  Script: {instanceID: 0}
+- Class: 21
+  Script: {instanceID: 0}
+- Class: 23
+  Script: {instanceID: 0}
+- Class: 28
+  Script: {instanceID: 0}
+- Class: 33
+  Script: {instanceID: 0}
+- Class: 43
+  Script: {instanceID: 0}
+- Class: 48
+  Script: {instanceID: 0}
+- Class: 114
+  Script: {fileID: 11500000, guid: 84ebf7035f21c914f99124845425d2cc, type: 3}
+- Class: 115
+  Script: {instanceID: 0}
+Assets:
+- Assets/StreamDaddy/Temp/ChunkData/MetaDataAssetBased.asset
+- Assets/Mega Fantasy Props Pack/FBX/barrel.fbx
+Dependencies: []

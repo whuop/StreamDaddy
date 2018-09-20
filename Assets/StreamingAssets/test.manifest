@@ -1,12 +1,12 @@
 ManifestFileVersion: 0
-CRC: 582794989
+CRC: 4059989299
 Hashes:
   AssetFileHash:
     serializedVersion: 2
-    Hash: afeffc3ba16d18407c03a46f49baaad6
+    Hash: 41506ffc833db1b57e060a689c6d6ae7
   TypeTreeHash:
     serializedVersion: 2
-    Hash: 57e32fbf9afc8a2447e9369fc7200f82
+    Hash: 2e4e23265241b8def8315dccd828c668
 HashAppended: 0
 ClassTypes:
 - Class: 1
@@ -27,59 +27,11 @@ ClassTypes:
   Script: {instanceID: 0}
 - Class: 64
   Script: {instanceID: 0}
-- Class: 65
-  Script: {instanceID: 0}
 - Class: 114
   Script: {fileID: 11500000, guid: c878b9d0455b01f479546a92cacb6821, type: 3}
 - Class: 115
   Script: {instanceID: 0}
 Assets:
-- Assets/Mega Fantasy Props Pack/Prefabs/Miscellaneous/cage.prefab
-- Assets/Mega Fantasy Props Pack/Prefabs/Chairs/Benches/bench.002.prefab
-- Assets/Mega Fantasy Props Pack/Prefabs/Miscellaneous/Barrels/barrel.002.prefab
-- Assets/Mega Fantasy Props Pack/Prefabs/Miscellaneous/Wall Canvas/canvas_on_wall.002.prefab
-- Assets/Prefabs/Cube (1).prefab
-- Assets/Mega Fantasy Props Pack/Prefabs/Miscellaneous/Vases/vase.001.prefab
-- Assets/Mega Fantasy Props Pack/Prefabs/Miscellaneous/firewood.prefab
-- Assets/Prefabs/Cube (2).prefab
-- Assets/Mega Fantasy Props Pack/Prefabs/Miscellaneous/Boxes/box.001.prefab
-- Assets/Mega Fantasy Props Pack/Prefabs/Miscellaneous/Candels/candle.003.prefab
-- Assets/Mega Fantasy Props Pack/Prefabs/Miscellaneous/Books/book_single_with_free_pages.prefab
-- Assets/Mega Fantasy Props Pack/Prefabs/Complex prefabs/Boxes.prefab
-- Assets/Mega Fantasy Props Pack/Prefabs/Miscellaneous/On Table/mug.prefab
-- Assets/Mega Fantasy Props Pack/Prefabs/Miscellaneous/tree.prefab
-- Assets/Prefabs/Cube.prefab
-- Assets/Mega Fantasy Props Pack/Prefabs/Miscellaneous/cauldron.prefab
-- Assets/Mega Fantasy Props Pack/Prefabs/Miscellaneous/Pile of planks/pile_of_planks.prefab
-- Assets/Prefabs/Cube (4).prefab
-- Assets/Mega Fantasy Props Pack/Prefabs/Miscellaneous/Wells/well.001.prefab
-- Assets/Mega Fantasy Props Pack/Prefabs/Miscellaneous/Vases/vase.002.prefab
-- Assets/Mega Fantasy Props Pack/Prefabs/Miscellaneous/sawing_wood.prefab
-- Assets/Mega Fantasy Props Pack/Prefabs/Miscellaneous/On Table/pot.prefab
-- Assets/Mega Fantasy Props Pack/Prefabs/Miscellaneous/On Table/bottle.prefab
-- Assets/Mega Fantasy Props Pack/Prefabs/Complex prefabs/Three firewoods.prefab
 - Assets/Mega Fantasy Props Pack/Prefabs/House.001.prefab
-- Assets/Mega Fantasy Props Pack/Prefabs/Complex prefabs/Barrels.prefab
-- Assets/Mega Fantasy Props Pack/Prefabs/Miscellaneous/On Table/bottle.003.prefab
-- Assets/Mega Fantasy Props Pack/Prefabs/Miscellaneous/rack_for_weapons_small.prefab
-- Assets/Mega Fantasy Props Pack/Prefabs/Miscellaneous/On Table/bowl.prefab
-- Assets/Prefabs/Cube (3).prefab
-- Assets/Mega Fantasy Props Pack/Prefabs/Miscellaneous/Bricks/brick.025.prefab
-- Assets/Mega Fantasy Props Pack/Prefabs/Miscellaneous/scroll.prefab
-- Assets/Mega Fantasy Props Pack/Prefabs/Houses/house.002.prefab
-- Assets/Mega Fantasy Props Pack/Prefabs/Houses/House.001.prefab
-- Assets/Mega Fantasy Props Pack/Prefabs/Miscellaneous/trunk.prefab
-- Assets/Mega Fantasy Props Pack/Prefabs/Miscellaneous/bucket.prefab
-- Assets/Mega Fantasy Props Pack/Prefabs/Miscellaneous/bag.prefab
-- Assets/Prefabs/Cube (5).prefab
-- Assets/Mega Fantasy Props Pack/Prefabs/Miscellaneous/spice_bag.prefab
-- Assets/Mega Fantasy Props Pack/Prefabs/Miscellaneous/wagon.prefab
-- Assets/Prefabs/Cube (6).prefab
-- Assets/Mega Fantasy Props Pack/Prefabs/Miscellaneous/basket.prefab
-- Assets/Mega Fantasy Props Pack/Prefabs/Miscellaneous/On Table/frying_pan.prefab
-- Assets/Mega Fantasy Props Pack/Prefabs/Houses/house.003.prefab
-- Assets/Mega Fantasy Props Pack/Prefabs/Fences/big_fence.001.prefab
 - Assets/StreamDaddy/Temp/ChunkData/MetaData.asset
-- Assets/Mega Fantasy Props Pack/Prefabs/Miscellaneous/Bricks/brick.022.prefab
-- Assets/Mega Fantasy Props Pack/Prefabs/Miscellaneous/Bricks/brick.024.prefab
 Dependencies: []

@@ -11,6 +11,10 @@ namespace StreamDaddy.AssetManagement
         public Vector3[] Scales;
         public string[] PrefabNames;
     }
+
+    
+
+    
 }
 
 

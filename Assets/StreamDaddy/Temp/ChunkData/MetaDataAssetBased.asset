@@ -1,0 +1,714 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 84ebf7035f21c914f99124845425d2cc, type: 3}
+  m_Name: MetaDataAssetBased
+  m_EditorClassIdentifier: 
+  Positions:
+  - {x: -49.912098, y: 13.1120405, z: 43.64}
+  - {x: -55.91, y: 9.22204, z: 49.637844}
+  - {x: -46.947, y: 9.37204, z: 43.690002}
+  - {x: -53.008713, y: 14.448507, z: 43.65}
+  - {x: -46.91, y: 9.22204, z: 46.64}
+  - {x: -49.010002, y: 14.448507, z: 43.65}
+  - {x: -55.91, y: 13.162041, z: 49.58}
+  - {x: -55.91, y: 9.22204, z: 43.64}
+  - {x: -52.9, y: 9.37204, z: 43.690002}
+  - {x: -49.912098, y: 13.162041, z: 49.58}
+  - {x: -56.010002, y: 14.448507, z: 43.65}
+  - {x: -58.91, y: 9.22204, z: 46.64}
+  - {x: -52.77, y: 17.19204, z: 46.72}
+  - {x: -49.91, y: 9.22204, z: 43.64}
+  - {x: -49.912098, y: 9.22204, z: 49.637844}
+  - {x: -53.05, y: 17.19204, z: 46.72}
+  - {x: -55.91, y: 13.1120405, z: 43.64}
+  - {x: -55.91, y: 13.1120405, z: 28.309998}
+  - {x: -53.05, y: 17.19204, z: 31.39}
+  - {x: -49.912098, y: 9.22204, z: 34.307842}
+  - {x: -49.91, y: 9.22204, z: 28.309998}
+  - {x: -52.77, y: 17.19204, z: 31.39}
+  - {x: -58.91, y: 9.22204, z: 31.309998}
+  - {x: -56.010002, y: 14.448507, z: 28.32}
+  - {x: -49.912098, y: 13.162041, z: 34.25}
+  - {x: -52.9, y: 9.37204, z: 28.36}
+  - {x: -55.91, y: 9.22204, z: 28.309998}
+  - {x: -55.91, y: 13.162041, z: 34.25}
+  - {x: -49.010002, y: 14.448507, z: 28.32}
+  - {x: -46.91, y: 9.22204, z: 31.309998}
+  - {x: -53.008713, y: 14.448507, z: 28.32}
+  - {x: -46.947, y: 9.37204, z: 28.36}
+  - {x: -55.91, y: 9.22204, z: 34.307842}
+  - {x: -49.912098, y: 13.1120405, z: 28.309998}
+  - {x: -32.6821, y: 13.1120405, z: 28.309998}
+  - {x: -38.68, y: 9.22204, z: 34.307842}
+  - {x: -29.717, y: 9.37204, z: 28.36}
+  - {x: -35.778713, y: 14.448507, z: 28.32}
+  - {x: -29.68, y: 9.22204, z: 31.309998}
+  - {x: -31.780003, y: 14.448507, z: 28.32}
+  - {x: -38.68, y: 13.162041, z: 34.25}
+  - {x: -38.68, y: 9.22204, z: 28.309998}
+  - {x: -35.670002, y: 9.37204, z: 28.36}
+  - {x: -32.6821, y: 13.162041, z: 34.25}
+  - {x: -38.780003, y: 14.448507, z: 28.32}
+  - {x: -41.68, y: 9.22204, z: 31.309998}
+  - {x: -35.54, y: 17.19204, z: 31.39}
+  - {x: -32.68, y: 9.22204, z: 28.309998}
+  - {x: -32.6821, y: 9.22204, z: 34.307842}
+  - {x: -35.82, y: 17.19204, z: 31.39}
+  - {x: -38.68, y: 13.1120405, z: 28.309998}
+  - {x: -22.539999, y: 13.1120405, z: 28.309998}
+  - {x: -19.679998, y: 17.19204, z: 31.39}
+  - {x: -16.542097, y: 9.22204, z: 34.307842}
+  - {x: -16.539999, y: 9.22204, z: 28.309998}
+  - {x: -19.4, y: 17.19204, z: 31.39}
+  - {x: -25.539999, y: 9.22204, z: 31.309998}
+  - {x: -22.640001, y: 14.448507, z: 28.32}
+  - {x: -16.542097, y: 13.162041, z: 34.25}
+  - {x: -19.53, y: 9.37204, z: 28.36}
+  - {x: -22.539999, y: 9.22204, z: 28.309998}
+  - {x: -22.539999, y: 13.162041, z: 34.25}
+  - {x: -15.640001, y: 14.448507, z: 28.32}
+  - {x: -13.539999, y: 9.22204, z: 31.309998}
+  - {x: -19.638712, y: 14.448507, z: 28.32}
+  - {x: -13.576998, y: 9.37204, z: 28.36}
+  - {x: -22.539999, y: 9.22204, z: 34.307842}
+  - {x: -16.542097, y: 13.1120405, z: 28.309998}
+  - {x: -16.542097, y: 13.1120405, z: 43.849567}
+  - {x: -22.539999, y: 9.22204, z: 49.847412}
+  - {x: -13.576998, y: 9.37204, z: 43.89957}
+  - {x: -19.638712, y: 14.448507, z: 43.85957}
+  - {x: -13.539999, y: 9.22204, z: 46.849567}
+  - {x: -15.640001, y: 14.448507, z: 43.85957}
+  - {x: -22.539999, y: 13.162041, z: 49.78957}
+  - {x: -22.539999, y: 9.22204, z: 43.849567}
+  - {x: -19.53, y: 9.37204, z: 43.89957}
+  - {x: -16.542097, y: 13.162041, z: 49.78957}
+  - {x: -22.640001, y: 14.448507, z: 43.85957}
+  - {x: -25.539999, y: 9.22204, z: 46.849567}
+  - {x: -19.4, y: 17.19204, z: 46.92957}
+  - {x: -16.539999, y: 9.22204, z: 43.849567}
+  - {x: -16.542097, y: 9.22204, z: 49.847412}
+  - {x: -19.679998, y: 17.19204, z: 46.92957}
+  - {x: -22.539999, y: 13.1120405, z: 43.849567}
+  - {x: -39.24423, y: 13.1120405, z: 43.849567}
+  - {x: -36.384228, y: 17.19204, z: 46.92957}
+  - {x: -33.246326, y: 9.22204, z: 49.847412}
+  - {x: -33.24423, y: 9.22204, z: 43.849567}
+  - {x: -36.10423, y: 17.19204, z: 46.92957}
+  - {x: -42.24423, y: 9.22204, z: 46.849567}
+  - {x: -39.34423, y: 14.448507, z: 43.85957}
+  - {x: -33.246326, y: 13.162041, z: 49.78957}
+  - {x: -36.23423, y: 9.37204, z: 43.89957}
+  - {x: -39.24423, y: 9.22204, z: 43.849567}
+  - {x: -39.24423, y: 13.162041, z: 49.78957}
+  - {x: -32.34423, y: 14.448507, z: 43.85957}
+  - {x: -30.244228, y: 9.22204, z: 46.849567}
+  - {x: -36.34294, y: 14.448507, z: 43.85957}
+  - {x: -30.281227, y: 9.37204, z: 43.89957}
+  - {x: -39.24423, y: 9.22204, z: 49.847412}
+  - {x: -33.246326, y: 13.1120405, z: 43.849567}
+  Rotations:
+  - {x: -0, y: 0, z: 0}
+  - {x: -0, y: 0, z: 0}
+  - {x: -0, y: 0, z: 0}
+  - {x: 90, y: 0, z: 0}
+  - {x: -0, y: 270.00012, z: -0}
+  - {x: 90, y: 0, z: 0}
+  - {x: -0, y: 180.00026, z: -0}
+  - {x: -0, y: -0.0000136603785, z: -0}
+  - {x: -0, y: 0, z: 0}
+  - {x: -0, y: 0, z: 0}
+  - {x: 90, y: 0, z: 0}
+  - {x: -0, y: 89.99986, z: -0}
+  - {x: 301.35306, y: 89.83237, z: 180.42656}
+  - {x: -0, y: 0, z: 0}
+  - {x: -0, y: 0, z: 0}
+  - {x: 301.35306, y: 269.83258, z: 180.42657}
+  - {x: -0, y: 180.00026, z: -0}
+  - {x: -0, y: 180.00026, z: -0}
+  - {x: 301.35306, y: 269.83258, z: 180.42657}
+  - {x: -0, y: 0, z: 0}
+  - {x: -0, y: 0, z: 0}
+  - {x: 301.35306, y: 89.83237, z: 180.42656}
+  - {x: -0, y: 89.99986, z: -0}
+  - {x: 90, y: 0, z: 0}
+  - {x: -0, y: 0, z: 0}
+  - {x: -0, y: 0, z: 0}
+  - {x: -0, y: -0.0000136603785, z: -0}
+  - {x: -0, y: 180.00026, z: -0}
+  - {x: 90, y: 0, z: 0}
+  - {x: -0, y: 270.00012, z: -0}
+  - {x: 90, y: 0, z: 0}
+  - {x: -0, y: 0, z: 0}
+  - {x: -0, y: 0, z: 0}
+  - {x: -0, y: 0, z: 0}
+  - {x: -0, y: 0, z: 0}
+  - {x: -0, y: 0, z: 0}
+  - {x: -0, y: 0, z: 0}
+  - {x: 90, y: 0, z: 0}
+  - {x: -0, y: 270.00012, z: -0}
+  - {x: 90, y: 0, z: 0}
+  - {x: -0, y: 180.00026, z: -0}
+  - {x: -0, y: -0.0000136603785, z: -0}
+  - {x: -0, y: 0, z: 0}
+  - {x: -0, y: 0, z: 0}
+  - {x: 90, y: 0, z: 0}
+  - {x: -0, y: 89.99986, z: -0}
+  - {x: 301.35306, y: 89.83237, z: 180.42656}
+  - {x: -0, y: 0, z: 0}
+  - {x: -0, y: 0, z: 0}
+  - {x: 301.35306, y: 269.83258, z: 180.42657}
+  - {x: -0, y: 180.00026, z: -0}
+  - {x: -0, y: 180.00026, z: -0}
+  - {x: 301.35306, y: 269.83258, z: 180.42657}
+  - {x: -0, y: 0, z: 0}
+  - {x: -0, y: 0, z: 0}
+  - {x: 301.35306, y: 89.83237, z: 180.42656}
+  - {x: -0, y: 89.99986, z: -0}
+  - {x: 90, y: 0, z: 0}
+  - {x: -0, y: 0, z: 0}
+  - {x: -0, y: 0, z: 0}
+  - {x: -0, y: -0.0000136603785, z: -0}
+  - {x: -0, y: 180.00026, z: -0}
+  - {x: 90, y: 0, z: 0}
+  - {x: -0, y: 270.00012, z: -0}
+  - {x: 90, y: 0, z: 0}
+  - {x: -0, y: 0, z: 0}
+  - {x: -0, y: 0, z: 0}
+  - {x: -0, y: 0, z: 0}
+  - {x: -0, y: 0, z: 0}
+  - {x: -0, y: 0, z: 0}
+  - {x: -0, y: 0, z: 0}
+  - {x: 90, y: 0, z: 0}
+  - {x: -0, y: 270.00012, z: -0}
+  - {x: 90, y: 0, z: 0}
+  - {x: -0, y: 180.00026, z: -0}
+  - {x: -0, y: -0.0000136603785, z: -0}
+  - {x: -0, y: 0, z: 0}
+  - {x: -0, y: 0, z: 0}
+  - {x: 90, y: 0, z: 0}
+  - {x: -0, y: 89.99986, z: -0}
+  - {x: 301.35306, y: 89.83237, z: 180.42656}
+  - {x: -0, y: 0, z: 0}
+  - {x: -0, y: 0, z: 0}
+  - {x: 301.35306, y: 269.83258, z: 180.42657}
+  - {x: -0, y: 180.00026, z: -0}
+  - {x: -0, y: 180.00026, z: -0}
+  - {x: 301.35306, y: 269.83258, z: 180.42657}
+  - {x: -0, y: 0, z: 0}
+  - {x: -0, y: 0, z: 0}
+  - {x: 301.35306, y: 89.83237, z: 180.42656}
+  - {x: -0, y: 89.99986, z: -0}
+  - {x: 90, y: 0, z: 0}
+  - {x: -0, y: 0, z: 0}
+  - {x: -0, y: 0, z: 0}
+  - {x: -0, y: -0.0000136603785, z: -0}
+  - {x: -0, y: 180.00026, z: -0}
+  - {x: 90, y: 0, z: 0}
+  - {x: -0, y: 270.00012, z: -0}
+  - {x: 90, y: 0, z: 0}
+  - {x: -0, y: 0, z: 0}
+  - {x: -0, y: 0, z: 0}
+  - {x: -0, y: 0, z: 0}
+  Scales:
+  - {x: 1, y: 1, z: 1}
+  - {x: 1, y: 1, z: 1}
+  - {x: 2.0007699, y: 1, z: 1.4420209}
+  - {x: 1, y: 0.984817, z: 1}
+  - {x: 0.9999999, y: 1, z: 0.9999999}
+  - {x: 1, y: 0.984817, z: 1}
+  - {x: 1, y: 1, z: 1}
+  - {x: 1, y: 1, z: 1}
+  - {x: 2.0007699, y: 1, z: 1.4420209}
+  - {x: 1, y: 1, z: 1}
+  - {x: 1, y: 0.984817, z: 1}
+  - {x: 1, y: 1, z: 1}
+  - {x: 1.2155188, y: 1.9772309, z: 1}
+  - {x: 1, y: 1, z: 1}
+  - {x: 1, y: 1, z: 1}
+  - {x: 1.2155191, y: 1.9772313, z: 1.0000001}
+  - {x: 1, y: 1, z: 1}
+  - {x: 1, y: 1, z: 1}
+  - {x: 1.2155191, y: 1.9772313, z: 1.0000001}
+  - {x: 1, y: 1, z: 1}
+  - {x: 1, y: 1, z: 1}
+  - {x: 1.2155188, y: 1.9772309, z: 1}
+  - {x: 1, y: 1, z: 1}
+  - {x: 1, y: 0.984817, z: 1}
+  - {x: 1, y: 1, z: 1}
+  - {x: 2.0007699, y: 1, z: 1.4420209}
+  - {x: 1, y: 1, z: 1}
+  - {x: 1, y: 1, z: 1}
+  - {x: 1, y: 0.984817, z: 1}
+  - {x: 0.9999999, y: 1, z: 0.9999999}
+  - {x: 1, y: 0.984817, z: 1}
+  - {x: 2.0007699, y: 1, z: 1.4420209}
+  - {x: 1, y: 1, z: 1}
+  - {x: 1, y: 1, z: 1}
+  - {x: 1, y: 1, z: 1}
+  - {x: 1, y: 1, z: 1}
+  - {x: 2.0007699, y: 1, z: 1.4420209}
+  - {x: 1, y: 0.984817, z: 1}
+  - {x: 0.9999999, y: 1, z: 0.9999999}
+  - {x: 1, y: 0.984817, z: 1}
+  - {x: 1, y: 1, z: 1}
+  - {x: 1, y: 1, z: 1}
+  - {x: 2.0007699, y: 1, z: 1.4420209}
+  - {x: 1, y: 1, z: 1}
+  - {x: 1, y: 0.984817, z: 1}
+  - {x: 1, y: 1, z: 1}
+  - {x: 1.2155188, y: 1.9772309, z: 1}
+  - {x: 1, y: 1, z: 1}
+  - {x: 1, y: 1, z: 1}
+  - {x: 1.2155191, y: 1.9772313, z: 1.0000001}
+  - {x: 1, y: 1, z: 1}
+  - {x: 1, y: 1, z: 1}
+  - {x: 1.2155191, y: 1.9772313, z: 1.0000001}
+  - {x: 1, y: 1, z: 1}
+  - {x: 1, y: 1, z: 1}
+  - {x: 1.2155188, y: 1.9772309, z: 1}
+  - {x: 1, y: 1, z: 1}
+  - {x: 1, y: 0.984817, z: 1}
+  - {x: 1, y: 1, z: 1}
+  - {x: 2.0007699, y: 1, z: 1.4420209}
+  - {x: 1, y: 1, z: 1}
+  - {x: 1, y: 1, z: 1}
+  - {x: 1, y: 0.984817, z: 1}
+  - {x: 0.9999999, y: 1, z: 0.9999999}
+  - {x: 1, y: 0.984817, z: 1}
+  - {x: 2.0007699, y: 1, z: 1.4420209}
+  - {x: 1, y: 1, z: 1}
+  - {x: 1, y: 1, z: 1}
+  - {x: 1, y: 1, z: 1}
+  - {x: 1, y: 1, z: 1}
+  - {x: 2.0007699, y: 1, z: 1.4420209}
+  - {x: 1, y: 0.984817, z: 1}
+  - {x: 0.9999999, y: 1, z: 0.9999999}
+  - {x: 1, y: 0.984817, z: 1}
+  - {x: 1, y: 1, z: 1}
+  - {x: 1, y: 1, z: 1}
+  - {x: 2.0007699, y: 1, z: 1.4420209}
+  - {x: 1, y: 1, z: 1}
+  - {x: 1, y: 0.984817, z: 1}
+  - {x: 1, y: 1, z: 1}
+  - {x: 1.2155188, y: 1.9772309, z: 1}
+  - {x: 1, y: 1, z: 1}
+  - {x: 1, y: 1, z: 1}
+  - {x: 1.2155191, y: 1.9772313, z: 1.0000001}
+  - {x: 1, y: 1, z: 1}
+  - {x: 1, y: 1, z: 1}
+  - {x: 1.2155191, y: 1.9772313, z: 1.0000001}
+  - {x: 1, y: 1, z: 1}
+  - {x: 1, y: 1, z: 1}
+  - {x: 1.2155188, y: 1.9772309, z: 1}
+  - {x: 1, y: 1, z: 1}
+  - {x: 1, y: 0.984817, z: 1}
+  - {x: 1, y: 1, z: 1}
+  - {x: 2.0007699, y: 1, z: 1.4420209}
+  - {x: 1, y: 1, z: 1}
+  - {x: 1, y: 1, z: 1}
+  - {x: 1, y: 0.984817, z: 1}
+  - {x: 0.9999999, y: 1, z: 0.9999999}
+  - {x: 1, y: 0.984817, z: 1}
+  - {x: 2.0007699, y: 1, z: 1.4420209}
+  - {x: 1, y: 1, z: 1}
+  - {x: 1, y: 1, z: 1}
+  MeshNames:
+  - wood_wall.007
+  - wood_wall.018
+  - platform.003
+  - wood_column.004
+  - wood_wall.016
+  - wood_column.004
+  - wood_wall.007
+  - wood_wall.016
+  - platform.003
+  - wood_wall.007
+  - wood_column.004
+  - wood_wall.016
+  - wood_wall.014
+  - wood_wall.018
+  - wood_wall_enter.004
+  - wood_wall.014
+  - wood_wall.007
+  - wood_wall.007
+  - wood_wall.014
+  - wood_wall_enter.004
+  - wood_wall.018
+  - wood_wall.014
+  - wood_wall.016
+  - wood_column.004
+  - wood_wall.007
+  - platform.003
+  - wood_wall.016
+  - wood_wall.007
+  - wood_column.004
+  - wood_wall.016
+  - wood_column.004
+  - platform.003
+  - wood_wall.018
+  - wood_wall.007
+  - wood_wall.007
+  - wood_wall.018
+  - platform.003
+  - wood_column.004
+  - wood_wall.016
+  - wood_column.004
+  - wood_wall.007
+  - wood_wall.016
+  - platform.003
+  - wood_wall.007
+  - wood_column.004
+  - wood_wall.016
+  - wood_wall.014
+  - wood_wall.018
+  - wood_wall_enter.004
+  - wood_wall.014
+  - wood_wall.007
+  - wood_wall.007
+  - wood_wall.014
+  - wood_wall_enter.004
+  - wood_wall.018
+  - wood_wall.014
+  - wood_wall.016
+  - wood_column.004
+  - wood_wall.007
+  - platform.003
+  - wood_wall.016
+  - wood_wall.007
+  - wood_column.004
+  - wood_wall.016
+  - wood_column.004
+  - platform.003
+  - wood_wall.018
+  - wood_wall.007
+  - wood_wall.007
+  - wood_wall.018
+  - platform.003
+  - wood_column.004
+  - wood_wall.016
+  - wood_column.004
+  - wood_wall.007
+  - wood_wall.016
+  - platform.003
+  - wood_wall.007
+  - wood_column.004
+  - wood_wall.016
+  - wood_wall.014
+  - wood_wall.018
+  - wood_wall_enter.004
+  - wood_wall.014
+  - wood_wall.007
+  - wood_wall.007
+  - wood_wall.014
+  - wood_wall_enter.004
+  - wood_wall.018
+  - wood_wall.014
+  - wood_wall.016
+  - wood_column.004
+  - wood_wall.007
+  - platform.003
+  - wood_wall.016
+  - wood_wall.007
+  - wood_column.004
+  - wood_wall.016
+  - wood_column.004
+  - platform.003
+  - wood_wall.018
+  - wood_wall.007
+  Materials:
+  - MaterialNames:
+    - timber_1_fixed_d
+    - wooden-boards-texture_d
+  - MaterialNames:
+    - timber_1_fixed_d
+    - wooden-boards-texture_d
+  - MaterialNames:
+    - wood_1_d
+    - wooden-boards-texture_d
+  - MaterialNames:
+    - wood_1_d
+  - MaterialNames:
+    - timber_1_fixed_d
+    - wooden-boards-texture_d
+  - MaterialNames:
+    - wood_1_d
+  - MaterialNames:
+    - timber_1_fixed_d
+    - wooden-boards-texture_d
+  - MaterialNames:
+    - timber_1_fixed_d
+    - wooden-boards-texture_d
+  - MaterialNames:
+    - wood_1_d
+    - wooden-boards-texture_d
+  - MaterialNames:
+    - timber_1_fixed_d
+    - wooden-boards-texture_d
+  - MaterialNames:
+    - wood_1_d
+  - MaterialNames:
+    - timber_1_fixed_d
+    - wooden-boards-texture_d
+  - MaterialNames:
+    - wood_1_d
+    - wooden-boards-texture_d
+  - MaterialNames:
+    - timber_1_fixed_d
+    - wooden-boards-texture_d
+  - MaterialNames:
+    - timber_1_fixed_d
+    - wooden-boards-texture_d
+  - MaterialNames:
+    - wood_1_d
+    - wooden-boards-texture_d
+  - MaterialNames:
+    - timber_1_fixed_d
+    - wooden-boards-texture_d
+  - MaterialNames:
+    - timber_1_fixed_d
+    - wooden-boards-texture_d
+  - MaterialNames:
+    - wood_1_d
+    - wooden-boards-texture_d
+  - MaterialNames:
+    - timber_1_fixed_d
+    - wooden-boards-texture_d
+  - MaterialNames:
+    - timber_1_fixed_d
+    - wooden-boards-texture_d
+  - MaterialNames:
+    - wood_1_d
+    - wooden-boards-texture_d
+  - MaterialNames:
+    - timber_1_fixed_d
+    - wooden-boards-texture_d
+  - MaterialNames:
+    - wood_1_d
+  - MaterialNames:
+    - timber_1_fixed_d
+    - wooden-boards-texture_d
+  - MaterialNames:
+    - wood_1_d
+    - wooden-boards-texture_d
+  - MaterialNames:
+    - timber_1_fixed_d
+    - wooden-boards-texture_d
+  - MaterialNames:
+    - timber_1_fixed_d
+    - wooden-boards-texture_d
+  - MaterialNames:
+    - wood_1_d
+  - MaterialNames:
+    - timber_1_fixed_d
+    - wooden-boards-texture_d
+  - MaterialNames:
+    - wood_1_d
+  - MaterialNames:
+    - wood_1_d
+    - wooden-boards-texture_d
+  - MaterialNames:
+    - timber_1_fixed_d
+    - wooden-boards-texture_d
+  - MaterialNames:
+    - timber_1_fixed_d
+    - wooden-boards-texture_d
+  - MaterialNames:
+    - timber_1_fixed_d
+    - wooden-boards-texture_d
+  - MaterialNames:
+    - timber_1_fixed_d
+    - wooden-boards-texture_d
+  - MaterialNames:
+    - wood_1_d
+    - wooden-boards-texture_d
+  - MaterialNames:
+    - wood_1_d
+  - MaterialNames:
+    - timber_1_fixed_d
+    - wooden-boards-texture_d
+  - MaterialNames:
+    - wood_1_d
+  - MaterialNames:
+    - timber_1_fixed_d
+    - wooden-boards-texture_d
+  - MaterialNames:
+    - timber_1_fixed_d
+    - wooden-boards-texture_d
+  - MaterialNames:
+    - wood_1_d
+    - wooden-boards-texture_d
+  - MaterialNames:
+    - timber_1_fixed_d
+    - wooden-boards-texture_d
+  - MaterialNames:
+    - wood_1_d
+  - MaterialNames:
+    - timber_1_fixed_d
+    - wooden-boards-texture_d
+  - MaterialNames:
+    - wood_1_d
+    - wooden-boards-texture_d
+  - MaterialNames:
+    - timber_1_fixed_d
+    - wooden-boards-texture_d
+  - MaterialNames:
+    - timber_1_fixed_d
+    - wooden-boards-texture_d
+  - MaterialNames:
+    - wood_1_d
+    - wooden-boards-texture_d
+  - MaterialNames:
+    - timber_1_fixed_d
+    - wooden-boards-texture_d
+  - MaterialNames:
+    - timber_1_fixed_d
+    - wooden-boards-texture_d
+  - MaterialNames:
+    - wood_1_d
+    - wooden-boards-texture_d
+  - MaterialNames:
+    - timber_1_fixed_d
+    - wooden-boards-texture_d
+  - MaterialNames:
+    - timber_1_fixed_d
+    - wooden-boards-texture_d
+  - MaterialNames:
+    - wood_1_d
+    - wooden-boards-texture_d
+  - MaterialNames:
+    - timber_1_fixed_d
+    - wooden-boards-texture_d
+  - MaterialNames:
+    - wood_1_d
+  - MaterialNames:
+    - timber_1_fixed_d
+    - wooden-boards-texture_d
+  - MaterialNames:
+    - wood_1_d
+    - wooden-boards-texture_d
+  - MaterialNames:
+    - timber_1_fixed_d
+    - wooden-boards-texture_d
+  - MaterialNames:
+    - timber_1_fixed_d
+    - wooden-boards-texture_d
+  - MaterialNames:
+    - wood_1_d
+  - MaterialNames:
+    - timber_1_fixed_d
+    - wooden-boards-texture_d
+  - MaterialNames:
+    - wood_1_d
+  - MaterialNames:
+    - wood_1_d
+    - wooden-boards-texture_d
+  - MaterialNames:
+    - timber_1_fixed_d
+    - wooden-boards-texture_d
+  - MaterialNames:
+    - timber_1_fixed_d
+    - wooden-boards-texture_d
+  - MaterialNames:
+    - timber_1_fixed_d
+    - wooden-boards-texture_d
+  - MaterialNames:
+    - timber_1_fixed_d
+    - wooden-boards-texture_d
+  - MaterialNames:
+    - wood_1_d
+    - wooden-boards-texture_d
+  - MaterialNames:
+    - wood_1_d
+  - MaterialNames:
+    - timber_1_fixed_d
+    - wooden-boards-texture_d
+  - MaterialNames:
+    - wood_1_d
+  - MaterialNames:
+    - timber_1_fixed_d
+    - wooden-boards-texture_d
+  - MaterialNames:
+    - timber_1_fixed_d
+    - wooden-boards-texture_d
+  - MaterialNames:
+    - wood_1_d
+    - wooden-boards-texture_d
+  - MaterialNames:
+    - timber_1_fixed_d
+    - wooden-boards-texture_d
+  - MaterialNames:
+    - wood_1_d
+  - MaterialNames:
+    - timber_1_fixed_d
+    - wooden-boards-texture_d
+  - MaterialNames:
+    - wood_1_d
+    - wooden-boards-texture_d
+  - MaterialNames:
+    - timber_1_fixed_d
+    - wooden-boards-texture_d
+  - MaterialNames:
+    - timber_1_fixed_d
+    - wooden-boards-texture_d
+  - MaterialNames:
+    - wood_1_d
+    - wooden-boards-texture_d
+  - MaterialNames:
+    - timber_1_fixed_d
+    - wooden-boards-texture_d
+  - MaterialNames:
+    - timber_1_fixed_d
+    - wooden-boards-texture_d
+  - MaterialNames:
+    - wood_1_d
+    - wooden-boards-texture_d
+  - MaterialNames:
+    - timber_1_fixed_d
+    - wooden-boards-texture_d
+  - MaterialNames:
+    - timber_1_fixed_d
+    - wooden-boards-texture_d
+  - MaterialNames:
+    - wood_1_d
+    - wooden-boards-texture_d
+  - MaterialNames:
+    - timber_1_fixed_d
+    - wooden-boards-texture_d
+  - MaterialNames:
+    - wood_1_d
+  - MaterialNames:
+    - timber_1_fixed_d
+    - wooden-boards-texture_d
+  - MaterialNames:
+    - wood_1_d
+    - wooden-boards-texture_d
+  - MaterialNames:
+    - timber_1_fixed_d
+    - wooden-boards-texture_d
+  - MaterialNames:
+    - timber_1_fixed_d
+    - wooden-boards-texture_d
+  - MaterialNames:
+    - wood_1_d
+  - MaterialNames:
+    - timber_1_fixed_d
+    - wooden-boards-texture_d
+  - MaterialNames:
+    - wood_1_d
+  - MaterialNames:
+    - wood_1_d
+    - wooden-boards-texture_d
+  - MaterialNames:
+    - timber_1_fixed_d
+    - wooden-boards-texture_d
+  - MaterialNames:
+    - timber_1_fixed_d
+    - wooden-boards-texture_d
