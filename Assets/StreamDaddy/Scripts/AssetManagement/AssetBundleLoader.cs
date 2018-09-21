@@ -16,16 +16,19 @@ namespace StreamDaddy.AssetManagement
         }
 
         public LoadType m_loadType;
+        public ShaderVariantCollection m_warmTheseUp;
 
         private static int m_sceneToLoad = 1;
 
         // Use this for initialization
         void Start()
         {
+            
+            m_warmTheseUp.WarmUp();
             switch(m_loadType)
             {
                 case LoadType.Asset:
-                    GameObjectPool.PreWarm(16*10);
+                    GameObjectPool.PreWarm(1000);
                     StartCoroutine(LoadBundleAssetBased("AssetBased"));
                     break;
                 case LoadType.Prefab:
@@ -52,42 +55,48 @@ namespace StreamDaddy.AssetManagement
             //  Load all assets in the bundle
             AssetBundle assetBundle = assetBundleCreateRequest.assetBundle;
             var assetBundleRequest = assetBundle.LoadAllAssetsAsync();
+            assetBundleRequest.completed += AssetBundleRequest_completed;
             yield return assetBundleRequest;
 
-            //  Retrieve assets, in this case Meshes and Materials
-            RenderableAsset renderableAssets = null;
+            
+            
+        }
+
+        private void AssetBundleRequest_completed(AsyncOperation obj)
+        {
+            var assetBundleRequest = (AssetBundleRequest)obj;
             var allAssets = assetBundleRequest.allAssets;
 
+            //  Retrieve assets, in this case Meshes and Materials
+            AssetChunkData chunkData = null;
             Type gameObjectType = typeof(GameObject);
             Type meshType = typeof(Mesh);
             Type materialType = typeof(Material);
-            Type renderableAssetType = typeof(RenderableAsset);
+            Type chunkDataType = typeof(AssetChunkData);
 
             Dictionary<string, Mesh> loadedMeshes = new Dictionary<string, Mesh>();
             Dictionary<string, Material> loadedMaterials = new Dictionary<string, Material>();
 
-            foreach(var asset in allAssets)
+            foreach (var asset in allAssets)
             {
                 Type type = asset.GetType();
                 if (type.IsAssignableFrom(gameObjectType))
                 {
                     var go = (GameObject)asset;
-                    Debug.Log("Loaded Game Object:" + go.name);
                 }
                 else if (type.IsAssignableFrom(meshType))
                 {
                     var mesh = (Mesh)asset;
                     loadedMeshes.Add(mesh.name, mesh);
-                    Debug.Log("Loaded Mesh: " + mesh.name);
                 }
                 else if (type.IsAssignableFrom(materialType))
                 {
                     var material = (Material)asset;
                     loadedMaterials.Add(material.name, material);
                 }
-                else if (type.IsAssignableFrom(renderableAssetType))
+                else if (type.IsAssignableFrom(chunkDataType))
                 {
-                    renderableAssets = (RenderableAsset)asset;
+                    chunkData = (AssetChunkData)asset;
                 }
                 else
                 {
@@ -99,16 +108,16 @@ namespace StreamDaddy.AssetManagement
             watch.Start();
 
             List<Material> goMaterials = new List<Material>();
-            for(int i = 0; i < renderableAssets.Positions.Length; i++)
+            for (int i = 0; i < chunkData.Positions.Length; i++)
             {
-                var positions = renderableAssets.Positions;
-                var rotations = renderableAssets.Rotations;
-                var scales = renderableAssets.Scales;
-                var meshes = renderableAssets.MeshNames;
-                var materials = renderableAssets.Materials;
+                var positions = chunkData.Positions;
+                var rotations = chunkData.Rotations;
+                var scales = chunkData.Scales;
+                var meshes = chunkData.MeshNames;
+                var materials = chunkData.Materials;
                 Mesh mesh = loadedMeshes[meshes[i]];
 
-                for(int j = 0; j < materials[i].MaterialNames.Length; j++)
+                for (int j = 0; j < materials[i].MaterialNames.Length; j++)
                 {
                     goMaterials.Add(loadedMaterials[materials[i].MaterialNames[j]]);
                 }
@@ -118,9 +127,9 @@ namespace StreamDaddy.AssetManagement
             }
 
             watch.Stop();
-            stopWatch.Stop();
-            Debug.Log("AssetBased spawn time: " + watch.ElapsedMilliseconds + " ticks: " + watch.ElapsedTicks);
-            Debug.Log("AssetBased Loading Time: " + stopWatch.ElapsedMilliseconds);
+            //stopWatch.Stop();
+            //Debug.Log("AssetBased spawn time: " + watch.ElapsedMilliseconds + " ticks: " + watch.ElapsedTicks);
+            //Debug.Log("AssetBased Loading Time: " + stopWatch.ElapsedMilliseconds);
         }
 
         IEnumerator LoadBundle(string bundleName)
@@ -142,14 +151,14 @@ namespace StreamDaddy.AssetManagement
             yield return assetBundleRequest;
 
             //  Retrieve object, in this case Prefab ( GameObject )
-            AssetsTransforms transforms = null;
+            PrefabChunkData chunkData = null;
             var allAssets = assetBundleRequest.allAssets;
             Dictionary<string, GameObject> prefabs = new Dictionary<string, GameObject>();
             foreach (var asset in allAssets)
             {
                 if (asset.name == "MetaData")
                 {
-                    transforms = (AssetsTransforms)asset;
+                    chunkData = (PrefabChunkData)asset;
                 }
                 else
                 {
@@ -170,13 +179,13 @@ namespace StreamDaddy.AssetManagement
             var watch = new System.Diagnostics.Stopwatch();
             watch.Start();
 
-            for (int i = 0; i < transforms.Positions.Length; i++)
+            for (int i = 0; i < chunkData.Positions.Length; i++)
             {
-                Vector3 pos = transforms.Positions[i];
-                Vector3 rot = transforms.Rotations[i];
-                Vector3 scale = transforms.Scales[i];
-                GameObject prefab = prefabs[transforms.PrefabNames[i]];
-                GameObject instance = GameObject.Instantiate(prefab, transforms.Positions[i], Quaternion.Euler(rot));
+                Vector3 pos = chunkData.Positions[i];
+                Vector3 rot = chunkData.Rotations[i];
+                Vector3 scale = chunkData.Scales[i];
+                GameObject prefab = prefabs[chunkData.PrefabNames[i]];
+                GameObject instance = GameObject.Instantiate(prefab, chunkData.Positions[i], Quaternion.Euler(rot));
                 instance.transform.localScale = scale;
                 //Debug.Log("Spawned prefab");
             }

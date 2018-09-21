@@ -1,12 +1,12 @@
 ManifestFileVersion: 0
-CRC: 454613362
+CRC: 2881314208
 Hashes:
   AssetFileHash:
     serializedVersion: 2
-    Hash: b37e36df082ecf568b1a3f08793cb5d6
+    Hash: e384d0f5a2e423e0d8ee80ce72f8651a
   TypeTreeHash:
     serializedVersion: 2
-    Hash: 3df2a160ef53750a76ec49b064bd9a2a
+    Hash: e6f15b944e38689620e1fa53ba945773
 HashAppended: 0
 ClassTypes:
 - Class: 1
@@ -30,6 +30,16 @@ ClassTypes:
 - Class: 115
   Script: {instanceID: 0}
 Assets:
+- Assets/Mega Fantasy Props Pack/FBX/wood_wall.007.fbx
+- Assets/Mega Fantasy Props Pack/FBX/wood_column.004.fbx
+- Assets/Mega Fantasy Props Pack/FBX/wood_wall.018.fbx
+- Assets/Mega Fantasy Props Pack/Materials/wood_1_d.mat
+- Assets/Mega Fantasy Props Pack/FBX/wood_wall_enter.004.fbx
 - Assets/StreamDaddy/Temp/ChunkData/MetaDataAssetBased.asset
-- Assets/Mega Fantasy Props Pack/FBX/barrel.fbx
+- Assets/Mega Fantasy Props Pack/Materials/timber_1_fixed_d.mat
+- Assets/Mega Fantasy Props Pack/Materials/wooden-boards-texture_d.mat
+- Assets/StreamDaddy/Temp/ChunkData/assetbased.asset
+- Assets/Mega Fantasy Props Pack/FBX/wood_wall.014.fbx
+- Assets/Mega Fantasy Props Pack/FBX/wood_wall.016.fbx
+- Assets/Mega Fantasy Props Pack/FBX/platform.003.fbx
 Dependencies: []

@@ -284,7 +284,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\StreamDaddy\Scripts\AssetManagement\AssetBundleLoader.cs" />
-    <Compile Include="Assets\StreamDaddy\Scripts\AssetManagement\AssetsTransforms.cs" />
+    <Compile Include="Assets\StreamDaddy\Scripts\AssetManagement\AssetChunkData.cs" />
+    <Compile Include="Assets\StreamDaddy\Scripts\AssetManagement\PrefabChunkData.cs" />
+    <Compile Include="Assets\StreamDaddy\Scripts\Chunking\ChunkID.cs" />
+    <Compile Include="Assets\StreamDaddy\Scripts\Pooling\GameObjectPool.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\Mega Fantasy Props Pack\README.txt" />

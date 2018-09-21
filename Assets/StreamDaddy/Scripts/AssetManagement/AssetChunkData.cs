@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace StreamDaddy.AssetManagement
 {
-    public class RenderableAsset : ScriptableObject
+    public class AssetChunkData : ScriptableObject
     {
         public Vector3[] Positions;
         public Vector3[] Rotations;

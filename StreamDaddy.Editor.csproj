@@ -289,8 +289,14 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\StreamDaddy\Scripts\Editor\AssetBuilder.cs" />
     <Compile Include="Assets\StreamDaddy\Scripts\Editor\AssetBundleUtils.cs" />
+    <Compile Include="Assets\StreamDaddy\Scripts\Editor\Assets\AssetBuilder.cs" />
+    <Compile Include="Assets\StreamDaddy\Scripts\Editor\Assets\AssetBuildStrategy.cs" />
+    <Compile Include="Assets\StreamDaddy\Scripts\Editor\Assets\IAssetBuildStrategy.cs" />
+    <Compile Include="Assets\StreamDaddy\Scripts\Editor\Assets\PrefabBuildStrategy.cs" />
+    <Compile Include="Assets\StreamDaddy\Scripts\Editor\Chunking\EditorChunk.cs" />
+    <Compile Include="Assets\StreamDaddy\Scripts\Editor\Chunking\EditorChunkManager.cs" />
+    <Compile Include="Assets\StreamDaddy\Scripts\Editor\StreamDaddyEditor.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\Mega Fantasy Props Pack\README.txt" />

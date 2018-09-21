@@ -5,10 +5,37 @@ using UnityEditor;
 using UnityEditor.SceneManagement;
 using StreamDaddy.AssetManagement;
 
-namespace StreamDaddy.Editor
+namespace StreamDaddy.Editor.Assets
 {
     public class AssetBuilder : MonoBehaviour
     {
+        [MenuItem("AssetBuilder/Build Prefabs")]
+        public static void BuildPrefabAssets()
+        {
+            ClearAllAssetBundles();
+            BuildAssets(GameObject.FindObjectsOfType<GameObject>(), 
+                        new PrefabBuildStrategy());
+        }
+
+        [MenuItem("AssetBuilder/Build Assets")]
+        public static void BuildAssets()
+        {
+            ClearAllAssetBundles();
+            
+            BuildAssets(GameObject.FindObjectsOfType<GameObject>(),
+                        new AssetBuildStrategy());
+        }
+
+
+        public static void BuildAssets(GameObject[] gameObjects, IAssetBuildStrategy buildStrategy)
+        {
+            Debug.Log("-- Started Asset Build Process --");
+
+            buildStrategy.BuildAssets(gameObjects);
+            
+            Debug.Log("-- Finished Asset Build Process --");
+        }
+
         [MenuItem("AssetBuilder/Clear All AssetBundles")]
         static void ClearAllAssetBundles()
         {
@@ -38,7 +65,7 @@ namespace StreamDaddy.Editor
                     continue;
                 if (uniqueMeshes.ContainsKey(meshFilter.sharedMesh.name))
                 {
-                    Debug.LogError("Skipped mesh " + meshFilter.sharedMesh.name + ". Is duplicate!");
+                    //  Skipping if already exists
                 }
                 else
                 {
@@ -73,6 +100,8 @@ namespace StreamDaddy.Editor
                         int instanceID = material.GetInstanceID();
                         string assetPath = AssetDatabase.GetAssetPath(instanceID);
                         AssetImporter.GetAtPath(assetPath).SetAssetBundleNameAndVariant("", "");
+
+                        
                     }
 
                     goMaterials.Add(material.name);
@@ -96,74 +125,21 @@ namespace StreamDaddy.Editor
             return assets;
         }
 
-        [MenuItem("AssetBuilder/Build Assets")]
-        static void PrefabBasedBuildAssets()
+        [MenuItem("AssetBuilder/Stop asset editing")]
+        static void StopAssetEditing()
         {
-            Dictionary<string, GameObject> uniquePrefabs = new Dictionary<string, GameObject>();
-            GameObject[] allGos = GameObject.FindObjectsOfType<GameObject>();
-
-            List<Vector3> positions = new List<Vector3>();
-            List<Vector3> rotations = new List<Vector3>();
-            List<Vector3> scales = new List<Vector3>();
-            List<string> prefabNames = new List<string>();
-
-            List<GameObject> addedRoots = new List<GameObject>();
-
-            foreach(var go in allGos)
-            {
-                var sceneRoot = (GameObject)PrefabUtility.FindPrefabRoot(go);
-                var prefab = (GameObject)PrefabUtility.GetPrefabParent(sceneRoot);
-                if (prefab == null)
-                {
-                    Debug.LogWarning("Skipping " + go.name + ". Does not appear to be a prefab!");
-                    continue;
-                }
-                
-                if (uniquePrefabs.ContainsKey(prefab.name))
-                {
-                    Debug.Log("Skipped " + prefab.name + ". Is duplicate!");
-                }
-                else
-                {
-                    uniquePrefabs.Add(prefab.name, prefab);
-                    int instanceID = prefab.GetInstanceID();
-
-                    string assetPath = AssetDatabase.GetAssetPath(instanceID);
-                    AssetImporter.GetAtPath(assetPath).SetAssetBundleNameAndVariant("test", "");
-                }
-
-                if (!addedRoots.Contains(sceneRoot))
-                {
-                    addedRoots.Add(sceneRoot);
-                }
-                else
-                {
-                    continue;
-                }
-
-                positions.Add(sceneRoot.transform.position);
-                rotations.Add(sceneRoot.transform.rotation.eulerAngles);
-                scales.Add(sceneRoot.transform.lossyScale);
-                prefabNames.Add(prefab.name);
-                Debug.Log("Prefab NAme: " + prefabNames[prefabNames.Count - 1]);
-            }
-
-            AssetsTransforms transforms = AssetBundleUtils.CreateAssetsTransforms("MetaData", positions.ToArray(), rotations.ToArray(), scales.ToArray(), prefabNames.ToArray());
-            
-            string transformsPath = AssetDatabase.GetAssetPath(transforms.GetInstanceID());
-            AssetImporter.GetAtPath(transformsPath).SetAssetBundleNameAndVariant("test", "");
-
-            string bundlePath = Application.streamingAssetsPath;
-            BuildPipeline.BuildAssetBundles(bundlePath, BuildAssetBundleOptions.ChunkBasedCompression |
-                                                        BuildAssetBundleOptions.DisableLoadAssetByFileName |
-                                                        BuildAssetBundleOptions.DisableLoadAssetByFileNameWithExtension |
-                                                        BuildAssetBundleOptions.DisableWriteTypeTree, BuildTarget.StandaloneWindows64);
+            AssetDatabase.StopAssetEditing();
         }
 
-        [MenuItem("AssetBuilder/Build Assets, Assets based")]
+        /*[MenuItem("AssetBuilder/Build Assets, Assets based")]
         static void AssetBasedBuildAssets()
         {
-            
+            ClearAllAssetBundles();
+            AssetDatabase.StartAssetEditing();
+            //string shaderVariantPath ="Assets/StreamDaddy/ShaderVariants/ShaderVariantCollection.shadervariants";
+            //Debug.Log("Variant path: " + shaderVariantPath);
+            //ShaderVariantCollection shaders = AssetDatabase.LoadAssetAtPath<ShaderVariantCollection>(shaderVariantPath);
+            //shaders.Clear();
             Dictionary<string, Mesh> uniqueMeshes = new Dictionary<string, Mesh>();
             Dictionary<string, Material> uniqueMaterials = new Dictionary<string, Material>();
 
@@ -242,6 +218,10 @@ namespace StreamDaddy.Editor
 
             RenderableAsset transforms = AssetBundleUtils.CreateRenderableAssets("MetaDataAssetBased", positions.ToArray(), rotations.ToArray(), scales.ToArray(), meshes.ToArray(), assetMaterials);
 
+            AssetDatabase.StopAssetEditing();
+            AssetDatabase.SaveAssets();
+            AssetDatabase.Refresh();
+
             string transformsPath = AssetDatabase.GetAssetPath(transforms.GetInstanceID());
             AssetImporter.GetAtPath(transformsPath).SetAssetBundleNameAndVariant("assetbased", "");
 
@@ -251,6 +231,7 @@ namespace StreamDaddy.Editor
                                                         BuildAssetBundleOptions.DisableLoadAssetByFileNameWithExtension | 
                                                         BuildAssetBundleOptions.DisableWriteTypeTree, 
                                                         BuildTarget.StandaloneWindows64);
+
 
             /*foreach(var kvp in uniqueMeshes)
             {
@@ -265,8 +246,8 @@ namespace StreamDaddy.Editor
                 string assetPath = AssetDatabase.GetAssetPath(instanceID);
                 AssetImporter.GetAtPath(assetPath).SetAssetBundleNameAndVariant("", "");
             }*/
-
-        }
+            /*
+        }*/
 
         [MenuItem("AssetBuilder/Build all assets")]
         static void BuildAllAssetBundles()

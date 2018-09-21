@@ -4,47 +4,53 @@ using UnityEngine;
 
 namespace StreamDaddy.Pooling
 {
+    public class Renderable
+    {
+        public GameObject GameObject;
+        public MeshFilter Filter;
+        public MeshRenderer Renderer;
+    }
+
     public class GameObjectPool
     {
-        private static Queue<GameObject> m_gameObjectPool = new Queue<GameObject>();
-        private static Queue<MeshFilter> m_filterPool = new Queue<MeshFilter>();
-        private static Queue<MeshRenderer> m_rendererPool = new Queue<MeshRenderer>();
+        private static Queue<Renderable> m_renderables = new Queue<Renderable>();
 
         public static void PreWarm(int rendererCount)
         {
-            while(m_gameObjectPool.Count < rendererCount)
+            while(m_renderables.Count < rendererCount)
             {
-                GameObject go = new GameObject("PooledRenderer_" + m_rendererPool.Count, typeof(MeshRenderer), typeof(MeshFilter));
+                GameObject go = new GameObject("PooledRenderer_" + m_renderables.Count, typeof(MeshRenderer), typeof(MeshFilter));
                 go.SetActive(false);
-                m_gameObjectPool.Enqueue(go);
-                m_filterPool.Enqueue(go.GetComponent<MeshFilter>());
-                m_rendererPool.Enqueue(go.GetComponent<MeshRenderer>());
+
+                Renderable renderable = new Renderable()
+                {
+                    GameObject = go,
+                    Renderer = go.GetComponent<MeshRenderer>(),
+                    Filter = go.GetComponent<MeshFilter>()
+                };
+
+                m_renderables.Enqueue(renderable);
             }
         }
 
-        public static GameObject GetRenderer(Mesh mesh, Material[] materials, Vector3 position, Vector3 rotation, Vector3 scale)
+        public static Renderable GetRenderer(Mesh mesh, Material[] materials, Vector3 position, Vector3 rotation, Vector3 scale)
         {
-            var go = m_gameObjectPool.Dequeue();
-            var meshFilter = m_filterPool.Dequeue();
-            var meshRenderer = m_rendererPool.Dequeue();
+            var renderable = m_renderables.Dequeue();
 
-            meshFilter.sharedMesh = mesh;
-            meshRenderer.sharedMaterials = materials;
-            go.transform.position = position;
-            go.transform.rotation = Quaternion.Euler(rotation);
-            go.transform.localScale = scale;
+            renderable.Filter.sharedMesh = mesh;
+            renderable.Renderer.sharedMaterials = materials;
+            renderable.GameObject.transform.position = position;
+            renderable.GameObject.transform.rotation = Quaternion.Euler(rotation);
+            renderable.GameObject.transform.localScale = scale;
 
-            go.SetActive(true);
-            return go;
+            renderable.GameObject.SetActive(true);
+            return renderable;
         }
 
-        public static void ReturnRenderer(GameObject go)
+        public static void ReturnRenderer(Renderable renderable)
         {
-            m_gameObjectPool.Enqueue(go);
-            m_filterPool.Enqueue(go.GetComponent<MeshFilter>());
-            m_rendererPool.Enqueue(go.GetComponent<MeshRenderer>());
-
-            go.SetActive(false);
+            m_renderables.Enqueue(renderable);
+            renderable.GameObject.SetActive(false);
         }
     }
 }
