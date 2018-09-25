@@ -1,4 +1,5 @@
 ﻿using StreamDaddy.AssetManagement;
+using StreamDaddy.Editor.Chunking;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
@@ -11,23 +12,27 @@ namespace StreamDaddy.Editor.Assets
         private Dictionary<string, Mesh> m_uniqueMeshes = new Dictionary<string, Mesh>();
         private Dictionary<string, Material> m_uniqueMaterials = new Dictionary<string, Material>();
 
-        public void BuildAssets(GameObject[] gameObjects)
+        private void Clear()
         {
+            m_uniqueMeshes.Clear();
+            m_uniqueMaterials.Clear();
+        }
+
+        public void BuildChunkAssets(EditorChunk chunk)
+        {
+            Clear();
             //  First off, fetch all MeshRenderers, these have the data we want in them, or on their game objects.
             List<MeshRenderer> allRenderers = new List<MeshRenderer>();
-            foreach(var go in gameObjects)
+
+            var gameObjects = chunk.GetAllChildren();
+
+            foreach (var go in gameObjects)
             {
                 var renderer = go.GetComponent<MeshRenderer>();
                 if (renderer != null)
                     allRenderers.Add(renderer);
             }
-
-            List<Vector3> positions = new List<Vector3>();
-            List<Vector3> rotations = new List<Vector3>();
-            List<Vector3> scales = new List<Vector3>();
-            List<string> meshes = new List<string>();
-            List<List<string>> materials = new List<List<string>>();
-
+            
             foreach (var renderer in allRenderers)
             {
                 var meshFilter = renderer.GetComponent<MeshFilter>();
@@ -35,16 +40,14 @@ namespace StreamDaddy.Editor.Assets
                     continue;
                 if (m_uniqueMeshes.ContainsKey(meshFilter.sharedMesh.name))
                 {
-                    Debug.LogError("Skipped mesh " + meshFilter.sharedMesh.name + ". Is duplicate!");
+                    //  Skipping mesh, has already been processed
                 }
                 else
                 {
                     m_uniqueMeshes.Add(meshFilter.sharedMesh.name, meshFilter.sharedMesh);
                     //  Do mesh Asset Bundle assignment here
                     int instanceID = meshFilter.sharedMesh.GetInstanceID();
-                    string assetPath = AssetDatabase.GetAssetPath(meshFilter.sharedMesh);//AssetDatabase.GetAssetPath(instanceID);
-                                                                                         //if (assetPath == string.Empty)
-                                                                                         //    assetPath = AssetDatabase.GetAssetPath(meshFilter.sharedMesh);
+                    string assetPath = AssetDatabase.GetAssetPath(meshFilter.sharedMesh);
 
                     if (assetPath == "Library/unity default resources")
                     {
@@ -53,15 +56,14 @@ namespace StreamDaddy.Editor.Assets
                     }
 
                     Debug.Log("AssetPath: " + assetPath);
-                    AssetImporter.GetAtPath(assetPath).SetAssetBundleNameAndVariant("assetbased", "");
+                    AssetImporter.GetAtPath(assetPath).SetAssetBundleNameAndVariant("chunkassets", "");
                 }
-
-                List<string> goMaterials = new List<string>();
+                
                 foreach (var material in renderer.sharedMaterials)
                 {
                     if (m_uniqueMaterials.ContainsKey(material.name))
                     {
-                        //Debug.LogError("Skipped material " + material.name + ". Is duplicate!");
+                        //  Skipping material, has already been processed
                     }
                     else
                     {
@@ -69,9 +71,42 @@ namespace StreamDaddy.Editor.Assets
                         // Do material Asset Bundle assigment here
                         int instanceID = material.GetInstanceID();
                         string assetPath = AssetDatabase.GetAssetPath(instanceID);
-                        AssetImporter.GetAtPath(assetPath).SetAssetBundleNameAndVariant("assetbased", "");
+                        AssetImporter.GetAtPath(assetPath).SetAssetBundleNameAndVariant("chunkassets", "");
                     }
+                }
+            }
 
+            
+        }
+
+        public void BuildChunkLayout(EditorChunk chunk)
+        {
+            Clear();
+            List<MeshRenderer> allRenderers = new List<MeshRenderer>();
+            var gameObjects = chunk.GetAllChildren();
+
+            List<Vector3> positions = new List<Vector3>();
+            List<Vector3> rotations = new List<Vector3>();
+            List<Vector3> scales = new List<Vector3>();
+            List<string> meshes = new List<string>();
+            List<List<string>> materials = new List<List<string>>();
+
+            foreach (var go in gameObjects)
+            {
+                var renderer = go.GetComponent<MeshRenderer>();
+                if (renderer != null)
+                    allRenderers.Add(renderer);
+            }
+
+            foreach (var renderer in allRenderers)
+            {
+                var meshFilter = renderer.GetComponent<MeshFilter>();
+                if (meshFilter.sharedMesh == null)
+                    continue;
+
+                List<string> goMaterials = new List<string>();
+                foreach (var material in renderer.sharedMaterials)
+                {
                     goMaterials.Add(material.name);
                 }
                 materials.Add(goMaterials);
@@ -93,17 +128,9 @@ namespace StreamDaddy.Editor.Assets
                 }
             }
 
-            AssetChunkData chunkData = AssetBundleUtils.CreateRenderableAssets("assetbased", positions.ToArray(), rotations.ToArray(), scales.ToArray(), meshes.ToArray(), assetMaterials);
-            
-            string transformsPath = AssetDatabase.GetAssetPath(chunkData.GetInstanceID());
-            AssetImporter.GetAtPath(transformsPath).SetAssetBundleNameAndVariant("assetbased", "");
-
-            string bundlePath = Application.streamingAssetsPath;
-            BuildPipeline.BuildAssetBundles(bundlePath, BuildAssetBundleOptions.ChunkBasedCompression |
-                                                        BuildAssetBundleOptions.DisableLoadAssetByFileName |
-                                                        BuildAssetBundleOptions.DisableLoadAssetByFileNameWithExtension |
-                                                        BuildAssetBundleOptions.DisableWriteTypeTree,
-                                                        BuildTarget.StandaloneWindows64);
+            AssetChunkData chunkData = AssetBundleUtils.CreateRenderableAssets("chunkdata_" + chunk.ChunkID.X + "_" + chunk.ChunkID.Y + " " + chunk.ChunkID.Z, positions.ToArray(), rotations.ToArray(), scales.ToArray(), meshes.ToArray(), assetMaterials, chunk.ChunkID.ID);
+            string chunkDataPath = AssetDatabase.GetAssetPath(chunkData.GetInstanceID());
+            AssetImporter.GetAtPath(chunkDataPath).SetAssetBundleNameAndVariant("chunkdata", "");
         }
     }
 }

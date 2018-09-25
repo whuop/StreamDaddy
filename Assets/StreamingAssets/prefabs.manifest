@@ -1,12 +1,12 @@
 ManifestFileVersion: 0
-CRC: 1750276869
+CRC: 3984903570
 Hashes:
   AssetFileHash:
     serializedVersion: 2
-    Hash: 6ecc4fe8b8df1c56dd1631a9ed0cbaf1
+    Hash: c7a169cb90723d3e32055643d688f9e7
   TypeTreeHash:
     serializedVersion: 2
-    Hash: dac686b4ea6febe05f3df276fe55c2cd
+    Hash: 3c57d10c64aca01622a197be983738e8
 HashAppended: 0
 ClassTypes:
 - Class: 1
@@ -23,12 +23,7 @@ ClassTypes:
   Script: {instanceID: 0}
 - Class: 64
   Script: {instanceID: 0}
-- Class: 114
-  Script: {fileID: 11500000, guid: c878b9d0455b01f479546a92cacb6821, type: 3}
-- Class: 115
-  Script: {instanceID: 0}
 Assets:
 - Assets/Mega Fantasy Props Pack/Prefabs/House.001.prefab
-- Assets/StreamDaddy/Temp/ChunkData/prefabs.asset
 Dependencies:
-- D:/Repos/StreamDaddy/Assets/StreamingAssets/assetbased
+- E:/Repos/StreamDaddy/Assets/StreamingAssets/assetbased

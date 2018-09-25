@@ -12,18 +12,18 @@ namespace StreamDaddy.Editor.Assets
         [MenuItem("AssetBuilder/Build Prefabs")]
         public static void BuildPrefabAssets()
         {
-            ClearAllAssetBundles();
-            BuildAssets(GameObject.FindObjectsOfType<GameObject>(), 
-                        new PrefabBuildStrategy());
+            //ClearAllAssetBundles();
+            //BuildAssets(GameObject.FindObjectsOfType<GameObject>(), 
+            //            new PrefabBuildStrategy());
         }
 
         [MenuItem("AssetBuilder/Build Assets")]
         public static void BuildAssets()
         {
-            ClearAllAssetBundles();
+            //ClearAllAssetBundles();
             
-            BuildAssets(GameObject.FindObjectsOfType<GameObject>(),
-                        new AssetBuildStrategy());
+            //BuildAssets(GameObject.FindObjectsOfType<GameObject>(),
+            //            new AssetBuildStrategy());
         }
 
 
@@ -31,7 +31,7 @@ namespace StreamDaddy.Editor.Assets
         {
             Debug.Log("-- Started Asset Build Process --");
 
-            buildStrategy.BuildAssets(gameObjects);
+            //buildStrategy.BuildAssets(gameObjects);
             
             Debug.Log("-- Finished Asset Build Process --");
         }

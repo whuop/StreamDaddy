@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
-
+/*
 namespace StreamDaddy.Editor.Assets
 {
     public class PrefabBuildStrategy : IAssetBuildStrategy
@@ -80,5 +80,4 @@ namespace StreamDaddy.Editor.Assets
         }
     }
 }
-
-
+*/

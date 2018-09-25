@@ -1,0 +1,18 @@
+ManifestFileVersion: 0
+CRC: 3414813806
+Hashes:
+  AssetFileHash:
+    serializedVersion: 2
+    Hash: 24edf9769d189d8b4aac18f53790af3f
+  TypeTreeHash:
+    serializedVersion: 2
+    Hash: 3bd3b9b4f480c2c65ae9fc8e0961bc74
+HashAppended: 0
+ClassTypes:
+- Class: 114
+  Script: {fileID: 11500000, guid: 84ebf7035f21c914f99124845425d2cc, type: 3}
+- Class: 115
+  Script: {instanceID: 0}
+Assets:
+- Assets/StreamDaddy/Temp/ChunkData/chunkdata_-1_0 0.asset
+Dependencies: []

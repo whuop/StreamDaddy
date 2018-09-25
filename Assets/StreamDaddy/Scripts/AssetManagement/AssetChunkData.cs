@@ -11,6 +11,7 @@ namespace StreamDaddy.AssetManagement
         public Vector3[] Scales;
         public string[] MeshNames;
         public MaterialArray[] Materials;
+        public Vector3Int ChunkID;
     }
 
     [System.Serializable]

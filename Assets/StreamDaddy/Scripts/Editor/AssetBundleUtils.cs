@@ -29,13 +29,14 @@ namespace StreamDaddy.Editor
             return asset;
         }
 
-        public static AssetChunkData CreateRenderableAssets(string scriptableObjectName, Vector3[] positions, Vector3[] rotations, Vector3[] scales, string[] meshNames, string[][] materialNames)
+        public static AssetChunkData CreateRenderableAssets(string scriptableObjectName, Vector3[] positions, Vector3[] rotations, Vector3[] scales, string[] meshNames, string[][] materialNames, Vector3Int chunkID)
         {
             AssetChunkData asset = ScriptableObject.CreateInstance<AssetChunkData>();
             asset.Positions = positions;
             asset.Rotations = rotations;
             asset.Scales = scales;
             asset.MeshNames = meshNames;
+            asset.ChunkID = chunkID;
 
             MaterialArray[] materials = new MaterialArray[materialNames.Length];
             for(int i = 0; i < materials.Length; i++)
@@ -50,8 +51,8 @@ namespace StreamDaddy.Editor
 
             EditorUtility.SetDirty(asset);
 
-            //AssetDatabase.SaveAssets();
-            //AssetDatabase.Refresh();
+            AssetDatabase.SaveAssets();
+            AssetDatabase.Refresh();
             return asset;
         }
     }
