@@ -1,5 +1,5 @@
 ManifestFileVersion: 0
-CRC: 3736401088
+CRC: 2934370792
 AssetBundleManifest:
   AssetBundleInfos:
     Info_0:
@@ -10,5 +10,5 @@ AssetBundleManifest:
       Dependencies:
         Dependency_0: assetbased
     Info_2:
-      Name: chunkdata
+      Name: testworld_chunklayout
       Dependencies: {}

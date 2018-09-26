@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 9bfe1cfefd1fa9f46a486abb7f613084
-timeCreated: 1537883487
+guid: 0add0d52c91c4094d99efeb10a0826ab
+timeCreated: 1537964105
 licenseType: Pro
 NativeFormatImporter:
   externalObjects: {}
   mainObjectFileID: 11400000
   userData: 
-  assetBundleName: chunkdata
+  assetBundleName: testworld_chunklayout
   assetBundleVariant: 

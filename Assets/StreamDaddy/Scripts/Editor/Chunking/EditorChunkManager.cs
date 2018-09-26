@@ -45,21 +45,19 @@ namespace StreamDaddy.Editor.Chunking
             m_chunks[chunkKey].AddChild(go);
         }
 
-        public void ExportAllChunkAssets()
+        public void ExportAllChunkAssets(string worldName)
         {
             foreach(var kvp in m_chunks)
             {
-                m_buildStrategy.BuildChunkAssets(kvp.Value);
+                m_buildStrategy.BuildChunkAssets(worldName, kvp.Value);
             }
-
-            
         }
 
-        public void ExportAllChunkLayouts()
+        public void ExportAllChunkLayouts(string worldName)
         {
             foreach(var kvp in m_chunks)
             {
-                m_buildStrategy.BuildChunkLayout(kvp.Value);
+                m_buildStrategy.BuildChunkLayout(worldName, kvp.Value);
             }
         }
 

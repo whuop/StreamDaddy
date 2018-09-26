@@ -17,37 +17,30 @@ namespace StreamDaddy.Editor
             StreamDaddyEditor window = (StreamDaddyEditor)EditorWindow.GetWindow(typeof(StreamDaddyEditor));
             window.Show();
         }
-        private EditorChunkManager m_chunkManager = new EditorChunkManager();
-
-        private bool m_isInitialized = false;
+        private EditorChunkManager m_chunkManager;
         
         private StreamDaddyConfig m_config;
 
         //  Serialied config variables
         private SerializedObject m_serializedConfig;
         private SerializedProperty m_chunkSizeProp;
-
-        private void OnFocus()
-        {
-            Debug.Log("OnFocus");
-            SceneView.onSceneGUIDelegate -= this.OnSceneGUI;
-            SceneView.onSceneGUIDelegate += this.OnSceneGUI;
-        }
+        private SerializedProperty m_worldNameProp;
 
         private void OnDestroy()
         {
-            Debug.Log("OnDestroy");
             SceneView.onSceneGUIDelegate -= this.OnSceneGUI;
         }
 
         private void OnEnable()
         {
-            Debug.Log("OnEnable");
+            Initialize();
+            SceneView.onSceneGUIDelegate -= this.OnSceneGUI;
+            SceneView.onSceneGUIDelegate += this.OnSceneGUI;
         }
 
         private void OnDisable()
         {
-            Debug.Log("OnDestroy");
+            Debug.Log("Disabled");
         }
 
         private void Initialize()
@@ -62,18 +55,17 @@ namespace StreamDaddy.Editor
 
             m_serializedConfig = new SerializedObject(m_config);
             m_chunkSizeProp = m_serializedConfig.FindProperty("m_chunkSize");
+            m_worldNameProp = m_serializedConfig.FindProperty("m_worldName");
+
+            m_chunkManager = new EditorChunkManager();
         }
 
         private void OnGUI()
         {
-            if (!m_isInitialized)
-            {
-                m_isInitialized = true;
-                Initialize();
-            }
 
             EditorGUI.BeginChangeCheck();
 
+            EditorGUILayout.PropertyField(m_worldNameProp);
             EditorGUILayout.PropertyField(m_chunkSizeProp);
             
             if (EditorGUI.EndChangeCheck())
@@ -91,13 +83,16 @@ namespace StreamDaddy.Editor
 
             if (GUILayout.Button("Export Assets"))
             {
-                m_chunkManager.ExportAllChunkAssets();
-                m_chunkManager.BuildAllAssetBundles();
+                m_chunkManager.ExportAllChunkAssets(m_worldNameProp.stringValue);
             }
 
             if (GUILayout.Button("Export World"))
             {
-                m_chunkManager.ExportAllChunkLayouts();
+                m_chunkManager.ExportAllChunkLayouts(m_worldNameProp.stringValue);
+            }
+
+            if (GUILayout.Button("Build AssetBundles"))
+            {
                 m_chunkManager.BuildAllAssetBundles();
             }
         }
@@ -112,11 +107,6 @@ namespace StreamDaddy.Editor
                 m_chunkManager.AddGameObject(go);
             }
             GUI.changed = true;
-        }
-
-        private void ExportWorld()
-        {
-
         }
 
         void OnSceneGUI(SceneView sceneView)

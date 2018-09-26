@@ -1,9 +1,9 @@
 ManifestFileVersion: 0
-CRC: 3414813806
+CRC: 1706287919
 Hashes:
   AssetFileHash:
     serializedVersion: 2
-    Hash: 24edf9769d189d8b4aac18f53790af3f
+    Hash: 5d07410d51b38933cccd762b1a5553c9
   TypeTreeHash:
     serializedVersion: 2
     Hash: 3bd3b9b4f480c2c65ae9fc8e0961bc74
@@ -14,5 +14,5 @@ ClassTypes:
 - Class: 115
   Script: {instanceID: 0}
 Assets:
-- Assets/StreamDaddy/Temp/ChunkData/chunkdata_-1_0 0.asset
+- Assets/StreamDaddy/Worlds/TestWorld/ChunkLayout/chunklayout_-1_0 0.asset
 Dependencies: []

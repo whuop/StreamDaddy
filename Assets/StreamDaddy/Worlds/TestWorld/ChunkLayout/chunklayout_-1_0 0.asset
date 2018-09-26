@@ -9,7 +9,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 84ebf7035f21c914f99124845425d2cc, type: 3}
-  m_Name: chunkdata_-1_0 0
+  m_Name: chunklayout_-1_0 0
   m_EditorClassIdentifier: 
   Positions:
   - {x: -0.42, y: 0, z: 0}

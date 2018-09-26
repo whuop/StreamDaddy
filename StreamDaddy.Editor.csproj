@@ -302,7 +302,9 @@
     <Compile Include="Assets\StreamDaddy\Scripts\Editor\Configs\Attributes\ConfigPathAttribute.cs" />
     <Compile Include="Assets\StreamDaddy\Scripts\Editor\Configs\ConfigBase.cs" />
     <Compile Include="Assets\StreamDaddy\Scripts\Editor\Configs\StreamDaddyConfig.cs" />
+    <Compile Include="Assets\StreamDaddy\Scripts\Editor\EditorPaths.cs" />
     <Compile Include="Assets\StreamDaddy\Scripts\Editor\StreamDaddyEditor.cs" />
+    <Compile Include="Assets\StreamDaddy\Scripts\Editor\Utils\PathUtils.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\Mega Fantasy Props Pack\README.txt" />

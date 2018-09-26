@@ -4,10 +4,10 @@ using System.Collections.Generic;
 using UnityEngine;
 
 namespace StreamDaddy.Editor.Assets
-{
+{      
     public interface IAssetBuildStrategy
     {
-        void BuildChunkAssets(EditorChunk chunk);
-        void BuildChunkLayout(EditorChunk chunk);
+        void BuildChunkAssets(string worldName, EditorChunk chunk);
+        void BuildChunkLayout(string worldName, EditorChunk chunk);
     }
 }

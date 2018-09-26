@@ -12,3 +12,4 @@ MonoBehaviour:
   m_Name: StreamDaddyEditorConfig
   m_EditorClassIdentifier: 
   m_chunkSize: {x: 1, y: 1, z: 1}
+  m_worldName: TestWorld

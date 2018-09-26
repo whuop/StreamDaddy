@@ -1,4 +1,5 @@
 ﻿using StreamDaddy.AssetManagement;
+using StreamDaddy.Editor.Utils;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -9,10 +10,7 @@ namespace StreamDaddy.Editor
 {
     public class AssetBundleUtils : MonoBehaviour
     {
-        private static string TEMP_PATH = "Assets/StreamDaddy/Temp/";
-        private static string CHUNK_DATA_PATH = Path.Combine(TEMP_PATH, "ChunkData/");
-
-        public static PrefabChunkData CreatePrefabChunkData(string scriptableObjectName, Vector3[] positions, Vector3[] rotations, Vector3[] scales, string[] prefabNames)
+        /*public static PrefabChunkData CreatePrefabChunkData(string scriptableObjectName, Vector3[] positions, Vector3[] rotations, Vector3[] scales, string[] prefabNames)
         {
             PrefabChunkData asset = ScriptableObject.CreateInstance<PrefabChunkData>();
             asset.Positions = positions;
@@ -27,10 +25,13 @@ namespace StreamDaddy.Editor
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
             return asset;
-        }
+        }*/
 
-        public static AssetChunkData CreateRenderableAssets(string scriptableObjectName, Vector3[] positions, Vector3[] rotations, Vector3[] scales, string[] meshNames, string[][] materialNames, Vector3Int chunkID)
+        public static AssetChunkData CreateChunkLayoutData(string worldName, string scriptableObjectName, Vector3[] positions, Vector3[] rotations, Vector3[] scales, string[] meshNames, string[][] materialNames, Vector3Int chunkID)
         {
+            string path = EditorPaths.GetWorldChunkLayoutPath(worldName);
+            PathUtils.EnsurePathExists(path);
+            
             AssetChunkData asset = ScriptableObject.CreateInstance<AssetChunkData>();
             asset.Positions = positions;
             asset.Rotations = rotations;
@@ -46,11 +47,8 @@ namespace StreamDaddy.Editor
             }
 
             asset.Materials = materials;
-
-            AssetDatabase.CreateAsset(asset, CHUNK_DATA_PATH + scriptableObjectName + ".asset");
-
+            AssetDatabase.CreateAsset(asset, path + scriptableObjectName + ".asset");
             EditorUtility.SetDirty(asset);
-
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
             return asset;
