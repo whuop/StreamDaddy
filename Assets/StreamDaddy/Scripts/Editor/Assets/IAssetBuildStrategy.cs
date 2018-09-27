@@ -7,7 +7,7 @@ namespace StreamDaddy.Editor.Assets
 {      
     public interface IAssetBuildStrategy
     {
-        void BuildChunkAssets(string worldName, EditorChunk chunk);
+        void BuildChunkAssets(string worldName, EditorChunk chunk, List<string> assetBundles);
         void BuildChunkLayout(string worldName, EditorChunk chunk);
     }
 }

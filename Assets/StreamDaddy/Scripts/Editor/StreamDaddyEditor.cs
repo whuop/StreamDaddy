@@ -83,17 +83,18 @@ namespace StreamDaddy.Editor
 
             if (GUILayout.Button("Export Assets"))
             {
-                m_chunkManager.ExportAllChunkAssets(m_worldNameProp.stringValue);
+                m_chunkManager.BeginWorld(m_worldNameProp.stringValue);
+                m_chunkManager.ExportAllChunkAssets();
             }
 
             if (GUILayout.Button("Export World"))
             {
-                m_chunkManager.ExportAllChunkLayouts(m_worldNameProp.stringValue);
+                m_chunkManager.ExportAllChunkLayouts();
             }
 
             if (GUILayout.Button("Build AssetBundles"))
             {
-                m_chunkManager.BuildAllAssetBundles();
+                m_chunkManager.EndWorld();
             }
         }
 

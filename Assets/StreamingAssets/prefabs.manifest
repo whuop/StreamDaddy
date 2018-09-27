@@ -3,7 +3,7 @@ CRC: 3984903570
 Hashes:
   AssetFileHash:
     serializedVersion: 2
-    Hash: c7a169cb90723d3e32055643d688f9e7
+    Hash: 1aee0cc8f02e4ef64243315098e14d68
   TypeTreeHash:
     serializedVersion: 2
     Hash: 3c57d10c64aca01622a197be983738e8
@@ -26,4 +26,4 @@ ClassTypes:
 Assets:
 - Assets/Mega Fantasy Props Pack/Prefabs/House.001.prefab
 Dependencies:
-- E:/Repos/StreamDaddy/Assets/StreamingAssets/assetbased
+- D:/Repos/StreamDaddy/Assets/StreamingAssets/assetbased

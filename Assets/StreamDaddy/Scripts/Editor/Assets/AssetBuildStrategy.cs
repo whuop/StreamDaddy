@@ -18,11 +18,17 @@ namespace StreamDaddy.Editor.Assets
             m_uniqueMaterials.Clear();
         }
 
-        public void BuildChunkAssets(string worldName, EditorChunk chunk)
+        public void BuildChunkAssets(string worldName, EditorChunk chunk, List<string> assetBundles)
         {
             Clear();
             //  First off, fetch all MeshRenderers, these have the data we want in them, or on their game objects.
             List<MeshRenderer> allRenderers = new List<MeshRenderer>();
+            
+            //  Change this to use mroe than one assebundle later if needed.
+            if (!assetBundles.Contains(worldName + "_chunkassets"))
+            {
+                assetBundles.Add(worldName + "_chunkassets");
+            }
 
             var gameObjects = chunk.GetAllChildren();
 
@@ -75,8 +81,6 @@ namespace StreamDaddy.Editor.Assets
                     }
                 }
             }
-
-            
         }
 
         public void BuildChunkLayout(string worldName, EditorChunk chunk)

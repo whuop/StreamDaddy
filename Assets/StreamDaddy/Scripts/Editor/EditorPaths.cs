@@ -7,10 +7,12 @@ namespace StreamDaddy.Editor
 {
     public static class EditorPaths
     {
-        public static string STREAMING_DIRECTORY_PATH = "StreamDaddy/StreamingAssets/";
-        public static string WORLDS_DIRECTORY_PATH = "StreamDaddy/Worlds/";
-        public static string RELATIVE_CHUNK_DATA_DIRECTORY_PATH= "ChunkData/";
-        public static string RELATIVE_CHUNK_LAYOUT_DIRECTORY_PATH = "ChunkLayout/";
+        public static string STREAMING_DIRECTORY_PATH = Application.streamingAssetsPath;
+        private static string WORLDS_DIRECTORY_PATH = "StreamDaddy/Worlds/";
+        private static string RELATIVE_CHUNK_DATA_DIRECTORY_PATH= "ChunkData/";
+        private static string RELATIVE_CHUNK_LAYOUT_DIRECTORY_PATH = "ChunkLayout/";
+
+        private static string WORLD_STREAMS_DIRECTORY_PATH = "Streams/";
 
         public static string GetWorldPath(string worldName)
         {
@@ -36,6 +38,13 @@ namespace StreamDaddy.Editor
         public static string GetStreamingAssetsFolder()
         {
             string path = STREAMING_DIRECTORY_PATH;
+            PathUtils.EnsurePathExists(Application.dataPath + "/" + path);
+            return "Assets/" + path;
+        }
+
+        public static string GetWorldStreamsFolder()
+        {
+            string path = WORLD_STREAMS_DIRECTORY_PATH;
             PathUtils.EnsurePathExists(Application.dataPath + "/" + path);
             return "Assets/" + path;
         }
