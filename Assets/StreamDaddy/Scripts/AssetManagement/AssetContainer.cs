@@ -20,6 +20,11 @@ namespace StreamDaddy.AssetManagement
 
         public T Get(string name)
         {
+            if (!m_assets.ContainsKey(name))
+            {
+                Debug.LogError("Could not find asset with key: " + name + " of type: " + typeof(T).Name);
+                return default(T);
+            }
             return m_assets[name];
         }
 

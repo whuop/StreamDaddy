@@ -58,11 +58,12 @@ namespace StreamDaddy.Editor.Assets
                     if (assetPath == "Library/unity default resources")
                     {
                         Debug.Log("Skipped unity default asset: " + meshFilter.gameObject.name);
-                        continue;
                     }
-
-                    Debug.Log("AssetPath: " + assetPath);
-                    AssetImporter.GetAtPath(assetPath).SetAssetBundleNameAndVariant(worldName + "_chunkassets", "");
+                    else
+                    {
+                        Debug.Log("AssetPath: " + assetPath);
+                        AssetImporter.GetAtPath(assetPath).SetAssetBundleNameAndVariant(worldName + "_chunkassets", "");
+                    }
                 }
                 
                 foreach (var material in renderer.sharedMaterials)

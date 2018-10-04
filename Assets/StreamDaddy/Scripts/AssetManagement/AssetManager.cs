@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace StreamDaddy.AssetManagement
@@ -9,11 +10,24 @@ namespace StreamDaddy.AssetManagement
         private IAssetContainer<Material> m_materialContainer;
         private IAssetContainer<AssetChunkData> m_chunkDataContainer;
 
+        [SerializeField]
+        private List<GameObject> m_builtInMeshes;
+
         public void Awake()
         {
             m_meshContainer = new AssetContainer<Mesh>();
             m_materialContainer = new AssetContainer<Material>();
             m_chunkDataContainer = new AssetContainer<AssetChunkData>();
+            LoadBuiltInResources();
+        }
+
+        private void LoadBuiltInResources()
+        {
+            for(int i = 0; i < m_builtInMeshes.Count; i++)
+            {
+                var meshObj = m_builtInMeshes[i];
+                m_meshContainer.Add(meshObj.name, meshObj.GetComponent<MeshFilter>().sharedMesh);
+            }
         }
 
         public void AddAssets(UnityEngine.Object[] bundle)

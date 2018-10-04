@@ -1,5 +1,6 @@
 ﻿using StreamDaddy.AssetManagement;
 using StreamDaddy.Chunking;
+using StreamDaddy.Pooling;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -10,9 +11,15 @@ namespace StreamDaddy.Streaming
     {
         private Dictionary<ChunkID, Chunk> m_chunks = new Dictionary<ChunkID, Chunk>();
 
-        public ChunkManager()
-        {
+        private AssetManager m_assetManager;
 
+        private MonoBehaviour m_coroutineStarter;
+
+        public ChunkManager(AssetManager assetManager)
+        {
+            m_assetManager = assetManager;
+            m_coroutineStarter = assetManager;
+            GameObjectPool.PreWarm(2500);
         }
 
         public int GetChunkCount()
@@ -43,6 +50,15 @@ namespace StreamDaddy.Streaming
             }
         }
 
+        public void LoadAllChunks()
+        {
+            var chunks = m_chunks.Values;
+            foreach(var chunk in chunks)
+            {
+                LoadChunk(chunk.ID);
+            }
+        }
+
         public void LoadChunk(int x, int y, int z)
         {
             LoadChunk(new ChunkID(x, y, z));
@@ -55,7 +71,38 @@ namespace StreamDaddy.Streaming
 
         public void LoadChunk(ChunkID id)
         {
+            if (!m_chunks.ContainsKey(id))
+            {
+                return;
+            }
 
+            Chunk chunk = m_chunks[id];
+
+            m_coroutineStarter.StartCoroutine(chunk.LoadChunk(m_assetManager));
+        }
+
+        public void UnloadChunk(int x, int y, int z)
+        {
+            LoadChunk(new ChunkID(x, y, z));
+        }
+
+        public void UnloadChunk(Vector3Int id)
+        {
+            LoadChunk(new ChunkID(id));
+        }
+
+        public void UnloadChunk(ChunkID id)
+        {
+            if (!m_chunks.ContainsKey(id))
+            {
+                return;
+            }
+
+            Chunk chunk = m_chunks[id];
+            if (chunk.State == ChunkState.Loaded)
+            {
+                chunk.UnloadChunk();
+            }
         }
     }
 

@@ -11,5 +11,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 33b3c9fcad86fb54686f7cddaf85e6c1, type: 3}
   m_Name: StreamDaddyEditorConfig
   m_EditorClassIdentifier: 
-  m_chunkSize: {x: 5, y: 5, z: 5}
+  m_chunkSize: {x: 16, y: 16, z: 16}
   m_worldName: TestWorld

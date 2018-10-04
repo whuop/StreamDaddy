@@ -22,7 +22,7 @@ namespace StreamDaddy.Streaming
         {
             m_bundleManager = GetComponent<AssetBundleManager>();
             m_assetManager = GetComponent<AssetManager>();
-            m_chunkManager = new ChunkManager();
+            m_chunkManager = new ChunkManager(m_assetManager);
         }
 
         // Use this for initialization
@@ -34,13 +34,24 @@ namespace StreamDaddy.Streaming
                 m_bundleManager.LoadBundle(bundleName);
             }
 
+            m_bundleManager.LoadBundle(m_worldStream.ChunkLayoutBundle);
+
             Debug.Log("Loaded all asset budles for world");
+            
+            StartCoroutine(LoadAllChunks());
+        }
+
+        private IEnumerator LoadAllChunks()
+        {
+            yield return new WaitForSeconds(2.0f);
 
             AssetChunkData[] chunkData = m_assetManager.GetAllAssetChunkData();
             m_chunkManager.PreWarmChunks(chunkData);
             NumChunks = m_chunkManager.GetChunkCount();
-
             Debug.Log("Prewarmed chunks for world");
+
+            m_chunkManager.LoadAllChunks();
+            Debug.Log("Loaded chunks!");
         }
 
         public void AddAreaOfInterest(AreaOfInterest aoi)
@@ -58,11 +69,31 @@ namespace StreamDaddy.Streaming
         // Update is called once per frame
         void Update()
         {
-            CheckAreasOfInterest();
+            //CheckAreasOfInterest();
         }
 
         private void CheckAreasOfInterest()
         {
+            Vector3Int chunkSize = m_worldStream.ChunkSize;
+
+            for(int i = 0; i < m_areasOfInterest.Count; i++)
+            {
+                AreaOfInterest areaOfInterest = m_areasOfInterest[i];
+                Vector3 position = areaOfInterest.transform.position;
+
+                //  Round to approximate chunk position
+                float x = position.x / (float)chunkSize.x;
+                float y = position.y / (float)chunkSize.y;
+                float z = position.z / (float)chunkSize.z;
+
+                //  Floor to chunk position ID ( chunk index in EditorChunkManager )
+                int cx = (int)Mathf.Floor(x);
+                int cy = (int)Mathf.Floor(y);
+                int cz = (int)Mathf.Floor(z);
+
+                Debug.Log("Loading Chunk: " + cx + " " + cy + " " + cz);
+                m_chunkManager.LoadChunk(new Chunking.ChunkID(cx, cy, cz));
+            }
         }
     }
 }
