@@ -28,7 +28,7 @@ namespace StreamDaddy.AssetManagement
             switch(m_loadType)
             {
                 case LoadType.Asset:
-                    GameObjectPool.PreWarm(1000);
+                    GameObjectPool.PreWarm(1000, 500, 500, 500);
                     StartCoroutine(LoadBundleAssetBased("AssetBased"));
                     break;
                 case LoadType.Prefab:

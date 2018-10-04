@@ -19,7 +19,7 @@ namespace StreamDaddy.Streaming
         {
             m_assetManager = assetManager;
             m_coroutineStarter = assetManager;
-            GameObjectPool.PreWarm(2500);
+            GameObjectPool.PreWarm(2500, 500, 500, 500);
         }
 
         public int GetChunkCount()
