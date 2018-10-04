@@ -23,9 +23,11 @@ namespace StreamDaddy.AssetManagement
     {
         private Dictionary<string, BundleReference> m_bundleRefs = new Dictionary<string, BundleReference>();
 
+        private AssetManager m_assetManager;
+
         public void Start()
         {
-            LoadBundle("testworld_chunklayout");
+            m_assetManager = GetComponent<AssetManager>();
         }
 
         public void LoadBundle(string bundleName)
@@ -76,6 +78,9 @@ namespace StreamDaddy.AssetManagement
             {
                 Debug.Log("Unloading bundle: " + bundleName);
 
+                //  Remove all the loaded assets from the asset manager.
+                m_assetManager.RemoveAssets(bundleRef.AssetBundle.GetAllAssetNames());
+
                 bundleRef.State = BundleState.Unloaded;
                 bundleRef.AssetBundle.Unload(true);
                 bundleRef.RefCount = 0;
@@ -105,10 +110,9 @@ namespace StreamDaddy.AssetManagement
             Debug.Log("Finished loading bundle assets: " + bundleName);
 
             bundleRef.AssetBundle = assetBundle;
-            bundleRef.State = BundleState.Loaded;
             //  The whole assetbundle and all assets in it have now been loaded. Time to extract all the assets from it.
-
-
+            m_assetManager.AddAssets(assetBundleRequest.allAssets);
+            bundleRef.State = BundleState.Loaded;
         }
     }
 }

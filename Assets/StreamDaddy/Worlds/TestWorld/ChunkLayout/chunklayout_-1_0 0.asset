@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Name: chunklayout_-1_0 0
   m_EditorClassIdentifier: 
   Positions:
-  - {x: -0.42, y: 0, z: 0}
+  - {x: -0.42, y: 0, z: 3.32}
   Rotations:
   - {x: -0, y: 0, z: 0}
   Scales:

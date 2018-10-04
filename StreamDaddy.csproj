@@ -286,13 +286,18 @@
     <Compile Include="Assets\StreamDaddy\Scripts\AssetManagement\AssetBundleLoader.cs" />
     <Compile Include="Assets\StreamDaddy\Scripts\AssetManagement\AssetBundleManager.cs" />
     <Compile Include="Assets\StreamDaddy\Scripts\AssetManagement\AssetChunkData.cs" />
+    <Compile Include="Assets\StreamDaddy\Scripts\AssetManagement\AssetContainer.cs" />
     <Compile Include="Assets\StreamDaddy\Scripts\AssetManagement\AssetManager.cs" />
+    <Compile Include="Assets\StreamDaddy\Scripts\AssetManagement\IAssetContainer.cs" />
     <Compile Include="Assets\StreamDaddy\Scripts\AssetManagement\PrefabChunkData.cs" />
     <Compile Include="Assets\StreamDaddy\Scripts\Chunking\ChunkID.cs" />
     <Compile Include="Assets\StreamDaddy\Scripts\Chunking\World.cs" />
     <Compile Include="Assets\StreamDaddy\Scripts\Pooling\GameObjectPool.cs" />
-    <Compile Include="Assets\StreamDaddy\Scripts\Streaming\Streamer.cs" />
+    <Compile Include="Assets\StreamDaddy\Scripts\Streaming\AreaOfInterest.cs" />
+    <Compile Include="Assets\StreamDaddy\Scripts\Streaming\Chunk.cs" />
+    <Compile Include="Assets\StreamDaddy\Scripts\Streaming\ChunkManager.cs" />
     <Compile Include="Assets\StreamDaddy\Scripts\Streaming\WorldStream.cs" />
+    <Compile Include="Assets\StreamDaddy\Scripts\Streaming\WorldStreamer.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\Mega Fantasy Props Pack\README.txt" />

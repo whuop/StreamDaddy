@@ -83,7 +83,13 @@ namespace StreamDaddy.Editor.Assets
             }
         }
 
-        public void BuildChunkLayout(string worldName, EditorChunk chunk)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="worldName"></param>
+        /// <param name="chunk"></param>
+        /// <returns>Chunk asset name</returns>
+        public string BuildChunkLayout(string worldName, EditorChunk chunk)
         {
             Clear();
             List<MeshRenderer> allRenderers = new List<MeshRenderer>();
@@ -132,9 +138,12 @@ namespace StreamDaddy.Editor.Assets
                 }
             }
 
-            AssetChunkData chunkData = AssetBundleUtils.CreateChunkLayoutData(worldName, "chunklayout_" + chunk.ChunkID.X + "_" + chunk.ChunkID.Y + " " + chunk.ChunkID.Z, positions.ToArray(), rotations.ToArray(), scales.ToArray(), meshes.ToArray(), assetMaterials, chunk.ChunkID.ID);
+            string chunkAssetName = "chunklayout_" + chunk.ChunkID.X + "_" + chunk.ChunkID.Y + " " + chunk.ChunkID.Z;
+
+            AssetChunkData chunkData = AssetBundleUtils.CreateChunkLayoutData(worldName, chunkAssetName, positions.ToArray(), rotations.ToArray(), scales.ToArray(), meshes.ToArray(), assetMaterials, chunk.ChunkID.ID);
             string chunkDataPath = AssetDatabase.GetAssetPath(chunkData.GetInstanceID());
             AssetImporter.GetAtPath(chunkDataPath).SetAssetBundleNameAndVariant(worldName + "_chunklayout", "");
+            return chunkAssetName;
         }
     }
 }

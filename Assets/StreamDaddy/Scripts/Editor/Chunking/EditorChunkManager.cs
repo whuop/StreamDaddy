@@ -28,8 +28,21 @@ namespace StreamDaddy.Editor.Chunking
             m_chunks.Clear();
         }
 
+        private bool ValidateGameObject(GameObject go)
+        {
+            if (go.GetComponent<MeshRenderer>() == null &&
+                go.GetComponent<Collider>() == null)
+                return false;
+
+            return true;
+        }
+
         public void AddGameObject(GameObject go)
         {
+            //  Make sure this is a game object that can be streamed. 
+            if (!ValidateGameObject(go))
+                return;
+
             //  Round to approximate chunk position
             float x = go.transform.position.x / (float)m_chunkSize.x;
             float y = go.transform.position.y / (float)m_chunkSize.y;
@@ -84,12 +97,16 @@ namespace StreamDaddy.Editor.Chunking
 
         public void ExportAllChunkLayouts()
         {
+            List<string> chunkAssetNames = new List<string>();
             foreach(var kvp in m_chunks)
             {
-                m_buildStrategy.BuildChunkLayout(m_worldName, kvp.Value);
+                string chunkAssetName = m_buildStrategy.BuildChunkLayout(m_worldName, kvp.Value);
+                chunkAssetNames.Add(chunkAssetName);
             }
 
             m_world.ChunkLayoutBundle = m_worldName + "_chunklayout";
+            m_world.ChunkSize = m_chunkSize;
+            m_world.ChunkNames = chunkAssetNames.ToArray();
         }
 
         public EditorChunk GetChunk(ChunkID id)
