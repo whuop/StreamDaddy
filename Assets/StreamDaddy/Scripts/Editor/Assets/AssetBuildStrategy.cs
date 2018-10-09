@@ -23,6 +23,9 @@ namespace StreamDaddy.Editor.Assets
             Clear();
             //  First off, fetch all MeshRenderers, these have the data we want in them, or on their game objects.
             List<MeshRenderer> allRenderers = new List<MeshRenderer>();
+            List<BoxCollider> allBoxColliders = new List<BoxCollider>();
+            List<SphereCollider> allSphereColliders = new List<SphereCollider>();
+            List<MeshCollider> allMeshColliders = new List<MeshCollider>();
             
             //  Change this to use mroe than one assebundle later if needed.
             if (!assetBundles.Contains(worldName + "_chunkassets"))
@@ -35,8 +38,18 @@ namespace StreamDaddy.Editor.Assets
             foreach (var go in gameObjects)
             {
                 var renderer = go.GetComponent<MeshRenderer>();
+                var boxCollider = go.GetComponent<BoxCollider>();
+                var sphereCollider = go.GetComponent<SphereCollider>();
+                var meshCollider = go.GetComponent<MeshCollider>();
+                
                 if (renderer != null)
                     allRenderers.Add(renderer);
+                if (boxCollider != null)
+                    allBoxColliders.Add(boxCollider);
+                if (sphereCollider != null)
+                    allSphereColliders.Add(sphereCollider);
+                if (meshCollider != null)
+                    allMeshColliders.Add(meshCollider);
             }
             
             foreach (var renderer in allRenderers)
@@ -93,58 +106,132 @@ namespace StreamDaddy.Editor.Assets
         public string BuildChunkLayout(string worldName, EditorChunk chunk)
         {
             Clear();
-            List<MeshRenderer> allRenderers = new List<MeshRenderer>();
+
+
+            List<MeshData> meshData = new List<MeshData>();
+            List<BoxColliderData> boxColliderData = new List<BoxColliderData>();
+            List<SphereColliderData> sphereColliderData = new List<SphereColliderData>();
+            List<MeshColliderData> meshColliderData = new List<MeshColliderData>();
+            
             var gameObjects = chunk.GetAllChildren();
-
-            List<Vector3> positions = new List<Vector3>();
-            List<Vector3> rotations = new List<Vector3>();
-            List<Vector3> scales = new List<Vector3>();
-            List<string> meshes = new List<string>();
-            List<List<string>> materials = new List<List<string>>();
-
+            
             foreach (var go in gameObjects)
             {
                 var renderer = go.GetComponent<MeshRenderer>();
+                var boxCollider = go.GetComponent<BoxCollider>();
+                var sphereCollider = go.GetComponent<SphereCollider>();
+                var meshCollider = go.GetComponent<MeshCollider>();
+                
                 if (renderer != null)
-                    allRenderers.Add(renderer);
-            }
-
-            foreach (var renderer in allRenderers)
-            {
-                var meshFilter = renderer.GetComponent<MeshFilter>();
-                if (meshFilter.sharedMesh == null)
-                    continue;
-
-                List<string> goMaterials = new List<string>();
-                foreach (var material in renderer.sharedMaterials)
                 {
-                    goMaterials.Add(material.name);
+                    MeshData md = CreateMeshData(renderer);
+                    if (md != null)
+                    {
+                        meshData.Add(md);
+                    }
                 }
-                materials.Add(goMaterials);
 
-                GameObject go = renderer.gameObject;
-                positions.Add(go.transform.position);
-                rotations.Add(go.transform.rotation.eulerAngles);
-                scales.Add(go.transform.lossyScale);
-                meshes.Add(meshFilter.sharedMesh.name);
-            }
-
-            string[][] assetMaterials = new string[materials.Count][];
-            for (int i = 0; i < materials.Count; i++)
-            {
-                assetMaterials[i] = new string[materials[i].Count];
-                for (int j = 0; j < materials[i].Count; j++)
+                if (boxCollider != null)
                 {
-                    assetMaterials[i][j] = materials[i][j];
+                    BoxColliderData bd = CreateBoxColliderData(boxCollider);
+                    if (bd != null)
+                    {
+                        boxColliderData.Add(bd);
+                    }
+                }
+
+                if (sphereCollider != null)
+                {
+                    SphereColliderData sd = CreateSphereColliderData(sphereCollider);
+                    if (sd != null)
+                    {
+                        sphereColliderData.Add(sd);
+                    }
+                }
+
+                if (meshCollider != null)
+                {
+                    MeshColliderData mcd = CreateMeshColliderData(meshCollider);
+                    if (mcd != null)
+                    {
+                        meshColliderData.Add(mcd);
+                    }
                 }
             }
 
             string chunkAssetName = "chunklayout_" + chunk.ChunkID.X + "_" + chunk.ChunkID.Y + " " + chunk.ChunkID.Z;
 
-            AssetChunkData chunkData = AssetBundleUtils.CreateChunkLayoutData(worldName, chunkAssetName, positions.ToArray(), rotations.ToArray(), scales.ToArray(), meshes.ToArray(), assetMaterials, chunk.ChunkID.ID);
+            AssetChunkData chunkData = AssetBundleUtils.CreateChunkLayoutData(worldName, chunkAssetName,
+                meshData.ToArray(),
+                boxColliderData.ToArray(), 
+                sphereColliderData.ToArray(), 
+                meshColliderData.ToArray(), 
+                chunk.ChunkID.ID);
+
             string chunkDataPath = AssetDatabase.GetAssetPath(chunkData.GetInstanceID());
             AssetImporter.GetAtPath(chunkDataPath).SetAssetBundleNameAndVariant(worldName + "_chunklayout", "");
             return chunkAssetName;
+        }
+
+        private MeshData CreateMeshData(MeshRenderer renderer)
+        {
+            var meshFilter = renderer.GetComponent<MeshFilter>();
+            if (meshFilter.sharedMesh == null)
+                return null;
+
+            MeshData data = new MeshData();
+
+            List<string> meshMaterials = new List<string>();
+            foreach (var material in renderer.sharedMaterials)
+            {
+                meshMaterials.Add(material.name);
+            }
+
+            data.MeshName = meshFilter.sharedMesh.name;
+            data.Position = meshFilter.transform.position;
+            data.Rotation = meshFilter.transform.rotation.eulerAngles;
+            data.Scale = meshFilter.transform.lossyScale;
+            data.MaterialNames = meshMaterials.ToArray();
+
+            return data;
+        }
+
+        private BoxColliderData CreateBoxColliderData(BoxCollider boxCollider)
+        {
+            BoxColliderData data = new BoxColliderData();
+
+            data.Center = boxCollider.center;
+            data.Size = boxCollider.size;
+            data.Position = boxCollider.transform.position;
+            data.Rotation = boxCollider.transform.rotation.eulerAngles;
+            data.Scale = boxCollider.transform.lossyScale;
+            
+            return data;
+        }
+
+        private SphereColliderData CreateSphereColliderData(SphereCollider sphereCollider)
+        {
+            SphereColliderData data = new SphereColliderData();
+
+            data.Center = sphereCollider.center;
+            data.Radius = sphereCollider.radius;
+            data.Position = sphereCollider.transform.position;
+            data.Rotation = sphereCollider.transform.rotation.eulerAngles;
+            data.Scale = sphereCollider.transform.lossyScale;
+
+            return data;
+        }
+
+        private MeshColliderData CreateMeshColliderData(MeshCollider meshCollider)
+        {
+            MeshColliderData data = new MeshColliderData();
+
+            data.MeshName = meshCollider.sharedMesh.name;
+            data.Position = meshCollider.transform.position;
+            data.Rotation = meshCollider.transform.rotation.eulerAngles;
+            data.Scale = meshCollider.transform.lossyScale;
+
+            return data;
         }
     }
 }

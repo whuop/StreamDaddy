@@ -100,13 +100,38 @@ namespace StreamDaddy.Editor
 
         private void ChunkWorld()
         {
-            GameObject[] allGos = GameObject.FindObjectsOfType<GameObject>();
+            var allMeshes = GameObject.FindObjectsOfType<MeshFilter>();
+            var allBoxColliders = GameObject.FindObjectsOfType<BoxCollider>();
+            var allSpherecolliders = GameObject.FindObjectsOfType<SphereCollider>();
+            var allMeshColliders = GameObject.FindObjectsOfType<MeshCollider>();
+
+            foreach(var mesh in allMeshes)
+            {
+                m_chunkManager.AddGameObject(mesh.gameObject);
+            }
+
+            foreach(var box in allBoxColliders)
+            {
+                m_chunkManager.AddGameObject(box.gameObject);
+            }
+
+            foreach(var sphere in allSpherecolliders)
+            {
+                m_chunkManager.AddGameObject(sphere.gameObject);
+            }
+
+            foreach(var meshCol in allMeshColliders)
+            {
+                m_chunkManager.AddGameObject(meshCol.gameObject);
+            }
+
+            /*GameObject[] allGos = GameObject.FindObjectsOfType<GameObject>();
             foreach(var go in allGos)
             {
                 if (!go.activeInHierarchy)
                     continue;
                 m_chunkManager.AddGameObject(go);
-            }
+            }*/
             GUI.changed = true;
         }
 

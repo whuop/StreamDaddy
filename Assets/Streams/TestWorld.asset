@@ -12,5 +12,11 @@ MonoBehaviour:
   m_Name: TestWorld
   m_EditorClassIdentifier: 
   m_chunkLayoutBundle: TestWorld_chunklayout
+  m_chunkNames:
+  - chunklayout_-1_0 -1
+  - chunklayout_0_0 0
+  - chunklayout_0_0 -1
+  - chunklayout_-1_0 0
+  m_chunkSize: {x: 16, y: 16, z: 16}
   m_assetBundles:
   - TestWorld_chunkassets

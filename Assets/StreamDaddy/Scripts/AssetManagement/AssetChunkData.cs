@@ -6,19 +6,58 @@ namespace StreamDaddy.AssetManagement
 {
     public class AssetChunkData : ScriptableObject
     {
-        public Vector3[] Positions;
-        public Vector3[] Rotations;
-        public Vector3[] Scales;
-        public string[] MeshNames;
-        public MaterialArray[] Materials;
+        public MeshData[] Meshes;
+        public BoxColliderData[] BoxColliders;
+        public SphereColliderData[] SphereColliders;
+        public MeshColliderData[] MeshColliders;
+
         public Vector3Int ChunkID;
+
     }
 
     [System.Serializable]
-    public class MaterialArray
+    public class PositionData
     {
         [SerializeField]
+        public Vector3 Position;
+        [SerializeField]
+        public Vector3 Rotation;
+        [SerializeField]
+        public Vector3 Scale;
+    }
+
+    [System.Serializable]
+    public class MeshData : PositionData
+    {
+        [SerializeField]
+        public string MeshName;
+        [SerializeField]
         public string[] MaterialNames;
+    }
+
+    [System.Serializable]
+    public class BoxColliderData : PositionData
+    {
+        [SerializeField]
+        public Vector3 Center;
+        [SerializeField]
+        public Vector3 Size;
+    }
+
+    [System.Serializable]
+    public class SphereColliderData : PositionData
+    {
+        [SerializeField]
+        public Vector3 Center;
+        [SerializeField]
+        public float Radius;
+    }
+
+    [System.Serializable]
+    public class MeshColliderData : PositionData
+    {
+        [SerializeField]
+        public string MeshName;
     }
 }
 

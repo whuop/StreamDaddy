@@ -21,7 +21,9 @@ namespace StreamDaddy.Streaming
         public ChunkState State { get { return m_chunkState; } set { m_chunkState = value; } }
 
         private List<Renderable> m_renderers = new List<Renderable>();
-        private List<GameObject> m_colliders = new List<GameObject>();
+        private List<MeshCollideable> m_meshColliders = new List<MeshCollideable>();
+        private List<BoxCollideable> m_boxColliders = new List<BoxCollideable>();
+        private List<SphereCollideable> m_sphereColliders = new List<SphereCollideable>();
 
         private ChunkID m_chunkID;
         public ChunkID ID { get { return m_chunkID; } }
@@ -40,22 +42,25 @@ namespace StreamDaddy.Streaming
 
             m_chunkState = ChunkState.Loading;
 
-            for(int i = 0; i < m_chunkData.MeshNames.Length; i++)
+            for(int i = 0; i < m_chunkData.Meshes.Length; i++)
             {
                 yield return new WaitForEndOfFrame();
-                string meshName = m_chunkData.MeshNames[i];
-                MaterialArray materialArray = m_chunkData.Materials[i];
 
-                Vector3 position = m_chunkData.Positions[i];
-                Vector3 rotation = m_chunkData.Rotations[i];
-                Vector3 scale = m_chunkData.Scales[i];
+                MeshData meshdata = m_chunkData.Meshes[i];
+
+                string meshName = meshdata.MeshName;
+                string[] materialNames = meshdata.MaterialNames;
+
+                Vector3 position = meshdata.Position;
+                Vector3 rotation = meshdata.Rotation;
+                Vector3 scale = meshdata.Scale;
 
                 Mesh mesh = assetManager.GetMeshAsset(meshName);
-                Material[] materials = new Material[materialArray.MaterialNames.Length];
+                Material[] materials = new Material[materialNames.Length];
                 
-                for(int j = 0; j < materialArray.MaterialNames.Length; j++)
+                for(int j = 0; j < materialNames.Length; j++)
                 {
-                    materials[j] = assetManager.GetMaterialAsset(materialArray.MaterialNames[j]);
+                    materials[j] = assetManager.GetMaterialAsset(materialNames[j]);
                 }
 
                 Renderable renderer = GameObjectPool.GetRenderer(mesh, materials, position, rotation, scale);
@@ -63,6 +68,40 @@ namespace StreamDaddy.Streaming
                 //  Add the renderable to the list of renderables that have been spawned in this chunk
                 //  so that we can easily unload them later.
                 m_renderers.Add(renderer);
+            }
+
+            for(int i = 0; i < m_chunkData.BoxColliders.Length; i++)
+            {
+                yield return new WaitForEndOfFrame();
+
+                BoxColliderData data = m_chunkData.BoxColliders[i];
+                BoxCollideable collideable = GameObjectPool.GetBoxCollider(data.Position, data.Rotation, data.Scale, data.Center, data.Size);
+
+                m_boxColliders.Add(collideable);
+            }
+
+            for(int i = 0; i < m_chunkData.SphereColliders.Length; i++)
+            {
+                yield return new WaitForEndOfFrame();
+
+                SphereColliderData data = m_chunkData.SphereColliders[i];
+                SphereCollideable collideable = GameObjectPool.GetSphereCollider(data.Position, data.Rotation, data.Scale, data.Center, data.Radius);
+                m_sphereColliders.Add(collideable);
+            }
+
+            for(int i = 0; i < m_chunkData.MeshColliders.Length; i++)
+            {
+                yield return new WaitForEndOfFrame();
+                MeshColliderData data = m_chunkData.MeshColliders[i];
+
+                string meshName = data.MeshName;
+                Vector3 position = data.Position;
+                Vector3 rotation = data.Rotation;
+                Vector3 scale = data.Scale;
+
+                Mesh mesh = assetManager.GetMeshAsset(meshName);
+                MeshCollideable collideable = GameObjectPool.GetMeshCollider(position, rotation, scale, mesh);
+                m_meshColliders.Add(collideable);
             }
 
             m_chunkState = ChunkState.Loaded;

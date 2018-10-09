@@ -119,6 +119,11 @@ namespace StreamDaddy.Pooling
         public static BoxCollideable GetBoxCollider(Vector3 position, Vector3 rotation, Vector3 scale, Vector3 center, Vector3 size)
         {
             var collideable = m_boxColliders.Dequeue();
+
+            collideable.GameObject.transform.position = position;
+            collideable.GameObject.transform.rotation = Quaternion.Euler(rotation);
+            collideable.GameObject.transform.localScale = scale;
+            
             collideable.BoxCollider.center = center;
             collideable.BoxCollider.size = size;
             
@@ -135,6 +140,11 @@ namespace StreamDaddy.Pooling
         public static SphereCollideable GetSphereCollider(Vector3 position, Vector3 rotation, Vector3 scale, Vector3 center, float radius)
         {
             var collideable = m_sphereColliders.Dequeue();
+
+            collideable.GameObject.transform.position = position;
+            collideable.GameObject.transform.rotation = Quaternion.Euler(rotation);
+            collideable.GameObject.transform.localScale = scale;
+
             collideable.SphereCollider.center = center;
             collideable.SphereCollider.radius = radius;
 
@@ -153,6 +163,10 @@ namespace StreamDaddy.Pooling
             var collideable = m_meshColliders.Dequeue();
             collideable.MeshCollider.sharedMesh = mesh;
 
+            collideable.GameObject.transform.position = position;
+            collideable.GameObject.transform.rotation = Quaternion.Euler(rotation);
+            collideable.GameObject.transform.localScale = scale;
+            
             collideable.GameObject.SetActive(true);
             return collideable;
         }

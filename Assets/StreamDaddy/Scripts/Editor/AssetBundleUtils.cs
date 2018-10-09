@@ -27,26 +27,18 @@ namespace StreamDaddy.Editor
             return asset;
         }*/
 
-        public static AssetChunkData CreateChunkLayoutData(string worldName, string scriptableObjectName, Vector3[] positions, Vector3[] rotations, Vector3[] scales, string[] meshNames, string[][] materialNames, Vector3Int chunkID)
+        public static AssetChunkData CreateChunkLayoutData(string worldName, string scriptableObjectName, MeshData[] meshes, BoxColliderData[] boxColliders, SphereColliderData[] sphereColliders, MeshColliderData[] meshColliders, Vector3Int chunkID)
         {
             string path = EditorPaths.GetWorldChunkLayoutPath(worldName);
             PathUtils.EnsurePathExists(path);
             
             AssetChunkData asset = ScriptableObject.CreateInstance<AssetChunkData>();
-            asset.Positions = positions;
-            asset.Rotations = rotations;
-            asset.Scales = scales;
-            asset.MeshNames = meshNames;
+            asset.Meshes = meshes;
+            asset.BoxColliders = boxColliders;
+            asset.SphereColliders = sphereColliders;
+            asset.MeshColliders = meshColliders;
             asset.ChunkID = chunkID;
-
-            MaterialArray[] materials = new MaterialArray[materialNames.Length];
-            for(int i = 0; i < materials.Length; i++)
-            {
-                materials[i] = new MaterialArray();
-                materials[i].MaterialNames = materialNames[i];
-            }
-
-            asset.Materials = materials;
+            
             AssetDatabase.CreateAsset(asset, path + scriptableObjectName + ".asset");
             EditorUtility.SetDirty(asset);
             AssetDatabase.SaveAssets();
