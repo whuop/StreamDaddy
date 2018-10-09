@@ -12,10 +12,13 @@ namespace StreamDaddy.Editor.Assets
         private Dictionary<string, Mesh> m_uniqueMeshes = new Dictionary<string, Mesh>();
         private Dictionary<string, Material> m_uniqueMaterials = new Dictionary<string, Material>();
 
+        private HashSet<int> m_processedInstanceIDs = new HashSet<int>();
+
         private void Clear()
         {
             m_uniqueMeshes.Clear();
             m_uniqueMaterials.Clear();
+            m_processedInstanceIDs.Clear();
         }
 
         public void BuildChunkAssets(string worldName, EditorChunk chunk, List<string> assetBundles)
@@ -117,6 +120,13 @@ namespace StreamDaddy.Editor.Assets
             
             foreach (var go in gameObjects)
             {
+                if (m_processedInstanceIDs.Contains(go.GetInstanceID()))
+                {
+                    continue;
+                }
+
+                m_processedInstanceIDs.Add(go.GetInstanceID());
+
                 var renderer = go.GetComponent<MeshRenderer>();
                 var boxCollider = go.GetComponent<BoxCollider>();
                 var sphereCollider = go.GetComponent<SphereCollider>();
