@@ -113,7 +113,7 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
---- !u!1001 &1090816976
+--- !u!1001 &164147580
 Prefab:
   m_ObjectHideFlags: 0
   serializedVersion: 2
@@ -131,6 +131,56 @@ Prefab:
     - target: {fileID: 4618927959378582, guid: 57dc92c7d3a223c49a472cdf1d9300b8, type: 2}
       propertyPath: m_LocalPosition.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4618927959378582, guid: 57dc92c7d3a223c49a472cdf1d9300b8, type: 2}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4618927959378582, guid: 57dc92c7d3a223c49a472cdf1d9300b8, type: 2}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4618927959378582, guid: 57dc92c7d3a223c49a472cdf1d9300b8, type: 2}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4618927959378582, guid: 57dc92c7d3a223c49a472cdf1d9300b8, type: 2}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4618927959378582, guid: 57dc92c7d3a223c49a472cdf1d9300b8, type: 2}
+      propertyPath: m_RootOrder
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 1876898879818394, guid: 57dc92c7d3a223c49a472cdf1d9300b8, type: 2}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1876898879818394, guid: 57dc92c7d3a223c49a472cdf1d9300b8, type: 2}
+      propertyPath: m_Name
+      value: House.001 (1)
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_ParentPrefab: {fileID: 100100000, guid: 57dc92c7d3a223c49a472cdf1d9300b8, type: 2}
+  m_IsPrefabParent: 0
+--- !u!1001 &1090816976
+Prefab:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 4618927959378582, guid: 57dc92c7d3a223c49a472cdf1d9300b8, type: 2}
+      propertyPath: m_LocalPosition.x
+      value: -13.02
+      objectReference: {fileID: 0}
+    - target: {fileID: 4618927959378582, guid: 57dc92c7d3a223c49a472cdf1d9300b8, type: 2}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4618927959378582, guid: 57dc92c7d3a223c49a472cdf1d9300b8, type: 2}
+      propertyPath: m_LocalPosition.z
+      value: -20.96
       objectReference: {fileID: 0}
     - target: {fileID: 4618927959378582, guid: 57dc92c7d3a223c49a472cdf1d9300b8, type: 2}
       propertyPath: m_LocalRotation.x
@@ -233,15 +283,15 @@ Prefab:
     m_Modifications:
     - target: {fileID: 4498000834695134, guid: 96429636246ec9b498993fea41b8f918, type: 2}
       propertyPath: m_LocalPosition.x
-      value: -17.750957
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 4498000834695134, guid: 96429636246ec9b498993fea41b8f918, type: 2}
       propertyPath: m_LocalPosition.y
-      value: 10.377525
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 4498000834695134, guid: 96429636246ec9b498993fea41b8f918, type: 2}
       propertyPath: m_LocalPosition.z
-      value: 11.392107
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 4498000834695134, guid: 96429636246ec9b498993fea41b8f918, type: 2}
       propertyPath: m_LocalRotation.x
@@ -263,6 +313,11 @@ Prefab:
       propertyPath: m_RootOrder
       value: 5
       objectReference: {fileID: 0}
+    - target: {fileID: 1709252384976748, guid: 96429636246ec9b498993fea41b8f918, type: 2}
+      propertyPath: m_Icon
+      value: 
+      objectReference: {fileID: 3936346786652291628, guid: 0000000000000000d000000000000000,
+        type: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 96429636246ec9b498993fea41b8f918, type: 2}
   m_IsPrefabParent: 0
@@ -416,8 +471,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: be9ea49999301f648bb295308bd814ba, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_loadType: 0
-  m_warmTheseUp: {fileID: 0}
 --- !u!4 &1989859077
 Transform:
   m_ObjectHideFlags: 0

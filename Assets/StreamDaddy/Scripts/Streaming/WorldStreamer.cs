@@ -10,6 +10,9 @@ namespace StreamDaddy.Streaming
         [SerializeField]
         private WorldStream m_worldStream;
 
+        [SerializeField]
+        private float m_areaOfInterestCheckTime = 0.2f;
+
         private AssetBundleManager m_bundleManager;
         private AssetManager m_assetManager;
 
@@ -17,6 +20,10 @@ namespace StreamDaddy.Streaming
         public int NumChunks = 0;
 
         private List<AreaOfInterest> m_areasOfInterest = new List<AreaOfInterest>();
+
+        public Vector3Int ChunkSize { get { return m_worldStream.ChunkSize; } }
+
+        
 
         private void Awake()
         {
@@ -36,9 +43,18 @@ namespace StreamDaddy.Streaming
 
             m_bundleManager.LoadBundle(m_worldStream.ChunkLayoutBundle);
 
+            PrewarmWorld();
+
             Debug.Log("Loaded all asset budles for world");
-            
+
             StartCoroutine(LoadAllChunks());
+            //StartCoroutine(CheckAreasOfInterest());
+        }
+
+        private void PrewarmWorld()
+        {
+            AssetChunkData[] chunkData = m_assetManager.GetAllAssetChunkData();
+            m_chunkManager.PreWarmChunks(chunkData);
         }
 
         private IEnumerator LoadAllChunks()
@@ -47,6 +63,7 @@ namespace StreamDaddy.Streaming
 
             AssetChunkData[] chunkData = m_assetManager.GetAllAssetChunkData();
             m_chunkManager.PreWarmChunks(chunkData);
+
             NumChunks = m_chunkManager.GetChunkCount();
             Debug.Log("Prewarmed chunks for world");
 
@@ -66,34 +83,23 @@ namespace StreamDaddy.Streaming
             Debug.Log("Removed area of interest!");
         }
 
-        // Update is called once per frame
-        void Update()
+        private IEnumerator CheckAreasOfInterest()
         {
-            //CheckAreasOfInterest();
-        }
-
-        private void CheckAreasOfInterest()
-        {
-            Vector3Int chunkSize = m_worldStream.ChunkSize;
-
-            for(int i = 0; i < m_areasOfInterest.Count; i++)
+            yield return new WaitForSeconds(2.0f);
+            while(true)
             {
-                AreaOfInterest areaOfInterest = m_areasOfInterest[i];
-                Vector3 position = areaOfInterest.transform.position;
+                Vector3Int chunkSize = m_worldStream.ChunkSize;
 
-                //  Round to approximate chunk position
-                float x = position.x / (float)chunkSize.x;
-                float y = position.y / (float)chunkSize.y;
-                float z = position.z / (float)chunkSize.z;
+                for (int i = 0; i < m_areasOfInterest.Count; i++)
+                {
+                    AreaOfInterest areaOfInterest = m_areasOfInterest[i];
+                    m_chunkManager.LoadChunk(areaOfInterest.ChunkPosition);
+                    yield return new WaitForEndOfFrame();
+                }
 
-                //  Floor to chunk position ID ( chunk index in EditorChunkManager )
-                int cx = (int)Mathf.Floor(x);
-                int cy = (int)Mathf.Floor(y);
-                int cz = (int)Mathf.Floor(z);
-
-                Debug.Log("Loading Chunk: " + cx + " " + cy + " " + cz);
-                m_chunkManager.LoadChunk(new Chunking.ChunkID(cx, cy, cz));
+                yield return new WaitForSeconds(m_areaOfInterestCheckTime);
             }
+            
         }
     }
 }

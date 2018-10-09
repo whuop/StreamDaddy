@@ -12,10 +12,10 @@ MonoBehaviour:
   m_Name: chunklayout_-1_0 -1
   m_EditorClassIdentifier: 
   Meshes:
-  - Position: {x: -2.1399994, y: 3.89, z: -2.9900017}
-    Rotation: {x: -0, y: 180.00026, z: -0}
+  - Position: {x: -2.1399994, y: 0, z: -2.9900017}
+    Rotation: {x: -0, y: -0.0000136603785, z: -0}
     Scale: {x: 1, y: 1, z: 1}
-    MeshName: wood_wall.007
+    MeshName: wood_wall.016
     MaterialNames:
     - timber_1_fixed_d
     - wooden-boards-texture_d
@@ -25,58 +25,26 @@ MonoBehaviour:
     MeshName: wood_column.004
     MaterialNames:
     - wood_1_d
-  - Position: {x: -2.1399994, y: 0, z: -2.9900017}
-    Rotation: {x: -0, y: -0.0000136603785, z: -0}
-    Scale: {x: 1, y: 1, z: 1}
-    MeshName: wood_wall.016
-    MaterialNames:
-    - timber_1_fixed_d
-    - wooden-boards-texture_d
   - Position: {x: -2.1399994, y: 3.89, z: -2.9900017}
     Rotation: {x: -0, y: 180.00026, z: -0}
     Scale: {x: 1, y: 1, z: 1}
     MeshName: wood_wall.007
-    MaterialNames:
-    - timber_1_fixed_d
-    - wooden-boards-texture_d
-  - Position: {x: -2.2400017, y: 5.2264676, z: -2.9799995}
-    Rotation: {x: 90, y: 0, z: 0}
-    Scale: {x: 1, y: 0.984817, z: 1}
-    MeshName: wood_column.004
-    MaterialNames:
-    - wood_1_d
-  - Position: {x: -2.1399994, y: 0, z: -2.9900017}
-    Rotation: {x: -0, y: -0.0000136603785, z: -0}
-    Scale: {x: 1, y: 1, z: 1}
-    MeshName: wood_wall.016
     MaterialNames:
     - timber_1_fixed_d
     - wooden-boards-texture_d
   BoxColliders: []
   SphereColliders: []
   MeshColliders:
-  - Position: {x: -2.1399994, y: 3.89, z: -2.9900017}
-    Rotation: {x: -0, y: 180.00026, z: -0}
-    Scale: {x: 1, y: 1, z: 1}
-    MeshName: wood_wall.007
-  - Position: {x: -2.2400017, y: 5.2264676, z: -2.9799995}
-    Rotation: {x: 90, y: 0, z: 0}
-    Scale: {x: 1, y: 0.984817, z: 1}
-    MeshName: wood_column.004
   - Position: {x: -2.1399994, y: 0, z: -2.9900017}
     Rotation: {x: -0, y: -0.0000136603785, z: -0}
     Scale: {x: 1, y: 1, z: 1}
     MeshName: wood_wall.016
-  - Position: {x: -2.1399994, y: 3.89, z: -2.9900017}
-    Rotation: {x: -0, y: 180.00026, z: -0}
-    Scale: {x: 1, y: 1, z: 1}
-    MeshName: wood_wall.007
   - Position: {x: -2.2400017, y: 5.2264676, z: -2.9799995}
     Rotation: {x: 90, y: 0, z: 0}
     Scale: {x: 1, y: 0.984817, z: 1}
     MeshName: wood_column.004
-  - Position: {x: -2.1399994, y: 0, z: -2.9900017}
-    Rotation: {x: -0, y: -0.0000136603785, z: -0}
+  - Position: {x: -2.1399994, y: 3.89, z: -2.9900017}
+    Rotation: {x: -0, y: 180.00026, z: -0}
     Scale: {x: 1, y: 1, z: 1}
-    MeshName: wood_wall.016
+    MeshName: wood_wall.007
   ChunkID: {x: -1, y: 0, z: -1}

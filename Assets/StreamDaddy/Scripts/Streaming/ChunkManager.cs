@@ -1,7 +1,6 @@
 ﻿using StreamDaddy.AssetManagement;
 using StreamDaddy.Chunking;
 using StreamDaddy.Pooling;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -73,12 +72,17 @@ namespace StreamDaddy.Streaming
         {
             if (!m_chunks.ContainsKey(id))
             {
+                Debug.Log("Could not find key: " + id);
                 return;
             }
 
             Chunk chunk = m_chunks[id];
 
+            if (chunk.State == ChunkState.Loaded || chunk.State == ChunkState.Loading)
+                return;
+
             m_coroutineStarter.StartCoroutine(chunk.LoadChunk(m_assetManager));
+            Debug.Log("Managed To start chunk load routine");
         }
 
         public void UnloadChunk(int x, int y, int z)

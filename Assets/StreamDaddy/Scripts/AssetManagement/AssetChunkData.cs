@@ -12,7 +12,6 @@ namespace StreamDaddy.AssetManagement
         public MeshColliderData[] MeshColliders;
 
         public Vector3Int ChunkID;
-
     }
 
     [System.Serializable]
