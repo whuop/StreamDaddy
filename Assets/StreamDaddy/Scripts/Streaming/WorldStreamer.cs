@@ -22,14 +22,19 @@ namespace StreamDaddy.Streaming
         private List<AreaOfInterest> m_areasOfInterest = new List<AreaOfInterest>();
 
         public Vector3Int ChunkSize { get { return m_worldStream.ChunkSize; } }
-
         
-
         private void Awake()
         {
             m_bundleManager = GetComponent<AssetBundleManager>();
             m_assetManager = GetComponent<AssetManager>();
             m_chunkManager = new ChunkManager(m_assetManager);
+
+            m_bundleManager.OnFinishedLoadingBundles += FinishedLoadingBundles;
+        }
+
+        private void OnDestroy()
+        {
+            m_bundleManager.OnFinishedLoadingBundles -= FinishedLoadingBundles;
         }
 
         // Use this for initialization
@@ -42,13 +47,16 @@ namespace StreamDaddy.Streaming
             }
 
             m_bundleManager.LoadBundle(m_worldStream.ChunkLayoutBundle);
-
-            PrewarmWorld();
-
+            
             Debug.Log("Loaded all asset budles for world");
 
-            StartCoroutine(LoadAllChunks());
-            //StartCoroutine(CheckAreasOfInterest());
+            //StartCoroutine(LoadAllChunks());
+            StartCoroutine(CheckAreasOfInterest());
+        }
+
+        private void FinishedLoadingBundles()
+        {
+            StartCoroutine(CheckAreasOfInterest());
         }
 
         private void PrewarmWorld()
@@ -61,8 +69,7 @@ namespace StreamDaddy.Streaming
         {
             yield return new WaitForSeconds(2.0f);
 
-            AssetChunkData[] chunkData = m_assetManager.GetAllAssetChunkData();
-            m_chunkManager.PreWarmChunks(chunkData);
+            PrewarmWorld();
 
             NumChunks = m_chunkManager.GetChunkCount();
             Debug.Log("Prewarmed chunks for world");
@@ -85,11 +92,11 @@ namespace StreamDaddy.Streaming
 
         private IEnumerator CheckAreasOfInterest()
         {
+            PrewarmWorld();
             yield return new WaitForSeconds(2.0f);
-            while(true)
+            Vector3Int chunkSize = m_worldStream.ChunkSize;
+            while (true)
             {
-                Vector3Int chunkSize = m_worldStream.ChunkSize;
-
                 for (int i = 0; i < m_areasOfInterest.Count; i++)
                 {
                     AreaOfInterest areaOfInterest = m_areasOfInterest[i];

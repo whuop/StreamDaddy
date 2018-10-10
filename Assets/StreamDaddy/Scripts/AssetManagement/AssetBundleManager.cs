@@ -25,6 +25,12 @@ namespace StreamDaddy.AssetManagement
 
         private AssetManager m_assetManager;
 
+        private HashSet<string> m_bundlesBeingLoaded = new HashSet<string>();
+
+        public delegate void FinishedLoadingBundleDelegate();
+
+        public FinishedLoadingBundleDelegate OnFinishedLoadingBundles { get; set; }
+
         public void Start()
         {
             m_assetManager = GetComponent<AssetManager>();
@@ -96,6 +102,7 @@ namespace StreamDaddy.AssetManagement
         private IEnumerator LoadAssetBundle(string bundleName, BundleReference bundleRef)
         {
             bundleRef.State = BundleState.Loading;
+            m_bundlesBeingLoaded.Add(bundleName);
             string filePath = System.IO.Path.Combine(Application.streamingAssetsPath, bundleName);
 
             //  Load bundle
@@ -113,6 +120,20 @@ namespace StreamDaddy.AssetManagement
             //  The whole assetbundle and all assets in it have now been loaded. Time to extract all the assets from it.
             m_assetManager.AddAssets(assetBundleRequest.allAssets);
             bundleRef.State = BundleState.Loaded;
+            m_bundlesBeingLoaded.Remove(bundleName);
+
+            if (!IsLoadingBundles())
+            {
+                if (OnFinishedLoadingBundles != null)
+                    OnFinishedLoadingBundles();
+            }
+        }
+
+        private bool IsLoadingBundles()
+        {
+            if (m_bundlesBeingLoaded.Count > 0)
+                return true;
+            return false;
         }
     }
 }

@@ -9,9 +9,7 @@ namespace StreamDaddy.Streaming
     public class ChunkManager
     {
         private Dictionary<ChunkID, Chunk> m_chunks = new Dictionary<ChunkID, Chunk>();
-
         private AssetManager m_assetManager;
-
         private MonoBehaviour m_coroutineStarter;
 
         public ChunkManager(AssetManager assetManager)
@@ -72,17 +70,14 @@ namespace StreamDaddy.Streaming
         {
             if (!m_chunks.ContainsKey(id))
             {
-                Debug.Log("Could not find key: " + id);
                 return;
             }
 
             Chunk chunk = m_chunks[id];
-
             if (chunk.State == ChunkState.Loaded || chunk.State == ChunkState.Loading)
                 return;
 
             m_coroutineStarter.StartCoroutine(chunk.LoadChunk(m_assetManager));
-            Debug.Log("Managed To start chunk load routine");
         }
 
         public void UnloadChunk(int x, int y, int z)
