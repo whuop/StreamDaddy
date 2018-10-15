@@ -12,6 +12,11 @@ namespace StreamDaddy.Streaming
         private AssetManager m_assetManager;
         private MonoBehaviour m_coroutineStarter;
 
+        public Dictionary<ChunkID, Chunk>.ValueCollection Chunks
+        {
+            get { return m_chunks.Values; }
+        }
+
         public ChunkManager(AssetManager assetManager)
         {
             m_assetManager = assetManager;
@@ -70,6 +75,7 @@ namespace StreamDaddy.Streaming
         {
             if (!m_chunks.ContainsKey(id))
             {
+                Debug.LogError("Could not find chunk: " + id);
                 return;
             }
 
@@ -78,6 +84,46 @@ namespace StreamDaddy.Streaming
                 return;
 
             m_coroutineStarter.StartCoroutine(chunk.LoadChunk(m_assetManager));
+        }
+
+        public void LoadChunks(List<ChunkID> chunkIDs)
+        {
+            for(int i = 0; i < chunkIDs.Count; i++)
+            {
+                ChunkID id = chunkIDs[i];
+
+                if (!m_chunks.ContainsKey(id))
+                {
+                    Debug.LogError("Could not find chunk: " + id);
+                    continue;
+                }
+
+                Chunk chunk = m_chunks[id];
+                if (chunk.State == ChunkState.Loaded || chunk.State == ChunkState.Loading)
+                    continue;
+
+                m_coroutineStarter.StartCoroutine(chunk.LoadChunk(m_assetManager));
+            }
+        }
+
+        public void UnloadChunks(List<ChunkID> chunkIDs)
+        {
+            for(int i = 0; i < chunkIDs.Count; i++)
+            {
+                ChunkID id = chunkIDs[i];
+
+                if (!m_chunks.ContainsKey(id))
+                {
+                    Debug.LogError("Could not find chunk: " + id);
+                    continue;
+                }
+
+                Chunk chunk = m_chunks[id];
+                if (chunk.State != ChunkState.Loaded)
+                    continue;
+
+                m_coroutineStarter.StartCoroutine(chunk.UnloadChunk());
+            }
         }
 
         public void UnloadChunk(int x, int y, int z)

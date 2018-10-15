@@ -28,12 +28,55 @@ namespace StreamDaddy.AssetManagement
         private HashSet<string> m_bundlesBeingLoaded = new HashSet<string>();
 
         public delegate void FinishedLoadingBundleDelegate();
+        public delegate void FinishedLoadingSingleBundleDelegate(BundleReference bundleRef);
 
         public FinishedLoadingBundleDelegate OnFinishedLoadingBundles { get; set; }
+
 
         public void Start()
         {
             m_assetManager = GetComponent<AssetManager>();
+        }
+
+        public void LoadBundles(params string[] bundles)
+        {
+            foreach(var bundleName in bundles)
+            {
+                if (!m_bundleRefs.ContainsKey(bundleName))
+                {
+                    m_bundleRefs.Add(bundleName, new BundleReference()
+                    {
+                        BundleName = bundleName
+                    });
+                }
+
+                //  Add the bundle to the list of bundles being loaded.
+                //  Do this before load starts, so that it has to finish loading the whole
+                //  set of bundles before being able to call the OnFinishedLoadingBundles delegate.
+                m_bundlesBeingLoaded.Add(bundleName);
+            }
+
+            foreach(var bundleName in bundles)
+            {
+                BundleReference bundle = m_bundleRefs[bundleName];
+                Debug.Log("Started loading bundle: " + bundleName);
+
+                switch(bundle.State)
+                {
+                    //  Bundle isn't loaded, add it to the set of bundles to load.
+                    case BundleState.Unloaded:
+                        bundle.RefCount++;
+                        StartCoroutine(LoadAssetBundle(bundleName, bundle));
+                    break;
+                    case BundleState.Loading:
+                    case BundleState.Loaded:
+                        //Remove the bundle from the list of bundles to load, if it has already been loaded.
+                        m_bundlesBeingLoaded.Remove(bundleName);
+                        bundle.RefCount++;
+                        Debug.Log(string.Format("Cannot load bundle {0}. Current Bundle state: {1}", bundleName, bundle.State));
+                        break;
+                }
+            }
         }
 
         public void LoadBundle(string bundleName)
@@ -89,7 +132,6 @@ namespace StreamDaddy.AssetManagement
 
                 bundleRef.State = BundleState.Unloaded;
                 bundleRef.AssetBundle.Unload(true);
-                bundleRef.RefCount = 0;
                 bundleRef.AssetBundle = null;
             }
             else if (bundleRef.RefCount < 0)

@@ -40,18 +40,16 @@ namespace StreamDaddy.Streaming
         // Use this for initialization
         void Start()
         {
+            string[] bundles = new string[m_worldStream.AssetBundles.Length + 1];
+
             for(int i = 0; i < m_worldStream.AssetBundles.Length; i++)
             {
-                string bundleName = m_worldStream.AssetBundles[i];
-                m_bundleManager.LoadBundle(bundleName);
+                bundles[i] = m_worldStream.AssetBundles[i];
             }
-
-            m_bundleManager.LoadBundle(m_worldStream.ChunkLayoutBundle);
+            bundles[bundles.Length - 1] = m_worldStream.ChunkLayoutBundle;
             
-            Debug.Log("Loaded all asset budles for world");
-
-            //StartCoroutine(LoadAllChunks());
-            StartCoroutine(CheckAreasOfInterest());
+            m_bundleManager.LoadBundles(bundles);
+            Debug.Log("Loaded all asset bundles for world");
         }
 
         private void FinishedLoadingBundles()
@@ -92,22 +90,51 @@ namespace StreamDaddy.Streaming
 
         private IEnumerator CheckAreasOfInterest()
         {
+            Debug.Log("Booting up AOI check");
             PrewarmWorld();
-            yield return new WaitForSeconds(2.0f);
             Vector3Int chunkSize = m_worldStream.ChunkSize;
             while (true)
             {
                 for (int i = 0; i < m_areasOfInterest.Count; i++)
                 {
                     AreaOfInterest areaOfInterest = m_areasOfInterest[i];
-                    m_chunkManager.LoadChunk(areaOfInterest.ChunkPosition);
+                    areaOfInterest.UpdateChunkPosition();
+
+                    m_chunkManager.LoadChunks(areaOfInterest.PositiveDelta);
+                    m_chunkManager.UnloadChunks(areaOfInterest.NegativeDelta);
+
                     yield return new WaitForEndOfFrame();
                 }
-
                 yield return new WaitForSeconds(m_areaOfInterestCheckTime);
             }
-            
         }
+
+#if UNITY_EDITOR
+
+        private void OnDrawGizmos()
+        {
+            if (!Application.isPlaying)
+                return;
+
+            var chunks = m_chunkManager.Chunks;
+            Color color = Gizmos.color;
+            foreach (var chunk in chunks)
+            {
+                Gizmos.color = Color.red;
+
+                Vector3 chunkPos = chunk.ID.ID;
+                Vector3 chunkSize = ChunkSize;
+                chunkPos.x *= chunkSize.x;
+                chunkPos.y *= chunkSize.y;
+                chunkPos.z *= chunkSize.z;
+                chunkPos += chunkSize * 0.5f;
+
+                Gizmos.DrawWireCube(chunkPos, chunkSize);
+            }
+            Gizmos.color = color;
+        }
+
+#endif
     }
 }
 

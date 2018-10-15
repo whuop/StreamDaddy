@@ -37,9 +37,6 @@ namespace StreamDaddy.Streaming
 
         public IEnumerator LoadChunk(AssetManager assetManager)
         {
-            if (m_chunkState != ChunkState.Unloaded)
-                yield return null;
-
             m_chunkState = ChunkState.Loading;
 
             for(int i = 0; i < m_chunkData.Meshes.Length; i++)
@@ -105,17 +102,36 @@ namespace StreamDaddy.Streaming
             }
 
             m_chunkState = ChunkState.Loaded;
+            //Debug.Log("END LOADING CHUNK!");
             yield return null;
         }
 
-        public IEnumerable UnloadChunk()
+        public IEnumerator UnloadChunk()
         {
             for(int i = 0; i < m_renderers.Count; i++)
             {
                 GameObjectPool.ReturnRenderer(m_renderers[i]);
             }
 
+            for(int i = 0; i < m_boxColliders.Count; i++)
+            {
+                GameObjectPool.ReturnBoxCollideable(m_boxColliders[i]);
+            }
+
+            for(int i = 0; i < m_sphereColliders.Count; i++)
+            {
+                GameObjectPool.ReturnSphereCollideable(m_sphereColliders[i]);
+            }
+
+            for(int i = 0; i < m_meshColliders.Count; i++)
+            {
+                GameObjectPool.ReturnMeshCollider(m_meshColliders[i]);
+            }
+
             m_renderers.Clear();
+            m_boxColliders.Clear();
+            m_sphereColliders.Clear();
+            m_meshColliders.Clear();
             m_chunkState = ChunkState.Unloaded;
 
             yield return null;

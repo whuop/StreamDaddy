@@ -14,26 +14,26 @@ namespace StreamDaddy.Streaming
         /// </summary>
         [SerializeField]
         private Vector3Int m_areaSize;
-
-        /// <summary>
-        /// The interval at which the position of the area of interest should be checked.
-        /// When AreaOfInterest changes chunk position new chunks are loaded, and old unseen chunks are unloaded.
-        /// </summary>
-        [SerializeField]
-        private float m_positionCheckTime = 0.2f;
-
+        
         private WorldStreamer m_streamer;
 
         private ChunkID m_chunkPosition;
         public ChunkID ChunkPosition { get { return m_chunkPosition; } }
 
-        private Coroutine m_updateRoutine;
+        private ChunkID m_lastChunkPosition;
+        public ChunkID LastChunkPosition { get { return m_lastChunkPosition; } }
+        
+        private List<ChunkID> m_positiveDelta = new List<ChunkID>();
+        public List<ChunkID> PositiveDelta { get { return m_positiveDelta; } }
+        private List<ChunkID> m_negativeDelta = new List<ChunkID>();
+        public List<ChunkID> NegativeDelta { get { return m_negativeDelta; } }
 
         // Use this for initialization
         void Start()
         {
             m_streamer = GameObject.FindObjectOfType<WorldStreamer>();
             m_chunkPosition = ChunkID.FromVector3(transform.position, m_streamer.ChunkSize);
+            m_lastChunkPosition = ChunkID.FromVector3(transform.position, m_streamer.ChunkSize);
 
             if (m_streamer == null)
             {
@@ -42,8 +42,6 @@ namespace StreamDaddy.Streaming
             }
 
             m_streamer.AddAreaOfInterest(this);
-
-            m_updateRoutine = StartCoroutine(UpdateChunkPosition());
         }
 
         private void OnDestroy()
@@ -56,19 +54,48 @@ namespace StreamDaddy.Streaming
             {
                 m_streamer.RemoveAreaOfInterest(this);
             }
-
-            StopCoroutine(m_updateRoutine);
-            m_updateRoutine = null;
         }
 
-        private IEnumerator UpdateChunkPosition()
+        public void UpdateChunkPosition()
         {
-            while(true)
+            m_negativeDelta.Clear();
+            m_positiveDelta.Clear();
+
+            m_lastChunkPosition = m_chunkPosition;
+            m_chunkPosition = ChunkID.FromVector3(transform.position, m_streamer.ChunkSize);
+
+            if (m_lastChunkPosition != m_chunkPosition)
             {
-                m_chunkPosition = ChunkID.FromVector3(transform.position, m_streamer.ChunkSize);
-                yield return new WaitForSeconds(m_positionCheckTime);
+                Debug.Log(string.Format("Switched chunk from {0} to {1}", m_lastChunkPosition, m_chunkPosition));
+
+                m_negativeDelta.Add(m_lastChunkPosition);
+                m_positiveDelta.Add(m_chunkPosition);
             }
         }
+
+#if UNITY_EDITOR
+
+        private void OnDrawGizmosSelected()
+        {
+            if (!Application.isPlaying)
+                return;
+            Color color = Gizmos.color;
+
+            Gizmos.color = new Color(0.0f, 1.0f, 0.0f, 0.2f);
+
+            Vector3 chunkPos = m_chunkPosition.ID;
+            Vector3 chunkSize = m_streamer.ChunkSize;
+            chunkPos.x *= chunkSize.x;
+            chunkPos.y *= chunkSize.y;
+            chunkPos.z *= chunkSize.z;
+            chunkPos += chunkSize * 0.5f;
+            
+            Gizmos.DrawCube(chunkPos, chunkSize);
+            
+            Gizmos.color = color;
+        }
+
+#endif
     }
 }
 
