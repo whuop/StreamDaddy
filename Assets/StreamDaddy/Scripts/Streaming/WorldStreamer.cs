@@ -52,6 +52,11 @@ namespace StreamDaddy.Streaming
             Debug.Log("Loaded all asset bundles for world");
         }
 
+        private void Update()
+        {
+            m_chunkManager.Update();
+        }
+
         private void FinishedLoadingBundles()
         {
             StartCoroutine(CheckAreasOfInterest());
@@ -102,12 +107,9 @@ namespace StreamDaddy.Streaming
 
                     m_chunkManager.LoadChunks(areaOfInterest.PositiveDelta);
                     m_chunkManager.UnloadChunks(areaOfInterest.NegativeDelta);
-                    Debug.Log("Loading chunks!");
-
                     yield return new WaitForEndOfFrame();
                 }
                 yield return new WaitForSeconds(m_areaOfInterestCheckTime);
-                Debug.Log("New loop!");
             }
         }
 
@@ -123,7 +125,6 @@ namespace StreamDaddy.Streaming
             foreach (var chunk in chunks)
             {
                 Gizmos.color = Color.red;
-
                 Vector3 chunkPos = chunk.ID.ID;
                 Vector3 chunkSize = ChunkSize;
                 chunkPos.x *= chunkSize.x;

@@ -14,6 +14,9 @@ namespace StreamDaddy.Streaming
         /// </summary>
         [SerializeField]
         private int m_maxDepth;
+
+        [SerializeField]
+        private bool m_debugRender = true;
         
         private WorldStreamer m_streamer;
 
@@ -34,8 +37,8 @@ namespace StreamDaddy.Streaming
         void Start()
         {
             m_streamer = GameObject.FindObjectOfType<WorldStreamer>();
-            m_chunkPosition = ChunkID.FromVector3(transform.position, m_streamer.ChunkSize);
-            m_lastChunkPosition = ChunkID.FromVector3(transform.position, m_streamer.ChunkSize);
+            m_chunkPosition = ChunkID.FromVector3(new Vector3(-9999, -9999, -9999), m_streamer.ChunkSize);
+            m_lastChunkPosition = ChunkID.FromVector3(new Vector3(-9999, -9999, -9999), m_streamer.ChunkSize);
 
             if (m_streamer == null)
             {

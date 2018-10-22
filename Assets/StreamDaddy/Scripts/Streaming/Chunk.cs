@@ -10,6 +10,7 @@ namespace StreamDaddy.Streaming
     public enum ChunkState
     {
         Unloaded = 0,
+        Unloading = 1,
         Loading = 2,
         Loaded = 3
     }

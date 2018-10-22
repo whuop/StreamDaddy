@@ -308,6 +308,7 @@
     <Compile Include="Assets\StreamDaddy\Scripts\Editor\Utils\ScriptableObjectUtils.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Assets\FantasyEnvironments\Environments\README.txt" />
     <None Include="Assets\Mega Fantasy Props Pack\README.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -72,6 +72,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_worldStream: {fileID: 11400000, guid: d485077e9cccc8845809a8480d236a6d, type: 2}
+  m_areaOfInterestCheckTime: 0.2
   NumChunks: 0
 --- !u!114 &114543845009682840
 MonoBehaviour:
