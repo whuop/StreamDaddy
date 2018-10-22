@@ -46,6 +46,25 @@ namespace StreamDaddy.Chunking
             return a.Equals(b);
         }
 
+        public static ChunkID operator + (ChunkID a, ChunkID b)
+        {
+            return new ChunkID(a.X + b.X,
+                                a.Y + b.Y,
+                                a.Z + b.Z);
+        }
+
+        public static ChunkID operator - (ChunkID a, ChunkID b)
+        {
+            return new ChunkID(a.X - b.X,
+                                a.Y - b.Y,
+                                a.Z - b.Z);
+        }
+
+        public Vector3 AsVector3()
+        {
+            return new Vector3(X, Y, Z);
+        }
+
         public override int GetHashCode()
         {
             var hashCode = -307843816;

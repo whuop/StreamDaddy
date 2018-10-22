@@ -102,10 +102,12 @@ namespace StreamDaddy.Streaming
 
                     m_chunkManager.LoadChunks(areaOfInterest.PositiveDelta);
                     m_chunkManager.UnloadChunks(areaOfInterest.NegativeDelta);
+                    Debug.Log("Loading chunks!");
 
                     yield return new WaitForEndOfFrame();
                 }
                 yield return new WaitForSeconds(m_areaOfInterestCheckTime);
+                Debug.Log("New loop!");
             }
         }
 
