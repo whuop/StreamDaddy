@@ -1,14 +1,14 @@
 ManifestFileVersion: 0
-CRC: 3965431791
+CRC: 897543984
 AssetBundleManifest:
   AssetBundleInfos:
     Info_0:
-      Name: assetbased
-      Dependencies: {}
-    Info_1:
       Name: prefabs
       Dependencies:
-        Dependency_0: assetbased
-    Info_2:
+        Dependency_0: testworld_chunkassets
+    Info_1:
       Name: testworld_chunklayout
+      Dependencies: {}
+    Info_2:
+      Name: testworld_chunkassets
       Dependencies: {}

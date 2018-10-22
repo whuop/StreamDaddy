@@ -1,0 +1,39 @@
+ManifestFileVersion: 0
+CRC: 3333106367
+Hashes:
+  AssetFileHash:
+    serializedVersion: 2
+    Hash: ed43792a5e76e3e98b4addbafffce1a6
+  TypeTreeHash:
+    serializedVersion: 2
+    Hash: bc193d49e7d16f71ac778acf3c7bfc27
+HashAppended: 0
+ClassTypes:
+- Class: 1
+  Script: {instanceID: 0}
+- Class: 4
+  Script: {instanceID: 0}
+- Class: 21
+  Script: {instanceID: 0}
+- Class: 23
+  Script: {instanceID: 0}
+- Class: 28
+  Script: {instanceID: 0}
+- Class: 33
+  Script: {instanceID: 0}
+- Class: 43
+  Script: {instanceID: 0}
+- Class: 48
+  Script: {instanceID: 0}
+Assets:
+- Assets/Mega Fantasy Props Pack/FBX/wood_wall.007.fbx
+- Assets/Mega Fantasy Props Pack/FBX/wood_column.004.fbx
+- Assets/Mega Fantasy Props Pack/FBX/wood_wall.018.fbx
+- Assets/Mega Fantasy Props Pack/Materials/wood_1_d.mat
+- Assets/Mega Fantasy Props Pack/FBX/wood_wall_enter.004.fbx
+- Assets/Mega Fantasy Props Pack/Materials/timber_1_fixed_d.mat
+- Assets/Mega Fantasy Props Pack/Materials/wooden-boards-texture_d.mat
+- Assets/Mega Fantasy Props Pack/FBX/wood_wall.014.fbx
+- Assets/Mega Fantasy Props Pack/FBX/wood_wall.016.fbx
+- Assets/Mega Fantasy Props Pack/FBX/platform.003.fbx
+Dependencies: []

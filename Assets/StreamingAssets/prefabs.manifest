@@ -1,9 +1,9 @@
 ManifestFileVersion: 0
-CRC: 3984903570
+CRC: 3032506078
 Hashes:
   AssetFileHash:
     serializedVersion: 2
-    Hash: 1aee0cc8f02e4ef64243315098e14d68
+    Hash: 5b3e8bc7a6a0dd8c9a7b7f29da71d3b8
   TypeTreeHash:
     serializedVersion: 2
     Hash: 3c57d10c64aca01622a197be983738e8
@@ -26,4 +26,4 @@ ClassTypes:
 Assets:
 - Assets/Mega Fantasy Props Pack/Prefabs/House.001.prefab
 Dependencies:
-- D:/Repos/StreamDaddy/Assets/StreamingAssets/assetbased
+- D:/Repos/StreamDaddy/Assets/StreamingAssets/testworld_chunkassets
