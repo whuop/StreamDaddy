@@ -73,6 +73,11 @@ namespace StreamDaddy.Editor
                 //  Apply changes to the serialized config, making it save changes. 
                 m_serializedConfig.ApplyModifiedProperties();
             }
+
+            if (GUILayout.Button("Split Terrain"))
+            {
+                SplitTerrain();
+            }
             
             if (GUILayout.Button("Chunk World"))
             {
@@ -96,6 +101,17 @@ namespace StreamDaddy.Editor
             {
                 m_chunkManager.EndWorld();
             }
+        }
+
+        private void SplitTerrain()
+        {
+            SplitTerrain splitTerrain = new SplitTerrain();
+
+
+            splitTerrain.Split(m_chunkSizeProp.vector3IntValue.x, m_chunkSizeProp.vector3IntValue.z);
+            //TerrainSplitter splitTerrain = new TerrainSplitter();
+            //Debug.Log("Splitting terrain with split size: " + m_terrainSplitSizeProp.intValue);
+            //splitTerrain.ChunkTerrain(m_terrainSplitSizeProp.intValue);
         }
 
         private void ChunkWorld()

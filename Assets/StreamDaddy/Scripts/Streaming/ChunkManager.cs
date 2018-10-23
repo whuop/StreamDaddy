@@ -102,7 +102,6 @@ namespace StreamDaddy.Streaming
         {
             if (!m_chunks.ContainsKey(id))
             {
-                Debug.LogError("Could not find chunk: " + id);
                 return;
             }
 
@@ -111,8 +110,6 @@ namespace StreamDaddy.Streaming
                 return;
             
             m_loadList.Add(chunk);
-
-            //m_coroutineStarter.StartCoroutine(chunk.LoadChunk(m_assetManager));
         }
 
         public void LoadChunks(List<ChunkID> chunkIDs)
@@ -128,7 +125,6 @@ namespace StreamDaddy.Streaming
             for(int i = 0; i < chunkIDs.Count; i++)
             {
                 UnloadChunk(chunkIDs[i]);
-                //m_coroutineStarter.StartCoroutine(chunk.UnloadChunk());
             }
         }
 
@@ -146,7 +142,6 @@ namespace StreamDaddy.Streaming
         {
             if (!m_chunks.ContainsKey(id))
             {
-                //Debug.LogError("Could not find chunk: " + id);
                 return;
             }
 
