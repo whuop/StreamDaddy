@@ -15,6 +15,9 @@ public class SplitTerrain : EditorWindow
         int detailResolution = origTerrain.terrainData.detailResolution / numSplitsX;
         int splatResolution = origTerrain.terrainData.alphamapResolution / numSplitsX;
 
+        //  Increase height map resolution by 1 to account for edge extrude
+        heightResolution += 1;
+
         if (origTerrain == null)
         {
             Debug.LogWarning("No terrain found on transform");
@@ -44,9 +47,10 @@ public class SplitTerrain : EditorWindow
             {
                 GameObject center = GameObject.Find(string.Format("{0}{1}_{2}", origTerrain.name, x, z));
                 GameObject right = GameObject.Find(string.Format("{0}{1}_{2}", origTerrain.name, x + 1, z));
-                GameObject bot = GameObject.Find(string.Format("{0}{1}_{2}", origTerrain.name, x, z - 1));
                 GameObject top = GameObject.Find(string.Format("{0}{1}_{2}", origTerrain.name, x, z + 1));
+                GameObject topRight = GameObject.Find(string.Format("{0}{1}_{2}", origTerrain.name, x + 1, z + 1));
                 GameObject left = GameObject.Find(string.Format("{0}{1}_{2}", origTerrain.name, x - 1, z));
+                GameObject bottom = GameObject.Find(string.Format("{0}{1}_{2}", origTerrain.name, x, z - 1));
 
                 if (center == null)
                     continue;
@@ -56,31 +60,24 @@ public class SplitTerrain : EditorWindow
                     continue;
 
                 Terrain rightT = null;
-                Terrain bottomT = null;
-                Terrain leftT = null;
                 Terrain topT = null;
+                Terrain topRightT = null;
+                Terrain leftT = null;
+                Terrain bottomT = null;
 
                 if (right != null)
                     rightT = right.GetComponent<Terrain>();
-                if (bot != null)
-                    bottomT = bot.GetComponent<Terrain>();
                 if (top != null)
                     topT = top.GetComponent<Terrain>();
+                if (topRight != null)
+                    topRightT = topRight.GetComponent<Terrain>();
                 if (left != null)
                     leftT = left.GetComponent<Terrain>();
+                if (bottom != null)
+                    bottomT = bottom.GetComponent<Terrain>();
                 
-
-
-                StitchRight(centerT, rightT, heightResolution);
-                //StitchTop(centerT, topT, heightResolution); // This one does not work correctly, check up on it.
-
-                //StitchLeft(centerT, leftT, heightResolution);
-                //StitchBottom(centerT, bottomT, heightResolution);
-                //StitchTopRight(centerT, topT, rightT, heightResolution);
-                //StitchTopAndLeft(centerT, topT, leftT, heightResolution);
-                //StitchBottomAndRight(centerT, rightT, bottomT, heightResolution);
-
-                //centerT.SetNeighbors(leftT, topT, rightT, bottomT);
+                StitchTopAndRight(centerT, topT, rightT, topRightT, heightResolution);
+                centerT.SetNeighbors(leftT, topT, rightT, bottomT);
             }
         }
     }
@@ -128,36 +125,59 @@ public class SplitTerrain : EditorWindow
             AssetDatabase.CreateFolder("Assets", "Resources");
         // Must do this before Splat
         AssetDatabase.CreateAsset(td, "Assets/Resources/" + newName + ".asset");
-
-        // Copy over all vars
-        newTerrain.bakeLightProbesForTrees = origTerrain.bakeLightProbesForTrees;
-        newTerrain.basemapDistance = origTerrain.basemapDistance;
-        newTerrain.castShadows = origTerrain.castShadows;
-        newTerrain.collectDetailPatches = origTerrain.collectDetailPatches;
-        newTerrain.detailObjectDensity = origTerrain.detailObjectDensity;
-        newTerrain.detailObjectDistance = origTerrain.detailObjectDistance;
-        newTerrain.drawHeightmap = origTerrain.drawHeightmap;
-        newTerrain.drawTreesAndFoliage = origTerrain.drawTreesAndFoliage;
-        newTerrain.editorRenderFlags = origTerrain.editorRenderFlags;
-        newTerrain.heightmapMaximumLOD = origTerrain.heightmapMaximumLOD;
-        newTerrain.heightmapPixelError = origTerrain.heightmapPixelError;
-        newTerrain.legacyShininess = origTerrain.legacyShininess;
-        newTerrain.legacySpecular = origTerrain.legacySpecular;
+        
+        //  Lighting
         newTerrain.lightmapIndex = origTerrain.lightmapIndex;
         newTerrain.lightmapScaleOffset = origTerrain.lightmapScaleOffset;
-        newTerrain.materialTemplate = origTerrain.materialTemplate;
-        newTerrain.materialType = origTerrain.materialType;
         newTerrain.realtimeLightmapIndex = origTerrain.realtimeLightmapIndex;
         newTerrain.realtimeLightmapScaleOffset = origTerrain.realtimeLightmapScaleOffset;
         newTerrain.reflectionProbeUsage = origTerrain.reflectionProbeUsage;
+        newTerrain.castShadows = origTerrain.castShadows;
+
+        //  Material
+        newTerrain.materialTemplate = origTerrain.materialTemplate;
+        newTerrain.materialType = origTerrain.materialType;
+
+        //  Legacy
+        newTerrain.legacyShininess = origTerrain.legacyShininess;
+        newTerrain.legacySpecular = origTerrain.legacySpecular;
+
+        //  Heightmap
+        newTerrain.drawHeightmap = origTerrain.drawHeightmap;
+        newTerrain.heightmapMaximumLOD = origTerrain.heightmapMaximumLOD;
+        newTerrain.heightmapPixelError = origTerrain.heightmapPixelError;
+
+        //  Detail
+        newTerrain.detailObjectDensity = origTerrain.detailObjectDensity;
+        newTerrain.detailObjectDistance = origTerrain.detailObjectDistance;
+        
+        newTerrain.collectDetailPatches = origTerrain.collectDetailPatches;
+        newTerrain.patchBoundsMultiplier = origTerrain.patchBoundsMultiplier;
+
+        
+
+        //  Tree
+        td.treePrototypes = origTerrain.terrainData.treePrototypes;
+        newTerrain.drawTreesAndFoliage = origTerrain.drawTreesAndFoliage;
         newTerrain.treeBillboardDistance = origTerrain.treeBillboardDistance;
         newTerrain.treeCrossFadeLength = origTerrain.treeCrossFadeLength;
         newTerrain.treeDistance = origTerrain.treeDistance;
         newTerrain.treeMaximumFullLODCount = origTerrain.treeMaximumFullLODCount;
+        newTerrain.bakeLightProbesForTrees = origTerrain.bakeLightProbesForTrees;
 
-        td.splatPrototypes = origTerrain.terrainData.splatPrototypes;
-        td.treePrototypes = origTerrain.terrainData.treePrototypes;
+        //  Misc
+        newTerrain.editorRenderFlags = origTerrain.editorRenderFlags;
+        newTerrain.basemapDistance = origTerrain.basemapDistance;
+
+        //  TerrainData
         td.detailPrototypes = origTerrain.terrainData.detailPrototypes;
+        td.splatPrototypes = origTerrain.terrainData.splatPrototypes;
+
+        //  Grass
+        td.wavingGrassAmount = origTerrain.terrainData.wavingGrassAmount;
+        td.wavingGrassSpeed = origTerrain.terrainData.wavingGrassSpeed;
+        td.wavingGrassStrength = origTerrain.terrainData.wavingGrassStrength;
+        td.wavingGrassTint = origTerrain.terrainData.wavingGrassTint;
 
         // Get percent of original
         float xMinNorm = xMin / origTerrain.terrainData.size.x;
@@ -193,8 +213,8 @@ public class SplitTerrain : EditorWindow
                     Mathf.FloorToInt((zMaxNorm - zMinNorm) * origTerrain.terrainData.detailHeight),
                     layer);
             int[,] newDetailLayer = new int[detailResolution, detailResolution];
-            dimRatio1 = (float)detailLayer.GetLength(0) / detailResolution;
-            dimRatio2 = (float)detailLayer.GetLength(1) / detailResolution;
+            dimRatio1 = (float)detailLayer.GetLength(0) / (detailResolution);
+            dimRatio2 = (float)detailLayer.GetLength(1) / (detailResolution);
             for (int i = 0; i < newDetailLayer.GetLength(0); i++)
             {
                 for (int j = 0; j < newDetailLayer.GetLength(1); j++)
@@ -206,7 +226,7 @@ public class SplitTerrain : EditorWindow
         }
 
         // Splat
-        td.alphamapResolution = alphamapResolution;
+        td.alphamapResolution = alphamapResolution + 1;
         float[,,] alphamaps = origTerrain.terrainData.GetAlphamaps(
             Mathf.FloorToInt(xMinNorm * origTerrain.terrainData.alphamapWidth),
             Mathf.FloorToInt(zMinNorm * origTerrain.terrainData.alphamapHeight),
@@ -249,169 +269,43 @@ public class SplitTerrain : EditorWindow
         AssetDatabase.SaveAssets();
     }
 
-    void StitchTop(Terrain cur, Terrain top, int heightResolution)
+    void StitchTopAndRight(Terrain cur, Terrain top, Terrain right, Terrain topRight, int heightResolution)
     {
         float[,] newHeights = new float[heightResolution, heightResolution];
         float[,] topHeights = new float[heightResolution, heightResolution];
-
-        if (top == null)
-            return;
-
-        for (int i = 0; i < heightResolution; i++)
-        {
-            if (top != null)
-                newHeights[heightResolution - 1, i] = topHeights[0, i];
-        }
-
-        cur.terrainData.SetHeights(0, 0, newHeights);
-    }
-
-    void StitchRight(Terrain cur, Terrain right, int heightResolution)
-    {
-        float[,] newHeights = new float[heightResolution, heightResolution];
         float[,] rightHeights = new float[heightResolution, heightResolution];
+        float[,] topRightHeights = new float[heightResolution, heightResolution];
 
-        if (right == null)
+        if (cur == null)
             return;
-        
-        newHeights = cur.terrainData.GetHeights(0, 0, heightResolution, heightResolution);
-        rightHeights = right.terrainData.GetHeights(0, 0, heightResolution, heightResolution);
 
-        for (int i = 0; i < heightResolution; i++)
+        newHeights = cur.terrainData.GetHeights(0, 0, heightResolution, heightResolution);
+
+        if (top != null)
+            topHeights = top.terrainData.GetHeights(0, 0, heightResolution, heightResolution);
+        if (right != null)
+            rightHeights = right.terrainData.GetHeights(0, 0, heightResolution, heightResolution);
+        if (topRight != null)
+            topRightHeights = topRight.terrainData.GetHeights(0, 0, heightResolution, heightResolution);
+
+        for(int i = 0; i < heightResolution; i++)
         {
             if (right != null)
+            {
                 newHeights[i, heightResolution - 1] = rightHeights[i, 0];
-        }
-        cur.terrainData.SetHeights(0, 0, newHeights);
-    }
-
-    void StitchLeft(Terrain cur, Terrain left, int heightResolution)
-    {
-        float[,] newHeights = new float[heightResolution, heightResolution];
-        float[,] leftHeights = new float[heightResolution, heightResolution];
-
-        if (left == null)
-            return;
-        
-        newHeights = cur.terrainData.GetHeights(0, 0, heightResolution, heightResolution);
-
-        for (int i = 0; i < heightResolution; i++)
-        {
-            if (left != null)
-                newHeights[i, 0] = leftHeights[i, heightResolution - 1];
-        }
-        cur.terrainData.SetHeights(0, 0, newHeights);
-    }
-
-    void StitchBottom(Terrain cur, Terrain bottom, int heightResolution)
-    {
-        float[,] newHeights = new float[heightResolution, heightResolution];
-        float[,] bottomHeights = new float[heightResolution, heightResolution];
-
-        if (bottom == null)
-            return;
-        
-        newHeights = cur.terrainData.GetHeights(0, 0, heightResolution, heightResolution);
-
-        for (int i = 0; i < heightResolution; i++)
-        {
-            if (bottom != null)
-                newHeights[0, i] = bottomHeights[heightResolution - 1, i];
-        }
-        cur.terrainData.SetHeights(0, 0, newHeights);
-    }
-
-    void StitchTopRight(Terrain cur, Terrain top, Terrain right, int heightResolution)
-    {
-        float[,] newHeights = new float[heightResolution, heightResolution];
-        float[,] rightHeights = new float[heightResolution, heightResolution];
-        float[,] topHeights = new float[heightResolution, heightResolution];
-
-        if (right != null)
-        {
-            rightHeights = right.terrainData.GetHeights(0, 0, heightResolution, heightResolution);
-        }
-
-        if (top != null)
-        {
-            topHeights = top.terrainData.GetHeights(0, 0, heightResolution, heightResolution);
-        }
-
-        if (top != null || right != null)
-        {
-            newHeights = cur.terrainData.GetHeights(0, 0, heightResolution, heightResolution);
-
-            for (int i = 0; i < heightResolution; i++)
-            {
-                if (top != null)
-                    newHeights[heightResolution - 1, i] = topHeights[0, i];
-
-                if (right != null)
-                    newHeights[i, heightResolution - 1] = rightHeights[i, 0];
             }
-            cur.terrainData.SetHeights(0, 0, newHeights);
-        }
-    }
 
-    void StitchBottomAndRight(Terrain cur, Terrain right, Terrain bottom, int heightResolution)
-    {
-        float[,] newHeights = new float[heightResolution, heightResolution];
-        float[,] rightHeights = new float[heightResolution, heightResolution];
-        float[,] bottomHeights = new float[heightResolution, heightResolution];
-
-        if (right != null)
-        {
-            rightHeights = right.terrainData.GetHeights(0, 0, heightResolution, heightResolution);
-        }
-        if (bottom != null)
-        {
-            bottomHeights = bottom.terrainData.GetHeights(0, 0, heightResolution, heightResolution);
-        }
-
-        if (right != null || bottom != null)
-        {
-            newHeights = cur.terrainData.GetHeights(0, 0, heightResolution, heightResolution);
-
-            for (int i = 0; i < heightResolution; i++)
+            if (top != null)
             {
-                if (right != null)
-                    newHeights[i, heightResolution - 1] = rightHeights[i, 0];
-
-                if (bottom != null)
-                    newHeights[0, i] = bottomHeights[heightResolution - 1, i];
+                newHeights[heightResolution - 1, i] = topHeights[0, i];
             }
-            cur.terrainData.SetHeights(0, 0, newHeights);
         }
-    }
 
-    void StitchTopAndLeft(Terrain cur, Terrain top, Terrain left, int heightResolution)
-    {
-        float[,] newHeights = new float[heightResolution, heightResolution];
-        float[,] topHeights = new float[heightResolution, heightResolution];
-        float[,] leftHeights = new float[heightResolution, heightResolution];
+        if (topRight != null)
+        {
+            newHeights[heightResolution - 1, heightResolution - 1] = topRightHeights[0, 0];
+        }
         
-        if (top != null)
-        {
-            topHeights = top.terrainData.GetHeights(0, 0, heightResolution, heightResolution);
-        }
-        if (left != null)
-        {
-            leftHeights = left.terrainData.GetHeights(0, 0, heightResolution, heightResolution);
-        }
-
-        if (top != null || left != null)
-        {
-            newHeights = cur.terrainData.GetHeights(0, 0, heightResolution, heightResolution);
-
-            for (int i = 0; i < heightResolution; i++)
-            {
-                if (top != null)
-                    newHeights[heightResolution - 1, i] = topHeights[0, i];
-
-                if (left != null)
-                    newHeights[i, 0] = leftHeights[i, heightResolution - 1];
-            }
-            cur.terrainData.SetHeights(0, 0, newHeights);
-        }
+        cur.terrainData.SetHeights(0, 0, newHeights);
     }
 }
