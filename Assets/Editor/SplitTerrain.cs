@@ -178,6 +178,7 @@ public class SplitTerrain : EditorWindow
         //  TerrainData
         td.detailPrototypes = origTerrain.terrainData.detailPrototypes;
 
+        //  Adjust splatmap tile position to chunk position
         var splats = origTerrain.terrainData.splatPrototypes;
         foreach(var splat in splats)
         {
