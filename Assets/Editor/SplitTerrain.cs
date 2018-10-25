@@ -11,9 +11,15 @@ public class SplitTerrain : EditorWindow
         int numSplitsX = Mathf.CeilToInt(origTerrain.terrainData.size.x / chunkSizeX);
         int numSplitsZ = Mathf.CeilToInt(origTerrain.terrainData.size.z / chunkSizeZ);
 
+
+        int tempDetailRes = origTerrain.terrainData.detailHeight / numSplitsX;
+        int tempSplatRes = origTerrain.terrainData.alphamapResolution / numSplitsX;
+
+
+
         int heightResolution = origTerrain.terrainData.heightmapResolution / numSplitsX;
-        int detailResolution = origTerrain.terrainData.detailResolution / numSplitsX;
-        int splatResolution = origTerrain.terrainData.alphamapResolution / numSplitsX;
+        int splatResolution = origTerrain.terrainData.alphamapResolution / (numSplitsX);
+        int detailResolution = origTerrain.terrainData.detailResolution / (numSplitsX);
 
         //  Increase height map resolution by 1 to account for edge extrude
         heightResolution += 1;
@@ -36,7 +42,7 @@ public class SplitTerrain : EditorWindow
                 float xMax = origTerrain.terrainData.size.x / numSplitsX * (x + 1);
                 float zMin = origTerrain.terrainData.size.z / numSplitsZ * z;
                 float zMax = origTerrain.terrainData.size.z / numSplitsZ * (z + 1);
-                copyTerrain(origTerrain, string.Format("{0}{1}_{2}", origTerrain.name, x, z), xMin, xMax, zMin, zMax, heightResolution, detailResolution, splatResolution);
+                copyTerrain(origTerrain, string.Format("{0}{1}_{2}", origTerrain.name, x, z), xMin, xMax, zMin, zMax, heightResolution, detailResolution, splatResolution, x, z);
             }
         }
         EditorUtility.ClearProgressBar();
@@ -82,12 +88,12 @@ public class SplitTerrain : EditorWindow
         }
     }
 
-    void copyTerrain(Terrain origTerrain, string newName, float xMin, float xMax, float zMin, float zMax, int heightmapResolution, int detailResolution, int alphamapResolution)
+    void copyTerrain(Terrain origTerrain, string newName, float xMin, float xMax, float zMin, float zMax, int heightmapResolution, int detailResolution, int alphamapResolution, int chunkX, int chunkZ)
     {
         if (heightmapResolution < 33 || heightmapResolution > 4097)
         {
             Debug.Log("Invalid heightmap resolution");
-            heightmapResolution = 33;
+            return;
         }
         if (detailResolution < 0 || detailResolution > 4048)
         {
@@ -171,7 +177,13 @@ public class SplitTerrain : EditorWindow
 
         //  TerrainData
         td.detailPrototypes = origTerrain.terrainData.detailPrototypes;
-        td.splatPrototypes = origTerrain.terrainData.splatPrototypes;
+
+        var splats = origTerrain.terrainData.splatPrototypes;
+        foreach(var splat in splats)
+        {
+            splat.tileOffset = new Vector2((heightmapResolution -1) * chunkX, (heightmapResolution - 1) * chunkZ);
+        }
+        td.splatPrototypes = splats;
 
         //  Grass
         td.wavingGrassAmount = origTerrain.terrainData.wavingGrassAmount;
@@ -184,20 +196,18 @@ public class SplitTerrain : EditorWindow
         float xMaxNorm = xMax / origTerrain.terrainData.size.x;
         float zMinNorm = zMin / origTerrain.terrainData.size.z;
         float zMaxNorm = zMax / origTerrain.terrainData.size.z;
-        float dimRatio1, dimRatio2;
 
         // Height
         td.heightmapResolution = heightmapResolution;
         float[,] newHeights = new float[heightmapResolution, heightmapResolution];
-        dimRatio1 = (xMax - xMin) / heightmapResolution;
-        dimRatio2 = (zMax - zMin) / heightmapResolution;
-        for (int i = 0; i < heightmapResolution; i++)
+        
+        var origHeights = origTerrain.terrainData.GetHeights(0, 0, origTerrain.terrainData.heightmapWidth, origTerrain.terrainData.heightmapHeight);
+
+        for (int i = 0; i < heightmapResolution - 1; i++)
         {
-            for (int j = 0; j < heightmapResolution; j++)
+            for (int j = 0; j < heightmapResolution - 1; j++)
             {
-                // Divide by size.y because height is stored as percentage
-                // Note this is [j, i] and not [i, j] (Why?!)
-                newHeights[j, i] = origTerrain.SampleHeight(new Vector3(xMin + (i * dimRatio1), 0, zMin + (j * dimRatio2))) / origTerrain.terrainData.size.y;
+                newHeights[j, i] = origHeights[chunkZ * (heightmapResolution - 1) + j, chunkX * (heightmapResolution - 1) + i];
             }
         }
         td.SetHeightsDelayLOD(0, 0, newHeights);
@@ -206,43 +216,30 @@ public class SplitTerrain : EditorWindow
         td.SetDetailResolution(detailResolution, 8); // Default? Haven't messed with resolutionPerPatch
         for (int layer = 0; layer < origTerrain.terrainData.detailPrototypes.Length; layer++)
         {
-            int[,] detailLayer = origTerrain.terrainData.GetDetailLayer(
-                    Mathf.FloorToInt(xMinNorm * origTerrain.terrainData.detailWidth),
-                    Mathf.FloorToInt(zMinNorm * origTerrain.terrainData.detailHeight),
-                    Mathf.FloorToInt((xMaxNorm - xMinNorm) * origTerrain.terrainData.detailWidth),
-                    Mathf.FloorToInt((zMaxNorm - zMinNorm) * origTerrain.terrainData.detailHeight),
-                    layer);
+            int[,] detailLayer = origTerrain.terrainData.GetDetailLayer(0, 0, origTerrain.terrainData.detailWidth, origTerrain.terrainData.detailHeight, layer);
             int[,] newDetailLayer = new int[detailResolution, detailResolution];
-            dimRatio1 = (float)detailLayer.GetLength(0) / (detailResolution);
-            dimRatio2 = (float)detailLayer.GetLength(1) / (detailResolution);
-            for (int i = 0; i < newDetailLayer.GetLength(0); i++)
+            for (int x = 0; x < newDetailLayer.GetLength(0); x++)
             {
-                for (int j = 0; j < newDetailLayer.GetLength(1); j++)
+                for (int z = 0; z < newDetailLayer.GetLength(1); z++)
                 {
-                    newDetailLayer[i, j] = detailLayer[Mathf.FloorToInt(i * dimRatio1), Mathf.FloorToInt(j * dimRatio2)];
+                    newDetailLayer[z, x] = detailLayer[chunkZ * (detailResolution) + z, chunkX * (detailResolution) + x];
                 }
             }
             td.SetDetailLayer(0, 0, layer, newDetailLayer);
         }
 
         // Splat
-        td.alphamapResolution = alphamapResolution + 1;
-        float[,,] alphamaps = origTerrain.terrainData.GetAlphamaps(
-            Mathf.FloorToInt(xMinNorm * origTerrain.terrainData.alphamapWidth),
-            Mathf.FloorToInt(zMinNorm * origTerrain.terrainData.alphamapHeight),
-            Mathf.FloorToInt((xMaxNorm - xMinNorm) * origTerrain.terrainData.alphamapWidth),
-            Mathf.FloorToInt((zMaxNorm - zMinNorm) * origTerrain.terrainData.alphamapHeight));
-        // Last dim is always origTerrain.terrainData.splatPrototypes.Length so don't ratio
+        td.alphamapResolution = alphamapResolution;
+        float[,,] alphamaps = origTerrain.terrainData.GetAlphamaps(0, 0, origTerrain.terrainData.alphamapWidth, origTerrain.terrainData.alphamapHeight);
         float[,,] newAlphamaps = new float[alphamapResolution, alphamapResolution, alphamaps.GetLength(2)];
-        dimRatio1 = (float)alphamaps.GetLength(0) / alphamapResolution;
-        dimRatio2 = (float)alphamaps.GetLength(1) / alphamapResolution;
-        for (int i = 0; i < newAlphamaps.GetLength(0); i++)
+
+        for (int x = 0; x < newAlphamaps.GetLength(0); x++)
         {
-            for (int j = 0; j < newAlphamaps.GetLength(1); j++)
+            for (int z = 0; z < newAlphamaps.GetLength(1); z++)
             {
                 for (int k = 0; k < newAlphamaps.GetLength(2); k++)
                 {
-                    newAlphamaps[i, j, k] = alphamaps[Mathf.FloorToInt(i * dimRatio1), Mathf.FloorToInt(j * dimRatio2), k];
+                    newAlphamaps[z, x, k] = alphamaps[chunkZ * (alphamapResolution) + z, chunkX * (alphamapResolution) + x, k];
                 }
             }
         }
