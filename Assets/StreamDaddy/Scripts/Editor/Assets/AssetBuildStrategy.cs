@@ -29,7 +29,7 @@ namespace StreamDaddy.Editor.Assets
             List<SphereCollider> allSphereColliders = new List<SphereCollider>();
             List<MeshCollider> allMeshColliders = new List<MeshCollider>();
             
-            //  Change this to use mroe than one assebundle later if needed.
+            //  Change this to use moree than one assebundle later if needed.
             if (!assetBundles.Contains(worldName + "_chunkassets"))
             {
                 assetBundles.Add(worldName + "_chunkassets");

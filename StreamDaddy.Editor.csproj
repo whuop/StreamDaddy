@@ -289,8 +289,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\Editor\SplitTerrain.cs" />
-    <Compile Include="Assets\Editor\TerrainSplitter.cs" />
     <Compile Include="Assets\StreamDaddy\Scripts\Editor\AssetBundleUtils.cs" />
     <Compile Include="Assets\StreamDaddy\Scripts\Editor\Assets\AssetBuilder.cs" />
     <Compile Include="Assets\StreamDaddy\Scripts\Editor\Assets\AssetBuildStrategy.cs" />
@@ -303,6 +301,7 @@
     <Compile Include="Assets\StreamDaddy\Scripts\Editor\Configs\StreamDaddyConfig.cs" />
     <Compile Include="Assets\StreamDaddy\Scripts\Editor\EditorPaths.cs" />
     <Compile Include="Assets\StreamDaddy\Scripts\Editor\StreamDaddyEditor.cs" />
+    <Compile Include="Assets\StreamDaddy\Scripts\Editor\TerrainTools\SplitTerrain.cs" />
     <Compile Include="Assets\StreamDaddy\Scripts\Editor\Utils\PathUtils.cs" />
     <Compile Include="Assets\StreamDaddy\Scripts\Editor\Utils\ScriptableObjectUtils.cs" />
   </ItemGroup>

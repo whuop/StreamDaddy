@@ -6,6 +6,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
+using StreamDaddy.Editor.TerrainTools;
 
 namespace StreamDaddy.Editor
 {
@@ -25,6 +26,8 @@ namespace StreamDaddy.Editor
         private SerializedObject m_serializedConfig;
         private SerializedProperty m_chunkSizeProp;
         private SerializedProperty m_worldNameProp;
+
+        private Terrain m_terrainToSplit;
 
         private void OnDestroy()
         {
@@ -56,6 +59,7 @@ namespace StreamDaddy.Editor
             m_serializedConfig = new SerializedObject(m_config);
             m_chunkSizeProp = m_serializedConfig.FindProperty("m_chunkSize");
             m_worldNameProp = m_serializedConfig.FindProperty("m_worldName");
+            
 
             m_chunkManager = new EditorChunkManager();
         }
@@ -67,7 +71,8 @@ namespace StreamDaddy.Editor
 
             EditorGUILayout.PropertyField(m_worldNameProp);
             EditorGUILayout.PropertyField(m_chunkSizeProp);
-            
+            m_terrainToSplit = (Terrain)EditorGUILayout.ObjectField("Terrain to split", m_terrainToSplit, typeof(Terrain), true);
+
             if (EditorGUI.EndChangeCheck())
             {
                 //  Apply changes to the serialized config, making it save changes. 
@@ -105,13 +110,7 @@ namespace StreamDaddy.Editor
 
         private void SplitTerrain()
         {
-            SplitTerrain splitTerrain = new SplitTerrain();
-
-
-            splitTerrain.Split(m_chunkSizeProp.vector3IntValue.x, m_chunkSizeProp.vector3IntValue.z);
-            //TerrainSplitter splitTerrain = new TerrainSplitter();
-            //Debug.Log("Splitting terrain with split size: " + m_terrainSplitSizeProp.intValue);
-            //splitTerrain.ChunkTerrain(m_terrainSplitSizeProp.intValue);
+            TerrainSplitter.SplitIntoChunks(m_chunkSizeProp.vector3IntValue.x, m_chunkSizeProp.vector3IntValue.z, m_terrainToSplit, "Assets/StreamDaddy/Worlds/" + m_worldNameProp.stringValue + "/Terrains/");
         }
 
         private void ChunkWorld()
