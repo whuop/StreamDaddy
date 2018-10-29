@@ -28,6 +28,7 @@ namespace StreamDaddy.Editor
         private SerializedProperty m_worldNameProp;
 
         private Terrain m_terrainToSplit;
+        private Material m_terrainMeshMaterial;
 
         private void OnDestroy()
         {
@@ -59,7 +60,8 @@ namespace StreamDaddy.Editor
             m_serializedConfig = new SerializedObject(m_config);
             m_chunkSizeProp = m_serializedConfig.FindProperty("m_chunkSize");
             m_worldNameProp = m_serializedConfig.FindProperty("m_worldName");
-            
+
+            m_terrainMeshMaterial = AssetDatabase.LoadAssetAtPath<Material>("Assets/StreamDaddy/Materials/MeshTerrain.mat");
 
             m_chunkManager = new EditorChunkManager();
         }
@@ -82,6 +84,11 @@ namespace StreamDaddy.Editor
             if (GUILayout.Button("Split Terrain"))
             {
                 SplitTerrain();
+            }
+
+            if (GUILayout.Button("Terrain To Mesh"))
+            {
+                TerrainToMesh.CreateMeshFromTerrain(m_terrainToSplit, m_terrainMeshMaterial);
             }
             
             if (GUILayout.Button("Chunk World"))
