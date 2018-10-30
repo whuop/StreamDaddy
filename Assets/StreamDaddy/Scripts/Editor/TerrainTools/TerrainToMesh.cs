@@ -28,16 +28,16 @@ public static class TerrainToMesh
                 vertices.Add(vertex);
             }
         }
-        
+
         int len = vertices.Count - terrainWidth - 1;
-        for(int i = 0; i < len; i++)
+        for (int i = 0; i < len; i++)
         {
             if ((i + 1) % terrainWidth == 0)
                 continue;
             int tv0 = i;
             int tv1 = i + 1;
             int tv2 = i + terrainWidth;
-            
+
             int vv0 = i + 1;
             int vv1 = i + terrainWidth + 1;
             int vv2 = tv2;
@@ -49,13 +49,17 @@ public static class TerrainToMesh
             indices.Add(vv0);
             indices.Add(vv1);
             indices.Add(vv2);
-            
+
         }
 
         Mesh mesh = new Mesh();
         mesh.name = terrain.gameObject.name;
         mesh.SetVertices(new List<Vector3>(vertices));
         mesh.SetTriangles(indices, 0);
+
+        GenerateControlUVs(terrainData, mesh);
+
+        mesh.RecalculateNormals();
 
         GameObject go = new GameObject(terrain.gameObject.name + "_mesh", typeof(MeshRenderer), typeof(MeshFilter));
 
@@ -76,15 +80,15 @@ public static class TerrainToMesh
         SplatPrototype[] splats = td.splatPrototypes;
 
         Texture2D controlTexture = new Texture2D(textureWidth, textureHeight);
-        
-        for(int x = 0; x < textureWidth; x++)
+
+        for (int x = 0; x < textureWidth; x++)
         {
-            for(int y = 0; y < textureHeight; y++)
+            for (int y = 0; y < textureHeight; y++)
             {
                 Color color = new Color(0, 0, 0, 0);
-                for(int layer = 0; layer < numLayers; layer++)
+                for (int layer = 0; layer < numLayers; layer++)
                 {
-                    switch(layer)
+                    switch (layer)
                     {
                         case 0:
                             color.r = alphaMaps[x, y, layer];
@@ -107,24 +111,49 @@ public static class TerrainToMesh
         AssetDatabase.CreateAsset(controlTexture, "Assets/controltexture.asset");
 
         material.SetTexture("_Control", controlTexture);
-        for(int i = 0; i < splats.Length; i++)
+        for (int i = 0; i < splats.Length; i++)
         {
             if (i == 0)
             {
                 material.SetTexture("_Splat0", splats[i].texture);
+                material.SetTextureScale("_Splat0", splats[i].tileSize);
             }
             else if (i == 1)
             {
                 material.SetTexture("_Splat1", splats[i].texture);
+                material.SetTextureScale("_Splat1", splats[i].tileSize);
             }
             else if (i == 2)
             {
                 material.SetTexture("_Splat2", splats[i].texture);
+                material.SetTextureScale("_Splat2", splats[i].tileSize);
             }
             else if (i == 3)
             {
                 material.SetTexture("_Splat3", splats[i].texture);
+                material.SetTextureScale("_Splat3", splats[i].tileSize);
             }
         }
+    }
+
+    private static void GenerateControlUVs(TerrainData data, Mesh terrainMesh)
+    {
+        int terrainWidth = data.heightmapWidth;
+        int terrainHeight = data.heightmapHeight;
+
+        float sampleWidth = 1.0f / (float)terrainWidth;
+        float sampleHeight = 1.0f / (float)terrainHeight;
+
+        List<Vector2> uvs = new List<Vector2>();
+
+        for (int y = 0; y < terrainHeight; y++)
+        {
+            for (int x = 0; x < terrainWidth; x++)
+            {
+                uvs.Add(new Vector2(x * sampleWidth, y * sampleHeight));
+            }
+        }
+
+        terrainMesh.SetUVs(0, uvs);
     }
 }
