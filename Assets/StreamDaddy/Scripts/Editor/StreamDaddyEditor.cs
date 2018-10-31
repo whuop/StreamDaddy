@@ -7,6 +7,8 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 using StreamDaddy.Editor.TerrainTools;
+using StreamDaddy.TerrainToMesh.Editor;
+using StreamDaddy.Editor.Tasks;
 
 namespace StreamDaddy.Editor
 {
@@ -29,6 +31,10 @@ namespace StreamDaddy.Editor
 
         private Terrain m_terrainToSplit;
         private Material m_terrainMeshMaterial;
+
+        private TaskChain m_taskChain;
+
+        private Task m_terrainToMeshTask;
 
         private void OnDestroy()
         {
@@ -64,6 +70,11 @@ namespace StreamDaddy.Editor
             m_terrainMeshMaterial = AssetDatabase.LoadAssetAtPath<Material>("Assets/StreamDaddy/Materials/MeshTerrain.mat");
 
             m_chunkManager = new EditorChunkManager();
+
+            m_taskChain = new TaskChain();
+            m_terrainToMeshTask = new TerrainToMeshTask();
+
+            m_taskChain.AddTask(m_terrainToMeshTask);
         }
 
         private void OnGUI()
@@ -88,7 +99,18 @@ namespace StreamDaddy.Editor
 
             if (GUILayout.Button("Terrain To Mesh"))
             {
-                TerrainToMesh.CreateMeshFromTerrain(m_terrainToSplit, m_terrainMeshMaterial);
+                Dictionary<string, object> args = new Dictionary<string, object>();
+                List<Terrain> terrains = new List<Terrain>();
+                terrains.Add(m_terrainToSplit);
+
+
+                args.Add(TerrainToMeshTask.TERRAIN_DATA_ARG, terrains);
+                args.Add(TerrainToMeshTask.TERRAIN_MATERIAL_ARG, m_terrainMeshMaterial);
+                args.Add(TerrainToMeshTask.WORLD_NAME_ARG, m_worldNameProp.stringValue);
+                m_terrainToMeshTask.Execute(args);
+                //var result = TerrainToMesh.Editor.TerrainToMesh.CreateMeshFromTerrain(m_terrainToSplit, m_terrainMeshMaterial);
+                
+                //TerrainToMesh.CreateMeshFromTerrain(m_terrainToSplit, m_terrainMeshMaterial);
             }
             
             if (GUILayout.Button("Chunk World"))

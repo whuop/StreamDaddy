@@ -12,7 +12,12 @@ namespace StreamDaddy.Editor
         private static string RELATIVE_CHUNK_DATA_DIRECTORY_PATH= "ChunkData/";
         private static string RELATIVE_CHUNK_LAYOUT_DIRECTORY_PATH = "ChunkLayout/";
 
+        private static string RELATIVE_TERRAIN_MESH_DIRECTORY_PATH = "TerrainMesh/";
+        private static string RELATIVE_TERRAIN_MESH_SPLAT_PATH = "TerrainMesh/Splats/";
+
         private static string WORLD_STREAMS_DIRECTORY_PATH = "Streams/";
+
+        private static string APPLICATION_DATAPATH = Application.dataPath.Replace("Assets", string.Empty);
 
         public static string GetWorldPath(string worldName)
         {
@@ -24,14 +29,14 @@ namespace StreamDaddy.Editor
         public static string GetWorldChunkDataPath(string worldName)
         {
             string path = GetWorldPath(worldName) + RELATIVE_CHUNK_DATA_DIRECTORY_PATH;
-            PathUtils.EnsurePathExists(Application.dataPath + "/" + path);
+            PathUtils.EnsurePathExists(APPLICATION_DATAPATH + path);
             return path;
         }
 
         public static string GetWorldChunkLayoutPath(string worldName)
         {
             string path = GetWorldPath(worldName) + RELATIVE_CHUNK_LAYOUT_DIRECTORY_PATH;
-            PathUtils.EnsurePathExists(Application.dataPath + "/" + path);
+            PathUtils.EnsurePathExists(APPLICATION_DATAPATH + path);
             return path;
         }
 
@@ -47,6 +52,20 @@ namespace StreamDaddy.Editor
             string path = WORLD_STREAMS_DIRECTORY_PATH;
             PathUtils.EnsurePathExists(Application.dataPath + "/" + path);
             return "Assets/" + path;
+        }
+
+        public static string GetTerrainMeshPath(string worldName)
+        {
+            string path = GetWorldPath(worldName) + RELATIVE_TERRAIN_MESH_DIRECTORY_PATH;
+            PathUtils.EnsurePathExists(APPLICATION_DATAPATH + path);
+            return path;
+        }
+
+        public static string GetTerrainMeshSplatPath(string worldName)
+        {
+            string path = GetWorldPath(worldName) + RELATIVE_TERRAIN_MESH_SPLAT_PATH;
+            PathUtils.EnsurePathExists(APPLICATION_DATAPATH + path);
+            return path;
         }
     }
 }
