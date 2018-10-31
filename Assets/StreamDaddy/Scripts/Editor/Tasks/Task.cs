@@ -25,5 +25,19 @@ namespace StreamDaddy.Editor.Tasks
         /// <param name="arguments"></param>
         /// <returns></returns>
         public abstract bool Execute(Dictionary<string, object> arguments);
+
+        /// <summary>
+        /// Checks to make sure that the 
+        /// </summary>
+        /// <param name="argument"></param>
+        protected bool EnsureArgumentExists(string argument, Dictionary<string, object> arguments)
+        {
+            if (!arguments.ContainsKey(argument))
+            {
+                Debug.LogError(string.Format("[Task] Could not find argument {0}, Task failed!", argument));
+                return false;
+            }
+            return true;
+        }
     }
 }

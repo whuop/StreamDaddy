@@ -35,6 +35,7 @@ namespace StreamDaddy.Editor
         private TaskChain m_taskChain;
 
         private Task m_terrainToMeshTask;
+        private Task m_exportChunkAssetsTask;
 
         private void OnDestroy()
         {
@@ -73,6 +74,7 @@ namespace StreamDaddy.Editor
 
             m_taskChain = new TaskChain();
             m_terrainToMeshTask = new TerrainToMeshTask();
+            m_exportChunkAssetsTask = new ExportChunkAssetsTask();
 
             m_taskChain.AddTask(m_terrainToMeshTask);
         }
@@ -108,9 +110,6 @@ namespace StreamDaddy.Editor
                 args.Add(TerrainToMeshTask.TERRAIN_MATERIAL_ARG, m_terrainMeshMaterial);
                 args.Add(TerrainToMeshTask.WORLD_NAME_ARG, m_worldNameProp.stringValue);
                 m_terrainToMeshTask.Execute(args);
-                //var result = TerrainToMesh.Editor.TerrainToMesh.CreateMeshFromTerrain(m_terrainToSplit, m_terrainMeshMaterial);
-                
-                //TerrainToMesh.CreateMeshFromTerrain(m_terrainToSplit, m_terrainMeshMaterial);
             }
             
             if (GUILayout.Button("Chunk World"))
@@ -123,7 +122,14 @@ namespace StreamDaddy.Editor
             if (GUILayout.Button("Export Assets"))
             {
                 m_chunkManager.BeginWorld(m_worldNameProp.stringValue);
-                m_chunkManager.ExportAllChunkAssets();
+
+                Dictionary<string, object> args = new Dictionary<string, object>();
+                args.Add(ExportChunkAssetsTask.WORLD_NAME_ARG, m_worldNameProp.stringValue);
+                args.Add(ExportChunkAssetsTask.CHUNKS_ARG, m_chunkManager.Chunks);
+
+    
+
+                //m_chunkManager.ExportAllChunkAssets();
             }
 
             if (GUILayout.Button("Export World"))

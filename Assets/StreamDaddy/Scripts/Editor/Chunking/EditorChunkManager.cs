@@ -11,6 +11,8 @@ namespace StreamDaddy.Editor.Chunking
     public class EditorChunkManager
     {
         private Dictionary<ChunkID, EditorChunk> m_chunks = new Dictionary<ChunkID, EditorChunk>();
+        public List<EditorChunk> Chunks { get { return new List<EditorChunk>(m_chunks.Values); } }
+
         private Vector3Int m_chunkSize;
 
         private IAssetBuildStrategy m_buildStrategy = new AssetBuildStrategy();
