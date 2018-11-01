@@ -8,9 +8,6 @@ namespace StreamDaddy.Editor.Tasks
 {
     public class ExportChunkAssetsTask : Task
     {
-        public static string WORLD_NAME_ARG = "worldname";
-        public static string CHUNKS_ARG = "chunks";
-
         private Dictionary<string, Mesh> m_uniqueMeshes = new Dictionary<string, Mesh>();
         private Dictionary<string, Material> m_uniqueMaterials = new Dictionary<string, Material>();
 
@@ -21,21 +18,12 @@ namespace StreamDaddy.Editor.Tasks
 
         }
 
-        public override bool Execute(Dictionary<string, object> arguments)
+        public bool Execute(string worldName, List<EditorChunk> chunks)
         {
             m_uniqueMeshes.Clear();
             m_uniqueMaterials.Clear();
             m_processedInstanceIDs.Clear();
-
-            if (!EnsureArgumentExists(WORLD_NAME_ARG, arguments))
-                return false;
-
-            if (!EnsureArgumentExists(CHUNKS_ARG, arguments))
-                return false;
-
-            string worldName = (string)arguments[WORLD_NAME_ARG];
-            List<EditorChunk> chunks = (List<EditorChunk>)arguments[CHUNKS_ARG];
-
+            
             List<MeshRenderer> allRenderers = new List<MeshRenderer>();
             List<BoxCollider> allBoxColliders = new List<BoxCollider>();
             List<SphereCollider> allSphereColliders = new List<SphereCollider>();
@@ -113,11 +101,25 @@ namespace StreamDaddy.Editor.Tasks
                             // Do material asset bundle assignment
                             int instanceID = material.GetInstanceID();
                             string assetPath = AssetDatabase.GetAssetPath(instanceID);
+                            
+                            if (assetPath == "Resources/unity_builtin_extra")
+                            {
+                                LogInfo(string.Format("Skipping material for mesh {0}. Is unity built in material with asset path: {1}.", meshFilter.sharedMesh.name, assetPath));
+                                continue;
+                            }
+
                             AssetImporter.GetAtPath(assetPath).SetAssetBundleNameAndVariant(assetBundleName, "");
                         }
                     }
                 }
             }
+
+            string bundlePath = EditorPaths.STREAMING_DIRECTORY_PATH;
+            BuildPipeline.BuildAssetBundles(bundlePath, BuildAssetBundleOptions.ChunkBasedCompression |
+                                                        BuildAssetBundleOptions.DisableLoadAssetByFileName |
+                                                        BuildAssetBundleOptions.DisableLoadAssetByFileNameWithExtension |
+                                                        BuildAssetBundleOptions.DisableWriteTypeTree,
+                                                        BuildTarget.StandaloneWindows64);
             return true;
         }
     }

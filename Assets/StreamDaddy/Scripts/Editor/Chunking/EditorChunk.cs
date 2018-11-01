@@ -28,6 +28,11 @@ namespace StreamDaddy.Editor.Chunking
             m_children.Add(go);
         }
 
+        public bool HasChild(GameObject go)
+        {
+            return m_children.Contains(go);
+        }
+
         public void RemoveChild(GameObject go)
         {
             m_children.Remove(go);

@@ -17,27 +17,19 @@ namespace StreamDaddy.Editor.Tasks
             m_name = name;
         }
 
-        /// <summary>
-        /// An executeable task.
-        /// Takes arguments as a dictionary which is the data that should be used in execution.
-        /// Returns true if successfull, returns false otherwise.
-        /// </summary>
-        /// <param name="arguments"></param>
-        /// <returns></returns>
-        public abstract bool Execute(Dictionary<string, object> arguments);
-
-        /// <summary>
-        /// Checks to make sure that the 
-        /// </summary>
-        /// <param name="argument"></param>
-        protected bool EnsureArgumentExists(string argument, Dictionary<string, object> arguments)
+        protected void LogInfo(string msg)
         {
-            if (!arguments.ContainsKey(argument))
-            {
-                Debug.LogError(string.Format("[Task] Could not find argument {0}, Task failed!", argument));
-                return false;
-            }
-            return true;
+            Debug.Log(string.Format("[Task-{0}] " + msg, Name));
+        }
+
+        protected void LogWarning(string msg)
+        {
+            Debug.LogWarning(string.Format("[Task-{0}] " + msg, Name));
+        }
+
+        protected void LogError(string msg)
+        {
+            Debug.LogError(string.Format("[Task-{0}] " + msg, Name));
         }
     }
 }

@@ -1,5 +1,5 @@
 ManifestFileVersion: 0
-CRC: 2570455716
+CRC: 1724809492
 AssetBundleManifest:
   AssetBundleInfos:
     Info_0:
@@ -7,8 +7,5 @@ AssetBundleManifest:
       Dependencies:
         Dependency_0: testworld_chunkassets
     Info_1:
-      Name: testworld_chunklayout
-      Dependencies: {}
-    Info_2:
       Name: testworld_chunkassets
       Dependencies: {}

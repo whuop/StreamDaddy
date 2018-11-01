@@ -42,8 +42,8 @@ namespace StreamDaddy.Editor.Chunking
         public void AddGameObject(GameObject go)
         {
             //  Make sure this is a game object that can be streamed. 
-            if (!ValidateGameObject(go))
-                return;
+            //if (!ValidateGameObject(go))
+                //return;
 
             //  Round to approximate chunk position
             float x = go.transform.position.x / (float)m_chunkSize.x;
@@ -61,15 +61,23 @@ namespace StreamDaddy.Editor.Chunking
             {
                 m_chunks.Add(chunkKey, new EditorChunk(chunkKey, m_chunkSize));
             }
-            
+
+            if (m_chunks[chunkKey].HasChild(go))
+                return;
+
             m_chunks[chunkKey].AddChild(go);
         }
+
+
+        
 
         public void BeginWorld(string worldName)
         {
             m_world = ScriptableObject.CreateInstance<WorldStream>();
             m_worldName = worldName;
         }
+
+
 
         public void EndWorld()
         {

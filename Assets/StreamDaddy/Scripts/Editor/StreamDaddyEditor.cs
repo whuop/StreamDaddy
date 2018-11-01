@@ -9,6 +9,7 @@ using UnityEngine;
 using StreamDaddy.Editor.TerrainTools;
 using StreamDaddy.TerrainToMesh.Editor;
 using StreamDaddy.Editor.Tasks;
+using StreamDaddy.Streaming;
 
 namespace StreamDaddy.Editor
 {
@@ -33,10 +34,7 @@ namespace StreamDaddy.Editor
         private Material m_terrainMeshMaterial;
 
         private TaskChain m_taskChain;
-
-        private Task m_terrainToMeshTask;
-        private Task m_exportChunkAssetsTask;
-
+        
         private void OnDestroy()
         {
             SceneView.onSceneGUIDelegate -= this.OnSceneGUI;
@@ -73,10 +71,6 @@ namespace StreamDaddy.Editor
             m_chunkManager = new EditorChunkManager();
 
             m_taskChain = new TaskChain();
-            m_terrainToMeshTask = new TerrainToMeshTask();
-            m_exportChunkAssetsTask = new ExportChunkAssetsTask();
-
-            m_taskChain.AddTask(m_terrainToMeshTask);
         }
 
         private void OnGUI()
@@ -96,50 +90,44 @@ namespace StreamDaddy.Editor
 
             if (GUILayout.Button("Split Terrain"))
             {
-                SplitTerrain();
+                new SplitTerrainTask().Execute(m_worldNameProp.stringValue, m_terrainToSplit, m_chunkSizeProp.vector3IntValue);
             }
 
             if (GUILayout.Button("Terrain To Mesh"))
             {
-                Dictionary<string, object> args = new Dictionary<string, object>();
                 List<Terrain> terrains = new List<Terrain>();
                 terrains.Add(m_terrainToSplit);
-
-
-                args.Add(TerrainToMeshTask.TERRAIN_DATA_ARG, terrains);
-                args.Add(TerrainToMeshTask.TERRAIN_MATERIAL_ARG, m_terrainMeshMaterial);
-                args.Add(TerrainToMeshTask.WORLD_NAME_ARG, m_worldNameProp.stringValue);
-                m_terrainToMeshTask.Execute(args);
+                
+                new TerrainToMeshTask().Execute(m_worldNameProp.stringValue, terrains, m_terrainMeshMaterial);
             }
             
             if (GUILayout.Button("Chunk World"))
             {
-                //  Apply new chunk size to the Chunk Manager. 
-                m_chunkManager.SetChunkSizeAndClearManager(m_config.ChunkSize);
-                ChunkWorld();
+                new ChunkWorldTask().Execute(m_chunkManager, m_chunkSizeProp.vector3IntValue);
+                GUI.changed = true;
+            }
+            
+            if (GUILayout.Button("Export Chunk Layouts"))
+            {
+                new BuildChunkLayoutTask().Execute(m_worldNameProp.stringValue, m_chunkManager.Chunks);
             }
 
             if (GUILayout.Button("Export Assets"))
             {
-                m_chunkManager.BeginWorld(m_worldNameProp.stringValue);
-
-                Dictionary<string, object> args = new Dictionary<string, object>();
-                args.Add(ExportChunkAssetsTask.WORLD_NAME_ARG, m_worldNameProp.stringValue);
-                args.Add(ExportChunkAssetsTask.CHUNKS_ARG, m_chunkManager.Chunks);
-
-    
-
-                //m_chunkManager.ExportAllChunkAssets();
+                new ExportChunkAssetsTask().Execute(m_worldNameProp.stringValue, m_chunkManager.Chunks);
             }
 
-            if (GUILayout.Button("Export World"))
+            if (GUILayout.Button("Export World Stream"))
             {
-                m_chunkManager.ExportAllChunkLayouts();
-            }
+                List<string> chunkLayoutNames = new List<string>();
+                foreach(var chunk in m_chunkManager.Chunks)
+                {
+                    chunkLayoutNames.Add("chunklayout_" + chunk.ChunkID.X + "_" + chunk.ChunkID.Y + " " + chunk.ChunkID.Z);
+                }
 
-            if (GUILayout.Button("Build AssetBundles"))
-            {
-                m_chunkManager.EndWorld();
+                List<string> assetBundles = new List<string>();
+                assetBundles.Add(m_worldNameProp.stringValue + "_chunkassets");
+                new BuildWorldStreamTask().Execute(m_worldNameProp.stringValue, m_worldNameProp + "_chunkassets", m_chunkSizeProp.vector3IntValue, chunkLayoutNames, assetBundles);
             }
         }
 

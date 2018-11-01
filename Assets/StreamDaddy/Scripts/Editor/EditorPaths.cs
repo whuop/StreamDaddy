@@ -12,6 +12,7 @@ namespace StreamDaddy.Editor
         private static string RELATIVE_CHUNK_DATA_DIRECTORY_PATH= "ChunkData/";
         private static string RELATIVE_CHUNK_LAYOUT_DIRECTORY_PATH = "ChunkLayout/";
 
+        private static string RELATIVE_SPLIT_TERRAIN_PATH = "Terrains/";
         private static string RELATIVE_TERRAIN_MESH_DIRECTORY_PATH = "TerrainMesh/";
         private static string RELATIVE_TERRAIN_MESH_SPLAT_PATH = "TerrainMesh/Splats/";
 
@@ -52,6 +53,13 @@ namespace StreamDaddy.Editor
             string path = WORLD_STREAMS_DIRECTORY_PATH;
             PathUtils.EnsurePathExists(Application.dataPath + "/" + path);
             return "Assets/" + path;
+        }
+
+        public static string GetSplitTerrainPath(string worldName)
+        {
+            string path = GetWorldPath(worldName) + RELATIVE_SPLIT_TERRAIN_PATH;
+            PathUtils.EnsurePathExists(APPLICATION_DATAPATH + path);
+            return path;
         }
 
         public static string GetTerrainMeshPath(string worldName)
