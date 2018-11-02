@@ -290,10 +290,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\StreamDaddy\Scripts\Editor\AssetBundleUtils.cs" />
-    <Compile Include="Assets\StreamDaddy\Scripts\Editor\Assets\AssetBuilder.cs" />
-    <Compile Include="Assets\StreamDaddy\Scripts\Editor\Assets\AssetBuildStrategy.cs" />
-    <Compile Include="Assets\StreamDaddy\Scripts\Editor\Assets\IAssetBuildStrategy.cs" />
-    <Compile Include="Assets\StreamDaddy\Scripts\Editor\Assets\PrefabBuildStrategy.cs" />
     <Compile Include="Assets\StreamDaddy\Scripts\Editor\Chunking\EditorChunk.cs" />
     <Compile Include="Assets\StreamDaddy\Scripts\Editor\Chunking\EditorChunkManager.cs" />
     <Compile Include="Assets\StreamDaddy\Scripts\Editor\Configs\Attributes\ConfigPathAttribute.cs" />
