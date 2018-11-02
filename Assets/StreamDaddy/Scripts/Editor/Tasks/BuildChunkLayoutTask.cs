@@ -104,16 +104,18 @@ namespace StreamDaddy.Editor.Tasks
 
             HashSet<int> processedInstanceIDs = new HashSet<int>();
 
-            List<MeshData> meshData = new List<MeshData>();
-            List<BoxColliderData> boxColliderData = new List<BoxColliderData>();
-            List<SphereColliderData> sphereColliderData = new List<SphereColliderData>();
-            List<MeshColliderData> meshColliderData = new List<MeshColliderData>();
+            
 
             //  The name of the asset bundle containing all the layouts for the chunks
             result.ChunkLayoutBundle = worldName + "_chunklayout";
             
             for(int i = 0; i < chunks.Count; i++)
             {
+                List<MeshData> meshData = new List<MeshData>();
+                List<BoxColliderData> boxColliderData = new List<BoxColliderData>();
+                List<SphereColliderData> sphereColliderData = new List<SphereColliderData>();
+                List<MeshColliderData> meshColliderData = new List<MeshColliderData>();
+
                 var chunk = chunks[i];
                 var gameObjects = chunk.GetAllChildren();
 

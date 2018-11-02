@@ -12,30 +12,6 @@ MonoBehaviour:
   m_Name: chunklayout_2_0_2
   m_EditorClassIdentifier: 
   Meshes:
-  - Position: {x: 255.4, y: 1.0900002, z: 140}
-    Rotation: {x: -0, y: 161.93825, z: -0}
-    Scale: {x: 2.1000025, y: 2.1, z: 2.1000025}
-    MeshName: Rock1
-    MaterialNames:
-    - Rock1
-  - Position: {x: 204.2, y: 2.2399998, z: 208.63}
-    Rotation: {x: 0, y: 237.61435, z: 0}
-    Scale: {x: 1.0000005, y: 1, z: 1.0000005}
-    MeshName: Rock1
-    MaterialNames:
-    - Rock1
-  - Position: {x: 208.46, y: 3.3400002, z: 210.62}
-    Rotation: {x: 0, y: 318.44534, z: 0}
-    Scale: {x: 1, y: 1, z: 1}
-    MeshName: Rock1
-    MaterialNames:
-    - Rock1
-  - Position: {x: 234.73, y: 1.4099998, z: 200.3}
-    Rotation: {x: -0, y: 77.13901, z: -0}
-    Scale: {x: 1, y: 1, z: 1}
-    MeshName: Rock1
-    MaterialNames:
-    - Rock1
   - Position: {x: 295.6, y: 3.4700003, z: 285.4}
     Rotation: {x: -0, y: 63.802715, z: -0}
     Scale: {x: 2.1, y: 2.1, z: 2.1}
@@ -51,22 +27,6 @@ MonoBehaviour:
   BoxColliders: []
   SphereColliders: []
   MeshColliders:
-  - Position: {x: 255.4, y: 1.0900002, z: 140}
-    Rotation: {x: -0, y: 161.93825, z: -0}
-    Scale: {x: 2.1000025, y: 2.1, z: 2.1000025}
-    MeshName: Rock1
-  - Position: {x: 204.2, y: 2.2399998, z: 208.63}
-    Rotation: {x: 0, y: 237.61435, z: 0}
-    Scale: {x: 1.0000005, y: 1, z: 1.0000005}
-    MeshName: Rock1
-  - Position: {x: 208.46, y: 3.3400002, z: 210.62}
-    Rotation: {x: 0, y: 318.44534, z: 0}
-    Scale: {x: 1, y: 1, z: 1}
-    MeshName: Rock1
-  - Position: {x: 234.73, y: 1.4099998, z: 200.3}
-    Rotation: {x: -0, y: 77.13901, z: -0}
-    Scale: {x: 1, y: 1, z: 1}
-    MeshName: Rock1
   - Position: {x: 295.6, y: 3.4700003, z: 285.4}
     Rotation: {x: -0, y: 63.802715, z: -0}
     Scale: {x: 2.1, y: 2.1, z: 2.1}
