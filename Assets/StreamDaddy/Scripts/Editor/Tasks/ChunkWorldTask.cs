@@ -12,10 +12,8 @@ namespace StreamDaddy.Editor.Tasks
 
         }
 
-        public bool Execute(EditorChunkManager chunkManager, Vector3Int chunkSize)
+        public bool Execute(EditorChunkManager chunkManager)
         {
-            chunkManager.SetChunkSizeAndClearManager(chunkSize);
-
             var allMeshes = GameObject.FindObjectsOfType<MeshFilter>();
             var allBoxColliders = GameObject.FindObjectsOfType<BoxCollider>();
             var allSphereColliders = GameObject.FindObjectsOfType<SphereCollider>();

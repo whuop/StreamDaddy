@@ -13,6 +13,12 @@ namespace StreamDaddy.Editor.Tasks
     {
         public static string WORLD_NAME_ARG = "worldname";
         public static string CHUNKS_ARG = "chunks";
+        
+        public struct BuildChunkLayoutResult
+        {
+            public List<string> ChunkLayoutNames;
+            public string ChunkLayoutBundle;
+        }
 
         public BuildChunkLayoutTask() : base("Build Chunk Layouts")
         {
@@ -80,7 +86,7 @@ namespace StreamDaddy.Editor.Tasks
             return data;
         }
 
-        public bool Execute(string worldName, List<EditorChunk> chunks)
+        public bool Execute(string worldName, List<EditorChunk> chunks, ref BuildChunkLayoutResult result)
         {
             if (chunks == null || chunks.Count == 0)
             {
@@ -93,6 +99,8 @@ namespace StreamDaddy.Editor.Tasks
                 LogError("World Name is either null or empty. Task failed!");
                 return false;
             }
+            
+            result.ChunkLayoutNames = new List<string>();
 
             HashSet<int> processedInstanceIDs = new HashSet<int>();
 
@@ -101,6 +109,9 @@ namespace StreamDaddy.Editor.Tasks
             List<SphereColliderData> sphereColliderData = new List<SphereColliderData>();
             List<MeshColliderData> meshColliderData = new List<MeshColliderData>();
 
+            //  The name of the asset bundle containing all the layouts for the chunks
+            result.ChunkLayoutBundle = worldName + "_chunklayout";
+            
             for(int i = 0; i < chunks.Count; i++)
             {
                 var chunk = chunks[i];
@@ -145,6 +156,7 @@ namespace StreamDaddy.Editor.Tasks
                 }
 
                 string chunkAssetName = "chunklayout_" + chunk.ChunkID.X + "_" + chunk.ChunkID.Y + "_" + chunk.ChunkID.Z;
+                result.ChunkLayoutNames.Add(chunkAssetName);
 
                 //  Create the scriptable object for this chunk layout
                 var chunkLayout = CreateChunkLayout(meshData.ToArray(), boxColliderData.ToArray(), sphereColliderData.ToArray(), meshColliderData.ToArray(), chunk.ChunkID);
@@ -154,10 +166,16 @@ namespace StreamDaddy.Editor.Tasks
                 EditorUtility.SetDirty(chunkLayout);
                 AssetDatabase.SaveAssets();
                 AssetDatabase.StopAssetEditing();
-                AssetDatabase.Refresh();
-                
-            }
+                AssetDatabase.Refresh(ImportAssetOptions.ForceUpdate);
 
+                string path = EditorPaths.GetWorldChunkLayoutPath(worldName) + chunkAssetName + ".asset";
+                chunkLayout = AssetDatabase.LoadAssetAtPath<AssetChunkData>(path);
+
+                //  Set the asset bundle
+                string chunkDataPath = AssetDatabase.GetAssetPath(chunkLayout.GetInstanceID());
+                AssetImporter.GetAtPath(chunkDataPath).SetAssetBundleNameAndVariant(result.ChunkLayoutBundle, "");
+            }
+            
             return true;
         }
 

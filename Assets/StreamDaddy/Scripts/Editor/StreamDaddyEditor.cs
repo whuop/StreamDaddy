@@ -1,15 +1,9 @@
 ﻿using StreamDaddy.Editor.Chunking;
 using StreamDaddy.Editor.Configs;
-using StreamDaddy.Editor.Configs.Attributes;
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
-using StreamDaddy.Editor.TerrainTools;
-using StreamDaddy.TerrainToMesh.Editor;
 using StreamDaddy.Editor.Tasks;
-using StreamDaddy.Streaming;
 
 namespace StreamDaddy.Editor
 {
@@ -34,7 +28,9 @@ namespace StreamDaddy.Editor
         private Material m_terrainMeshMaterial;
 
         private TaskChain m_taskChain;
-        
+
+        private BuildChunkLayoutTask.BuildChunkLayoutResult m_chunkLayoutResult;
+
         private void OnDestroy()
         {
             SceneView.onSceneGUIDelegate -= this.OnSceneGUI;
@@ -67,9 +63,7 @@ namespace StreamDaddy.Editor
             m_worldNameProp = m_serializedConfig.FindProperty("m_worldName");
 
             m_terrainMeshMaterial = AssetDatabase.LoadAssetAtPath<Material>("Assets/StreamDaddy/Materials/MeshTerrain.mat");
-
-            m_chunkManager = new EditorChunkManager();
-
+            
             m_taskChain = new TaskChain();
         }
 
@@ -103,13 +97,15 @@ namespace StreamDaddy.Editor
             
             if (GUILayout.Button("Chunk World"))
             {
-                new ChunkWorldTask().Execute(m_chunkManager, m_chunkSizeProp.vector3IntValue);
+                m_chunkManager = new EditorChunkManager(m_chunkSizeProp.vector3IntValue);
+                new ChunkWorldTask().Execute(m_chunkManager);
                 GUI.changed = true;
             }
             
             if (GUILayout.Button("Export Chunk Layouts"))
             {
-                new BuildChunkLayoutTask().Execute(m_worldNameProp.stringValue, m_chunkManager.Chunks);
+                m_chunkLayoutResult = new BuildChunkLayoutTask.BuildChunkLayoutResult();
+                new BuildChunkLayoutTask().Execute(m_worldNameProp.stringValue, m_chunkManager.Chunks, ref m_chunkLayoutResult);
             }
 
             if (GUILayout.Button("Export Assets"))
@@ -119,66 +115,19 @@ namespace StreamDaddy.Editor
 
             if (GUILayout.Button("Export World Stream"))
             {
-                List<string> chunkLayoutNames = new List<string>();
-                foreach(var chunk in m_chunkManager.Chunks)
-                {
-                    chunkLayoutNames.Add("chunklayout_" + chunk.ChunkID.X + "_" + chunk.ChunkID.Y + " " + chunk.ChunkID.Z);
-                }
-
                 List<string> assetBundles = new List<string>();
                 assetBundles.Add(m_worldNameProp.stringValue + "_chunkassets");
-                new BuildWorldStreamTask().Execute(m_worldNameProp.stringValue, m_worldNameProp + "_chunkassets", m_chunkSizeProp.vector3IntValue, chunkLayoutNames, assetBundles);
-            }
-        }
-
-        private void SplitTerrain()
-        {
-            TerrainSplitter.SplitIntoChunks(m_chunkSizeProp.vector3IntValue.x, m_chunkSizeProp.vector3IntValue.z, m_terrainToSplit, "Assets/StreamDaddy/Worlds/" + m_worldNameProp.stringValue + "/Terrains/");
-        }
-
-        private void ChunkWorld()
-        {
-            var allMeshes = GameObject.FindObjectsOfType<MeshFilter>();
-            var allBoxColliders = GameObject.FindObjectsOfType<BoxCollider>();
-            var allSpherecolliders = GameObject.FindObjectsOfType<SphereCollider>();
-            var allMeshColliders = GameObject.FindObjectsOfType<MeshCollider>();
-
-            foreach(var mesh in allMeshes)
-            {
-                m_chunkManager.AddGameObject(mesh.gameObject);
+                new BuildWorldStreamTask().Execute(m_worldNameProp.stringValue, m_chunkLayoutResult.ChunkLayoutBundle, m_chunkSizeProp.vector3IntValue, m_chunkLayoutResult.ChunkLayoutNames, assetBundles);
             }
 
-            foreach(var box in allBoxColliders)
-            {
-                m_chunkManager.AddGameObject(box.gameObject);
-            }
-
-            foreach(var sphere in allSpherecolliders)
-            {
-                m_chunkManager.AddGameObject(sphere.gameObject);
-            }
-
-            foreach(var meshCol in allMeshColliders)
-            {
-                m_chunkManager.AddGameObject(meshCol.gameObject);
-            }
-
-            /*GameObject[] allGos = GameObject.FindObjectsOfType<GameObject>();
-            foreach(var go in allGos)
-            {
-                if (!go.activeInHierarchy)
-                    continue;
-                m_chunkManager.AddGameObject(go);
-            }*/
-            GUI.changed = true;
+            if (GUI.changed)
+                SceneView.RepaintAll();
         }
 
         void OnSceneGUI(SceneView sceneView)
         {
-            m_chunkManager.Draw();
-
-            if (GUI.changed)
-                SceneView.RepaintAll();
+            if (m_chunkManager != null)
+                m_chunkManager.Draw();
         }
     }
 }

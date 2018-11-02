@@ -9,18 +9,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: cea6878e0e307ef4c9192c404c8b1d46, type: 3}
-  m_Name: 
+  m_Name: TestWorld
   m_EditorClassIdentifier: 
-  m_chunkLayoutBundle: UnityEditor.SerializedProperty_chunkassets
+  m_chunkLayoutBundle: TestWorld_chunklayout
   m_chunkNames:
-  - chunklayout_1_0 1
-  - chunklayout_2_0 2
-  - chunklayout_2_0 1
-  - chunklayout_1_0 2
-  - chunklayout_2_0 3
-  - chunklayout_2_0 0
-  - chunklayout_3_0 1
-  - chunklayout_0_0 1
+  - chunklayout_1_0_1
+  - chunklayout_2_0_2
+  - chunklayout_2_0_1
+  - chunklayout_1_0_2
+  - chunklayout_2_0_3
+  - chunklayout_2_0_0
+  - chunklayout_3_0_1
+  - chunklayout_0_0_1
   m_chunkSize: {x: 128, y: 128, z: 128}
   m_assetBundles:
   - TestWorld_chunkassets

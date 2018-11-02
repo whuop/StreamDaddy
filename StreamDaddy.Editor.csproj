@@ -301,15 +301,25 @@
     <Compile Include="Assets\StreamDaddy\Scripts\Editor\Configs\StreamDaddyConfig.cs" />
     <Compile Include="Assets\StreamDaddy\Scripts\Editor\EditorPaths.cs" />
     <Compile Include="Assets\StreamDaddy\Scripts\Editor\StreamDaddyEditor.cs" />
+    <Compile Include="Assets\StreamDaddy\Scripts\Editor\Tasks\BuildChunkLayoutTask.cs" />
+    <Compile Include="Assets\StreamDaddy\Scripts\Editor\Tasks\BuildWorldStreamTask.cs" />
+    <Compile Include="Assets\StreamDaddy\Scripts\Editor\Tasks\ChunkWorldTask.cs" />
+    <Compile Include="Assets\StreamDaddy\Scripts\Editor\Tasks\ExportChunkAssetsTask.cs" />
+    <Compile Include="Assets\StreamDaddy\Scripts\Editor\Tasks\SplitTerrainTask.cs" />
+    <Compile Include="Assets\StreamDaddy\Scripts\Editor\Tasks\Task.cs" />
+    <Compile Include="Assets\StreamDaddy\Scripts\Editor\Tasks\TaskArguments.cs" />
+    <Compile Include="Assets\StreamDaddy\Scripts\Editor\Tasks\TaskChain.cs" />
+    <Compile Include="Assets\StreamDaddy\Scripts\Editor\Tasks\TerrainToMeshTask.cs" />
     <Compile Include="Assets\StreamDaddy\Scripts\Editor\TerrainTools\TerrainSplitter.cs" />
-    <Compile Include="Assets\StreamDaddy\Scripts\Editor\TerrainTools\TerrainToMesh.cs" />
+    <Compile Include="Assets\StreamDaddy\Scripts\Editor\Utils\AssetDatabaseUtils.cs" />
     <Compile Include="Assets\StreamDaddy\Scripts\Editor\Utils\PathUtils.cs" />
     <Compile Include="Assets\StreamDaddy\Scripts\Editor\Utils\ScriptableObjectUtils.cs" />
+    <Compile Include="Assets\StreamDaddy\TerrainToMesh\Scripts\Editor\TerrainToMesh.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\FantasyEnvironments\Environments\README.txt" />
     <None Include="Assets\Mega Fantasy Props Pack\README.txt" />
-    <None Include="Assets\StreamDaddy\Scripts\Shaders\MeshTerrain.shader" />
+    <None Include="Assets\StreamDaddy\TerrainToMesh\Scripts\Shaders\MeshTerrain.shader" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="GenerateTargetFrameworkMonikerAttribute" />

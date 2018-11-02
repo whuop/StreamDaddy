@@ -1,9 +1,5 @@
 ﻿using StreamDaddy.Chunking;
-using StreamDaddy.Editor.Assets;
-using StreamDaddy.Editor.Utils;
-using StreamDaddy.Streaming;
 using System.Collections.Generic;
-using UnityEditor;
 using UnityEngine;
 
 namespace StreamDaddy.Editor.Chunking
@@ -15,18 +11,13 @@ namespace StreamDaddy.Editor.Chunking
 
         private Vector3Int m_chunkSize;
 
-        private IAssetBuildStrategy m_buildStrategy = new AssetBuildStrategy();
-
-        private WorldStream m_world = null;
-        private string m_worldName = string.Empty;
-
-        public EditorChunkManager()
+        public EditorChunkManager(Vector3Int chunkSize)
         {
+            m_chunkSize = chunkSize;
         }
 
-        public void SetChunkSizeAndClearManager(Vector3Int newChunkSize)
+        public void ClearAllChunks(Vector3Int newChunkSize)
         {
-            m_chunkSize = newChunkSize;
             m_chunks.Clear();
         }
 
@@ -66,57 +57,6 @@ namespace StreamDaddy.Editor.Chunking
                 return;
 
             m_chunks[chunkKey].AddChild(go);
-        }
-
-
-        
-
-        public void BeginWorld(string worldName)
-        {
-            m_world = ScriptableObject.CreateInstance<WorldStream>();
-            m_worldName = worldName;
-        }
-
-
-
-        public void EndWorld()
-        {
-            ScriptableObjectUtils.CreateOrReplaceAsset<WorldStream>(m_world,
-                                        EditorPaths.GetWorldStreamsFolder() + m_worldName + ".asset");
-            m_world = null;
-            m_worldName = string.Empty;
-
-            string bundlePath = EditorPaths.STREAMING_DIRECTORY_PATH;
-            BuildPipeline.BuildAssetBundles(bundlePath, BuildAssetBundleOptions.ChunkBasedCompression |
-                                                        BuildAssetBundleOptions.DisableLoadAssetByFileName |
-                                                        BuildAssetBundleOptions.DisableLoadAssetByFileNameWithExtension |
-                                                        BuildAssetBundleOptions.DisableWriteTypeTree,
-                                                        BuildTarget.StandaloneWindows64);
-        }
-
-        public void ExportAllChunkAssets()
-        {
-            List<string> assetBundles = new List<string>();
-            foreach(var kvp in m_chunks)
-            {
-                 m_buildStrategy.BuildChunkAssets(m_worldName, kvp.Value, assetBundles);
-            }
-
-            m_world.AssetBundles = assetBundles.ToArray();
-        }
-
-        public void ExportAllChunkLayouts()
-        {
-            List<string> chunkAssetNames = new List<string>();
-            foreach(var kvp in m_chunks)
-            {
-                string chunkAssetName = m_buildStrategy.BuildChunkLayout(m_worldName, kvp.Value);
-                chunkAssetNames.Add(chunkAssetName);
-            }
-
-            m_world.ChunkLayoutBundle = m_worldName + "_chunklayout";
-            m_world.ChunkSize = m_chunkSize;
-            m_world.ChunkNames = chunkAssetNames.ToArray();
         }
 
         public EditorChunk GetChunk(ChunkID id)

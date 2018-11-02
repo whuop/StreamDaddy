@@ -15,10 +15,12 @@ namespace StreamDaddy.Editor.Utils
             {
                 AssetDatabase.CreateAsset(asset, path);
                 existingAsset = asset;
+                Debug.Log("Created asset: " + typeof(T).Name + " at path: " + path);
             }
             else
             {
                 EditorUtility.CopySerialized(asset, existingAsset);
+                Debug.Log("Replaced asset: " + typeof(T).Name + " at path: " + path);
             }
 
             return existingAsset;
