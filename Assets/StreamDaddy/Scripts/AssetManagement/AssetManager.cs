@@ -12,6 +12,13 @@ namespace StreamDaddy.AssetManagement
 
         [SerializeField]
         private List<GameObject> m_builtInMeshes;
+        /// <summary>
+        /// The terrains that are a part of the world streaming. These terrains are not streamed but simply activated or deactivated
+        /// to lower the load on CPU and disk reads.
+        /// </summary>
+        [SerializeField]
+        private List<Terrain> m_sceneTerrains;
+        public List<Terrain> SceneTerrains { get { return m_sceneTerrains; } set { m_sceneTerrains = value; } }
 
         public void Awake()
         {

@@ -1,4 +1,5 @@
 ﻿using StreamDaddy.Editor.Utils;
+using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Assertions;
@@ -7,7 +8,7 @@ namespace StreamDaddy.Editor.TerrainTools
 {
     public static class TerrainSplitter
     {
-        public static void SplitIntoChunks(int chunkSizeX, int chunkSizeZ, Terrain origTerrain, string terrainSavePath)
+        public static List<Terrain> SplitIntoChunks(int chunkSizeX, int chunkSizeZ, Terrain origTerrain, string terrainSavePath)
         {
             //  Create folder structure
             PathUtils.EnsurePathExists(terrainSavePath);
@@ -25,11 +26,13 @@ namespace StreamDaddy.Editor.TerrainTools
             if (origTerrain == null)
             {
                 Debug.LogWarning("No terrain found on transform");
-                return;
+                return null;
             }
 
             Assert.IsTrue(numSplitsX >= 1, "NumSplitsX is less than 0, must be at least 1!");
             Assert.IsTrue(numSplitsZ >= 1, "NumSplitsZ is less than 0, must be at least 1!");
+
+            List<Terrain> terrains = new List<Terrain>();
 
             for (int x = 0; x < numSplitsX; x++)
             {
@@ -40,7 +43,7 @@ namespace StreamDaddy.Editor.TerrainTools
                     float xMax = origTerrain.terrainData.size.x / numSplitsX * (x + 1);
                     float zMin = origTerrain.terrainData.size.z / numSplitsZ * z;
                     float zMax = origTerrain.terrainData.size.z / numSplitsZ * (z + 1);
-                    CopyTerrain(origTerrain, string.Format("{0}{1}_{2}", origTerrain.name, x, z), terrainSavePath, xMin, xMax, zMin, zMax, heightResolution, detailResolution, splatResolution, x, z);
+                    CopyTerrain(origTerrain, terrains, string.Format("{0}{1}_{2}", origTerrain.name, x, z), terrainSavePath, xMin, xMax, zMin, zMax, heightResolution, detailResolution, splatResolution, x, z);
                 }
             }
             EditorUtility.ClearProgressBar();
@@ -84,9 +87,11 @@ namespace StreamDaddy.Editor.TerrainTools
                     centerT.SetNeighbors(leftT, topT, rightT, bottomT);
                 }
             }
+
+            return terrains;
         }
 
-        static void CopyTerrain(Terrain origTerrain, string newName, string savePath, float xMin, float xMax, float zMin, float zMax, int heightmapResolution, int detailResolution, int alphamapResolution, int chunkX, int chunkZ)
+        static void CopyTerrain(Terrain origTerrain, List<Terrain> splits, string newName, string savePath, float xMin, float xMax, float zMin, float zMax, int heightmapResolution, int detailResolution, int alphamapResolution, int chunkX, int chunkZ)
         {
             if (heightmapResolution < 33 || heightmapResolution > 4097)
             {
@@ -269,6 +274,8 @@ namespace StreamDaddy.Editor.TerrainTools
 
             // Must happen after setting heightmapResolution
             td.size = new Vector3(xMax - xMin, origTerrain.terrainData.size.y, zMax - zMin);
+
+            splits.Add(newTerrain);
 
             AssetDatabase.SaveAssets();
         }

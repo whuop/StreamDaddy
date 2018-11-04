@@ -7,12 +7,17 @@ namespace StreamDaddy.Editor.Tasks
 {
     public class SplitTerrainTask : Task
     {
+        public struct SplitTerrainResult
+        {
+            public List<Terrain> TerrainSplits;
+        }
+
         public SplitTerrainTask() : base("Split Terrain")
         {
 
         }
 
-        public bool Execute(string worldName, Terrain terrain, Vector3Int chunkSize)
+        public bool Execute(string worldName, Terrain terrain, Vector3Int chunkSize, ref SplitTerrainResult result)
         {
             if (terrain == null)
             {
@@ -24,7 +29,7 @@ namespace StreamDaddy.Editor.Tasks
                 LogError("World name is null or empty, task failed!");
             }
 
-            TerrainSplitter.SplitIntoChunks(chunkSize.x, chunkSize.z, terrain, EditorPaths.GetSplitTerrainPath(worldName));
+            result.TerrainSplits = TerrainSplitter.SplitIntoChunks(chunkSize.x, chunkSize.z, terrain, EditorPaths.GetSplitTerrainPath(worldName));
 
             return true;
         }

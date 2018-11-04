@@ -9,6 +9,10 @@ namespace StreamDaddy.Editor
     {
         public static string STREAMING_DIRECTORY_PATH = Application.streamingAssetsPath;
         private static string WORLDS_DIRECTORY_PATH = "StreamDaddy/Worlds/";
+        private static string PREFABS_DIRECTORY_PATH = "StreamDaddy/Prefabs/";
+
+        private static string RELATIVE_SCENES_PATH = "Scenes/";
+
         private static string RELATIVE_CHUNK_DATA_DIRECTORY_PATH= "ChunkData/";
         private static string RELATIVE_CHUNK_LAYOUT_DIRECTORY_PATH = "ChunkLayout/";
 
@@ -23,6 +27,13 @@ namespace StreamDaddy.Editor
         public static string GetWorldPath(string worldName)
         {
             string path = WORLDS_DIRECTORY_PATH + worldName + "/";
+            PathUtils.EnsurePathExists(Application.dataPath + "/" + path);
+            return "Assets/" + path;
+        }
+
+        public static string GetPrefabsPAth()
+        {
+            string path = PREFABS_DIRECTORY_PATH;
             PathUtils.EnsurePathExists(Application.dataPath + "/" + path);
             return "Assets/" + path;
         }
@@ -72,6 +83,13 @@ namespace StreamDaddy.Editor
         public static string GetTerrainMeshSplatPath(string worldName)
         {
             string path = GetWorldPath(worldName) + RELATIVE_TERRAIN_MESH_SPLAT_PATH;
+            PathUtils.EnsurePathExists(APPLICATION_DATAPATH + path);
+            return path;
+        }
+
+        public static string GetWorldScenePath(string worldName)
+        {
+            string path = GetWorldPath(worldName) + RELATIVE_SCENES_PATH;
             PathUtils.EnsurePathExists(APPLICATION_DATAPATH + path);
             return path;
         }

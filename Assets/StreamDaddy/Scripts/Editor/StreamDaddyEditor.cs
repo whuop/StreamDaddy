@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 using StreamDaddy.Editor.Tasks;
+using UnityEditor.SceneManagement;
 
 namespace StreamDaddy.Editor
 {
@@ -29,6 +30,7 @@ namespace StreamDaddy.Editor
 
         private TaskChain m_taskChain;
 
+        private SplitTerrainTask.SplitTerrainResult m_splitTerrainResult;
         private BuildChunkLayoutTask.BuildChunkLayoutResult m_chunkLayoutResult;
 
         private void OnDestroy()
@@ -82,9 +84,12 @@ namespace StreamDaddy.Editor
                 m_serializedConfig.ApplyModifiedProperties();
             }
 
+            
+
             if (GUILayout.Button("Split Terrain"))
             {
-                new SplitTerrainTask().Execute(m_worldNameProp.stringValue, m_terrainToSplit, m_chunkSizeProp.vector3IntValue);
+                m_splitTerrainResult = new SplitTerrainTask.SplitTerrainResult();
+                new SplitTerrainTask().Execute(m_worldNameProp.stringValue, m_terrainToSplit, m_chunkSizeProp.vector3IntValue, ref m_splitTerrainResult);
             }
 
             if (GUILayout.Button("Terrain To Mesh"))
@@ -118,6 +123,14 @@ namespace StreamDaddy.Editor
                 List<string> assetBundles = new List<string>();
                 assetBundles.Add(m_worldNameProp.stringValue + "_chunkassets");
                 new BuildWorldStreamTask().Execute(m_worldNameProp.stringValue, m_chunkLayoutResult.ChunkLayoutBundle, m_chunkSizeProp.vector3IntValue, m_chunkLayoutResult.ChunkLayoutNames, assetBundles);
+            }
+
+            if (GUILayout.Button("Construct Stream Scene for World"))
+            {
+                List<Terrain> terrainsToMove = new List<Terrain>(GameObject.FindObjectsOfType<Terrain>());
+                terrainsToMove.Remove(m_terrainToSplit);
+
+                new CreateStreamedSceneTask().Execute(m_worldNameProp.stringValue, terrainsToMove);
             }
 
             if (GUI.changed)

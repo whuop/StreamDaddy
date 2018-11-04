@@ -9,7 +9,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 84ebf7035f21c914f99124845425d2cc, type: 3}
-  m_Name: 
+  m_Name: chunklayout_0_0_1
   m_EditorClassIdentifier: 
   Meshes:
   - Position: {x: 56.2, y: 21.5, z: 250}

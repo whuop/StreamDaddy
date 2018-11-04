@@ -103,9 +103,7 @@ namespace StreamDaddy.Editor.Tasks
             result.ChunkLayoutNames = new List<string>();
 
             HashSet<int> processedInstanceIDs = new HashSet<int>();
-
             
-
             //  The name of the asset bundle containing all the layouts for the chunks
             result.ChunkLayoutBundle = worldName + "_chunklayout";
             

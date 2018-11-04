@@ -300,6 +300,7 @@
     <Compile Include="Assets\StreamDaddy\Scripts\Editor\Tasks\BuildChunkLayoutTask.cs" />
     <Compile Include="Assets\StreamDaddy\Scripts\Editor\Tasks\BuildWorldStreamTask.cs" />
     <Compile Include="Assets\StreamDaddy\Scripts\Editor\Tasks\ChunkWorldTask.cs" />
+    <Compile Include="Assets\StreamDaddy\Scripts\Editor\Tasks\CreateStreamedSceneTask.cs" />
     <Compile Include="Assets\StreamDaddy\Scripts\Editor\Tasks\ExportChunkAssetsTask.cs" />
     <Compile Include="Assets\StreamDaddy\Scripts\Editor\Tasks\SplitTerrainTask.cs" />
     <Compile Include="Assets\StreamDaddy\Scripts\Editor\Tasks\Task.cs" />
