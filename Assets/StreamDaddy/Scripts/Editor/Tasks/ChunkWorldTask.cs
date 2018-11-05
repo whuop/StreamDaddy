@@ -23,6 +23,11 @@ namespace StreamDaddy.Editor.Tasks
             int i = 0;
             foreach(var mesh in allMeshes)
             {
+                var renderer = mesh.GetComponent<MeshRenderer>();
+                if (renderer == null)
+                    continue;
+                if (renderer.enabled == false)
+                    continue;
                 chunkManager.AddGameObject(mesh.gameObject);
                 i++;
             }

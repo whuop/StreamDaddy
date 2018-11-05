@@ -9,16 +9,20 @@ namespace StreamDaddy.Streaming
     {
         [SerializeField]
         private WorldStream m_worldStream;
+        public WorldStream WorldStream { get { return m_worldStream; } set { m_worldStream = value; } }
 
         [SerializeField]
         private float m_areaOfInterestCheckTime = 0.2f;
+
+        [SerializeField]
+        private List<Terrain> m_worldTerrains = new List<Terrain>();
+        public List<Terrain> WorldTerrains { get { return m_worldTerrains; } set { m_worldTerrains = value; } }
 
         private AssetBundleManager m_bundleManager;
         private AssetManager m_assetManager;
 
         private ChunkManager m_chunkManager;
-        public int NumChunks = 0;
-
+        
         private List<AreaOfInterest> m_areasOfInterest = new List<AreaOfInterest>();
 
         public Vector3Int ChunkSize { get { return m_worldStream.ChunkSize; } }
@@ -27,7 +31,7 @@ namespace StreamDaddy.Streaming
         {
             m_bundleManager = GetComponent<AssetBundleManager>();
             m_assetManager = GetComponent<AssetManager>();
-            m_chunkManager = new ChunkManager(m_assetManager);
+            m_chunkManager = new ChunkManager(m_assetManager, m_worldStream.ChunkSize);
 
             m_bundleManager.OnFinishedLoadingBundles += FinishedLoadingBundles;
         }
@@ -65,7 +69,7 @@ namespace StreamDaddy.Streaming
         private void PrewarmWorld()
         {
             AssetChunkData[] chunkData = m_assetManager.GetAllAssetChunkData();
-            m_chunkManager.PreWarmChunks(chunkData);
+            m_chunkManager.PreWarmChunks(chunkData, m_worldTerrains);
         }
 
         private IEnumerator LoadAllChunks()
@@ -73,10 +77,7 @@ namespace StreamDaddy.Streaming
             yield return new WaitForSeconds(2.0f);
 
             PrewarmWorld();
-
-            NumChunks = m_chunkManager.GetChunkCount();
             Debug.Log("Prewarmed chunks for world");
-
             m_chunkManager.LoadAllChunks();
             Debug.Log("Loaded chunks!");
         }

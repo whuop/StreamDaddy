@@ -1,0 +1,25 @@
+ManifestFileVersion: 0
+CRC: 1356676232
+Hashes:
+  AssetFileHash:
+    serializedVersion: 2
+    Hash: 7fc8863c7e7020d40f1318e1ccbed607
+  TypeTreeHash:
+    serializedVersion: 2
+    Hash: a2c56ff009515bd5ba9736fcaf7c59c4
+HashAppended: 0
+ClassTypes:
+- Class: 114
+  Script: {fileID: 11500000, guid: 84ebf7035f21c914f99124845425d2cc, type: 3}
+- Class: 115
+  Script: {instanceID: 0}
+Assets:
+- Assets/StreamDaddy/Worlds/TestWorld/ChunkLayout/chunklayout_2_0_0.asset
+- Assets/StreamDaddy/Worlds/TestWorld/ChunkLayout/chunklayout_1_0_1.asset
+- Assets/StreamDaddy/Worlds/TestWorld/ChunkLayout/chunklayout_2_0_3.asset
+- Assets/StreamDaddy/Worlds/TestWorld/ChunkLayout/chunklayout_2_0_2.asset
+- Assets/StreamDaddy/Worlds/TestWorld/ChunkLayout/chunklayout_3_0_1.asset
+- Assets/StreamDaddy/Worlds/TestWorld/ChunkLayout/chunklayout_1_0_2.asset
+- Assets/StreamDaddy/Worlds/TestWorld/ChunkLayout/chunklayout_2_0_1.asset
+- Assets/StreamDaddy/Worlds/TestWorld/ChunkLayout/chunklayout_0_0_1.asset
+Dependencies: []

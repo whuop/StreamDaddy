@@ -15,13 +15,16 @@ namespace StreamDaddy.Streaming
         private List<Chunk> m_unloadList = new List<Chunk>();
         private List<Chunk> m_loadList = new List<Chunk>();
 
+        private Vector3Int m_chunkSize;
+
         public Dictionary<ChunkID, Chunk>.ValueCollection Chunks
         {
             get { return m_chunks.Values; }
         }
 
-        public ChunkManager(AssetManager assetManager)
+        public ChunkManager(AssetManager assetManager, Vector3Int chunkSize)
         {
+            m_chunkSize = chunkSize;
             m_assetManager = assetManager;
             m_coroutineStarter = assetManager;
             GameObjectPool.PreWarm(2500, 500, 500, 500);
@@ -56,7 +59,7 @@ namespace StreamDaddy.Streaming
             }
         }
 
-        public void PreWarmChunks(AssetChunkData[] chunkData)
+        public void PreWarmChunks(AssetChunkData[] chunkData, List<Terrain> terrains)
         {
             for(int i = 0; i < chunkData.Length; i++)
             {
@@ -64,6 +67,32 @@ namespace StreamDaddy.Streaming
                 var chunkID = data.ChunkID;
 
                 AddChunk(new ChunkID(chunkID), data);
+            }
+
+            //Inject terrains into the chunks.
+            for(int i = 0; i < terrains.Count; i++)
+            {
+                Terrain terrain = terrains[i];
+                GameObject terrainGO = terrain.gameObject;
+                //  Round to approximate chunk position
+                float x = terrainGO.transform.position.x / (float)m_chunkSize.x;
+                float y = terrainGO.transform.position.y / (float)m_chunkSize.y;
+                float z = terrainGO.transform.position.z / (float)m_chunkSize.z;
+
+                //  Floor to chunk position ID ( chunk index in EditorChunkManager )
+                int cx = (int)Mathf.Floor(x);
+                int cy = (int)Mathf.Floor(y);
+                int cz = (int)Mathf.Floor(z);
+
+                //  If there are no streamed assets in the chunk, then it wont exist.
+                //  In this case the chunk needs to be created.
+                ChunkID chunkKey = new ChunkID((int)cx, (int)cy, (int)cz);
+                if (!m_chunks.ContainsKey(chunkKey))
+                {
+                    m_chunks.Add(chunkKey,new Chunk(chunkKey));
+                }
+
+                m_chunks[chunkKey].SetTerrain(terrain);
             }
         }
 

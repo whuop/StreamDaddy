@@ -1,4 +1,5 @@
 ﻿using StreamDaddy.Editor.Utils;
+using StreamDaddy.Streaming;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
@@ -16,7 +17,6 @@ namespace StreamDaddy.Editor.Tasks
 
         public bool Execute(string worldName, List<Terrain> terrains)
         {
-
             //  Create the scene from which the world should be streamed from during gameplay.
             var streamScene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Additive);
             //streamScene.name = worldName + "_streamed";
@@ -25,6 +25,9 @@ namespace StreamDaddy.Editor.Tasks
                 var terrainGO = terrains[i].gameObject;
 
                 EditorSceneManager.MoveGameObjectToScene(terrainGO, streamScene);
+
+                //  Deactivate the terrain 
+                terrainGO.SetActive(false);
             }
 
             string scenePath = EditorPaths.GetWorldScenePath(worldName) + worldName + "_streamed.unity";
@@ -34,7 +37,16 @@ namespace StreamDaddy.Editor.Tasks
             string worldStreamerPath = prefabsPath + "WorldStreamer.prefab";
             GameObject worldStreamerPrefab = AssetDatabase.LoadAssetAtPath<GameObject>(worldStreamerPath);
 
+            string worldStreamPath = EditorPaths.GetWorldStreamsFolder() + worldName + ".asset";
+
+            WorldStream stream = AssetDatabase.LoadAssetAtPath<WorldStream>(worldStreamPath);
+
             GameObject worldStreamerInstance = (GameObject)PrefabUtility.InstantiatePrefab(worldStreamerPrefab, streamScene);
+            
+            //  Set all world streamer values needed to stream the world.
+            WorldStreamer streamer = worldStreamerInstance.GetComponent<WorldStreamer>();
+            streamer.WorldStream = stream;
+            streamer.WorldTerrains = terrains;
 
             AssetDatabase.StartAssetEditing();
             EditorSceneManager.SaveScene(streamScene, scenePath);

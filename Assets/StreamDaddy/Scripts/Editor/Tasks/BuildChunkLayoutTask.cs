@@ -130,7 +130,7 @@ namespace StreamDaddy.Editor.Tasks
                     var sphereCollider = go.GetComponent<SphereCollider>();
                     var meshCollider = go.GetComponent<MeshCollider>();
 
-                    if (renderer != null)
+                    if (renderer != null && renderer.enabled)
                     {
                         MeshData md = CreateMeshData(renderer);
                         meshData.Add(md);
