@@ -36,6 +36,13 @@ namespace StreamDaddy.Editor.Tasks
             List<string> meshMaterials = new List<string>();
             foreach (var material in renderer.sharedMaterials)
             {
+                //  Make sure the mesh isn't null, can't export nothing.
+                if (material == null)
+                {
+                    Debug.LogError(string.Format("[Task-{0}] Missing Material on MeshRenderer for GameObject {1}", this.Name, renderer.gameObject.name), renderer.gameObject);
+                    continue;
+                }
+                    
                 meshMaterials.Add(material.name);
             }
 
@@ -76,6 +83,11 @@ namespace StreamDaddy.Editor.Tasks
 
         private MeshColliderData CreateMeshColliderData(MeshCollider meshCollider)
         {
+            if (meshCollider.sharedMesh == null)
+            {
+                Debug.LogError(string.Format("[Task-{0}] Missing Mesh for MeshCollider on GameObject {1}", this.Name, meshCollider.gameObject.name), meshCollider.gameObject);
+                return null;
+            }
             MeshColliderData data = new MeshColliderData();
 
             data.MeshName = meshCollider.sharedMesh.name;
@@ -133,25 +145,29 @@ namespace StreamDaddy.Editor.Tasks
                     if (renderer != null && renderer.enabled)
                     {
                         MeshData md = CreateMeshData(renderer);
-                        meshData.Add(md);
+                        if (md != null)
+                            meshData.Add(md);
                     }
 
                     if (boxCollider != null)
                     {
                         BoxColliderData bd = CreateBoxColliderData(boxCollider);
-                        boxColliderData.Add(bd);
+                        if (bd != null)
+                            boxColliderData.Add(bd);
                     }
 
                     if (sphereCollider != null)
                     {
                         SphereColliderData sd = CreateSphereColliderData(sphereCollider);
-                        sphereColliderData.Add(sd);
+                        if (sd != null)
+                            sphereColliderData.Add(sd);
                     }
 
                     if (meshCollider != null)
                     {
                         MeshColliderData mcd = CreateMeshColliderData(meshCollider);
-                        meshColliderData.Add(mcd);
+                        if (mcd != null)
+                            meshColliderData.Add(mcd);
                     }
                 }
 

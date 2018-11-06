@@ -83,14 +83,28 @@ namespace StreamDaddy.Editor.Tasks
                         }
                         else
                         {
-                            Debug.Log(string.Format("[Task-{0}] Setting AssetBundle for {1} to bundle {2}", this.Name, meshFilter.sharedMesh.name, assetBundleName));
-                            AssetImporter.GetAtPath(assetPath).SetAssetBundleNameAndVariant(assetBundleName, "");
+                            AssetImporter assetImporter = AssetImporter.GetAtPath(assetPath);
+                            if (assetImporter != null)
+                            {
+                                Debug.Log(string.Format("[Task-{0}] Setting AssetBundle for {1} to bundle {2}", this.Name, meshFilter.sharedMesh.name, assetBundleName));
+                                assetImporter.SetAssetBundleNameAndVariant(assetBundleName, "");
+                            }
+                            else
+                            {
+                                Debug.Log(string.Format("[Task-{0}] Can not find Mesh in GameObject {1}", this.Name, meshFilter.gameObject.name), meshFilter.gameObject);
+                            }
                         }
                     }
 
                     //  Build materials
                     foreach(var material in renderer.sharedMaterials)
                     {
+                        if (material == null)
+                        {
+                            Debug.Log(string.Format("[Task-{0}] Can not export null Material in GameObject {1}", this.Name, renderer.gameObject.name), renderer.gameObject);
+                            continue;
+                        }
+
                         if (m_uniqueMaterials.ContainsKey(material.name))
                         {
                             //  Skipping material, has already been processed.
