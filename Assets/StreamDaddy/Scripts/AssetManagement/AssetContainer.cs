@@ -39,6 +39,11 @@ namespace StreamDaddy.AssetManagement
             m_assets.Values.CopyTo(array, 0);
             return array;
         }
+
+        public bool Contains(string name)
+        {
+            return m_assets.ContainsKey(name);
+        }
     }
 }
 

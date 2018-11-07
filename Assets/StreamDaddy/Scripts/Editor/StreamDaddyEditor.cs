@@ -133,6 +133,32 @@ namespace StreamDaddy.Editor
                 new CreateStreamedSceneTask().Execute(m_worldNameProp.stringValue, terrainsToMove);
             }
 
+            if (GUILayout.Button("Full Export (excluding terrain split)"))
+            {
+                //  Chunk World
+                m_chunkManager = new EditorChunkManager(m_chunkSizeProp.vector3IntValue);
+                new ChunkWorldTask().Execute(m_chunkManager);
+                GUI.changed = true;
+
+                //  Export chunk layouts
+                m_chunkLayoutResult = new BuildChunkLayoutTask.BuildChunkLayoutResult();
+                new BuildChunkLayoutTask().Execute(m_worldNameProp.stringValue, m_chunkManager.Chunks, ref m_chunkLayoutResult);
+
+                //  Export Assets
+                new ExportChunkAssetsTask().Execute(m_worldNameProp.stringValue, m_chunkManager.Chunks);
+
+                //  Export WorldStream scriptable object
+                List<string> assetBundles = new List<string>();
+                assetBundles.Add(m_worldNameProp.stringValue + "_chunkassets");
+                new BuildWorldStreamTask().Execute(m_worldNameProp.stringValue, m_chunkLayoutResult.ChunkLayoutBundle, m_chunkSizeProp.vector3IntValue, m_chunkLayoutResult.ChunkLayoutNames, assetBundles);
+
+                //  Construct the stream scene
+                List<Terrain> terrainsToMove = new List<Terrain>(GameObject.FindObjectsOfType<Terrain>());
+                terrainsToMove.Remove(m_terrainToSplit);
+
+                new CreateStreamedSceneTask().Execute(m_worldNameProp.stringValue, terrainsToMove);
+            }
+
             if (GUI.changed)
                 SceneView.RepaintAll();
         }

@@ -1,4 +1,5 @@
 ﻿using StreamDaddy.AssetManagement;
+using StreamDaddy.Pooling;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -17,6 +18,18 @@ namespace StreamDaddy.Streaming
         [SerializeField]
         private List<Terrain> m_worldTerrains = new List<Terrain>();
         public List<Terrain> WorldTerrains { get { return m_worldTerrains; } set { m_worldTerrains = value; } }
+
+        [SerializeField]
+        private bool m_debugRender = true;
+
+        [SerializeField]
+        private int m_numRenderables;
+        [SerializeField]
+        private int m_numBoxColliders;
+        [SerializeField]
+        private int m_numSphereColliders;
+        [SerializeField]
+        private int m_numMeshColliders;
 
         private AssetBundleManager m_bundleManager;
         private AssetManager m_assetManager;
@@ -59,6 +72,11 @@ namespace StreamDaddy.Streaming
         private void Update()
         {
             m_chunkManager.Update();
+
+            m_numRenderables = GameObjectPool.CreatedRenderers;
+            m_numBoxColliders = GameObjectPool.CreatedBoxColliders;
+            m_numSphereColliders = GameObjectPool.CreatedSphereColliders;
+            m_numMeshColliders = GameObjectPool.CreatedMeshColliders;
         }
 
         private void FinishedLoadingBundles()
@@ -118,6 +136,9 @@ namespace StreamDaddy.Streaming
 
         private void OnDrawGizmos()
         {
+            if (!m_debugRender)
+                return;
+
             if (!Application.isPlaying)
                 return;
 

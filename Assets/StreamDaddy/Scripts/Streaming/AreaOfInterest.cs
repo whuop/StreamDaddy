@@ -69,6 +69,7 @@ namespace StreamDaddy.Streaming
 
             m_lastChunkPosition = m_chunkPosition;
             m_chunkPosition = ChunkID.FromVector3(transform.position, m_streamer.ChunkSize);
+            Debug.Log("ChunkPos:" + m_chunkPosition.ToString());
 
             if (m_lastChunkPosition != m_chunkPosition)
             {
@@ -179,6 +180,9 @@ namespace StreamDaddy.Streaming
 
         private void OnDrawGizmosSelected()
         {
+            if (!m_debugRender)
+                return;
+
             if (!Application.isPlaying || m_chunks == null)
                 return;
 

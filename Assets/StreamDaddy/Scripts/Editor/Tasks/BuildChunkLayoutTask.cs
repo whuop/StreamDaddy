@@ -121,6 +121,8 @@ namespace StreamDaddy.Editor.Tasks
             
             for(int i = 0; i < chunks.Count; i++)
             {
+                if (EditorUtility.DisplayCancelableProgressBar("Exporting chunk layout", "Chunk " + i, i / chunks.Count))
+                    return false;
                 List<MeshData> meshData = new List<MeshData>();
                 List<BoxColliderData> boxColliderData = new List<BoxColliderData>();
                 List<SphereColliderData> sphereColliderData = new List<SphereColliderData>();
@@ -191,7 +193,9 @@ namespace StreamDaddy.Editor.Tasks
                 string chunkDataPath = AssetDatabase.GetAssetPath(chunkLayout.GetInstanceID());
                 AssetImporter.GetAtPath(chunkDataPath).SetAssetBundleNameAndVariant(result.ChunkLayoutBundle, "");
             }
-            
+
+            EditorUtility.ClearProgressBar();
+
             return true;
         }
 

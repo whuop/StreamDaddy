@@ -17,6 +17,8 @@ namespace StreamDaddy.Editor.Tasks
 
         public bool Execute(string worldName, List<Terrain> terrains)
         {
+            if (EditorUtility.DisplayCancelableProgressBar("Building Stream Scene", worldName, 0.5f))
+                return false;
             //  Create the scene from which the world should be streamed from during gameplay.
             var streamScene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Additive);
             //streamScene.name = worldName + "_streamed";
@@ -53,6 +55,8 @@ namespace StreamDaddy.Editor.Tasks
             AssetDatabase.SaveAssets();
             AssetDatabase.StopAssetEditing();
             AssetDatabase.Refresh();
+
+            EditorUtility.ClearProgressBar();
 
             return true;
         }

@@ -39,6 +39,9 @@ namespace StreamDaddy.Editor.Tasks
                 //  all the assets can be extracted.
                 var gameObjects = chunk.GetAllChildren();
 
+                if (EditorUtility.DisplayCancelableProgressBar("Exporting Chunk Assets", "Chunk " + i, i / chunks.Count))
+                    return false;
+
                 //  Extract all assets to be built into asset bundles.
                 foreach (var go in gameObjects)
                 {
@@ -127,6 +130,8 @@ namespace StreamDaddy.Editor.Tasks
                     }
                 }
             }
+
+            EditorUtility.ClearProgressBar();
 
             string bundlePath = EditorPaths.STREAMING_DIRECTORY_PATH;
             BuildPipeline.BuildAssetBundles(bundlePath, BuildAssetBundleOptions.ChunkBasedCompression |

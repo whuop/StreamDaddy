@@ -30,7 +30,9 @@ namespace StreamDaddy.Editor.Tasks
                 LogError("AssetBundles is null or has a count of 0. Task failed!");
                 return false;
             }
-            
+
+            if (EditorUtility.DisplayCancelableProgressBar("Building WorldStream", worldName, 0.5f))
+                return false;
 
             WorldStream world = ScriptableObject.CreateInstance<WorldStream>();
             world.AssetBundles = assetBundles.ToArray();
@@ -48,6 +50,7 @@ namespace StreamDaddy.Editor.Tasks
             AssetDatabase.StopAssetEditing();
             AssetDatabase.Refresh();
 
+            EditorUtility.ClearProgressBar();
 
             return true;
         }

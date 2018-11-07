@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 namespace StreamDaddy.Pooling
@@ -32,72 +31,115 @@ namespace StreamDaddy.Pooling
     public class GameObjectPool
     {
         private static Queue<Renderable> m_renderables = new Queue<Renderable>();
+        public static int NumRenderables { get { return m_renderables.Count; } }
         private static Queue<BoxCollideable> m_boxColliders = new Queue<BoxCollideable>();
+        public static int NumBoxColliders { get { return m_boxColliders.Count; } }
         private static Queue<SphereCollideable> m_sphereColliders = new Queue<SphereCollideable>();
+        public static int NumSphereColliders { get { return m_sphereColliders.Count; } }
         private static Queue<MeshCollideable> m_meshColliders = new Queue<MeshCollideable>();
+        public static int NumMeshColliders { get { return m_meshColliders.Count; } }
+
+        private static int m_createdRenderers = 0;
+        public static int CreatedRenderers { get { return m_createdRenderers; } }
+        private static int m_createdBoxColliders = 0;
+        public static int CreatedBoxColliders { get { return m_createdBoxColliders; } }
+        private static int m_createdSphereColliders = 0;
+        public static int CreatedSphereColliders { get { return m_createdSphereColliders; } }
+        private static int m_createdMeshColliders = 0;
+        public static int CreatedMeshColliders { get { return m_createdMeshColliders; } }
 
         public static void PreWarm(int rendererCount, int boxColliderCount, int sphereColliderCount, int meshColliderCount)
         {
             while(m_renderables.Count < rendererCount)
             {
-                GameObject go = new GameObject("PooledRenderer_" + m_renderables.Count, typeof(MeshRenderer), typeof(MeshFilter));
-                go.SetActive(false);
-
-                Renderable renderable = new Renderable()
-                {
-                    GameObject = go,
-                    Renderer = go.GetComponent<MeshRenderer>(),
-                    Filter = go.GetComponent<MeshFilter>()
-                };
-
-                m_renderables.Enqueue(renderable);
+                CreateRenderable();
             }
 
             while(m_boxColliders.Count < boxColliderCount)
             {
-                GameObject go = new GameObject("PooledBoxCollider_" + m_boxColliders.Count, typeof(BoxCollider));
-                go.SetActive(false);
-
-                BoxCollideable collideable = new BoxCollideable()
-                {
-                    GameObject = go,
-                    BoxCollider = go.GetComponent<BoxCollider>()
-                };
-
-                m_boxColliders.Enqueue(collideable);
+                CreateBoxCollider();
             }
 
             while (m_sphereColliders.Count < sphereColliderCount)
             {
-                GameObject go = new GameObject("PooledSphereCollider_" + m_sphereColliders.Count, typeof(SphereCollider));
-                go.SetActive(false);
-
-                SphereCollideable collideable = new SphereCollideable()
-                {
-                    GameObject = go,
-                    SphereCollider = go.GetComponent<SphereCollider>()
-                };
-
-                m_sphereColliders.Enqueue(collideable);
+                CreateSphereCollider();
             }
 
             while (m_meshColliders.Count < meshColliderCount)
             {
-                GameObject go = new GameObject("PooledMeshCollider_" + m_meshColliders.Count, typeof(MeshCollider));
-                go.SetActive(false);
-
-                MeshCollideable collideable = new MeshCollideable()
-                {
-                    GameObject = go,
-                    MeshCollider = go.GetComponent<MeshCollider>()
-                };
-
-                m_meshColliders.Enqueue(collideable);
+                CreateMeshCollider();
             }
+        }
+
+        private static void CreateRenderable()
+        {
+            GameObject go = new GameObject("PooledRenderer_" + m_renderables.Count, typeof(MeshRenderer), typeof(MeshFilter));
+            go.SetActive(false);
+
+            Renderable renderable = new Renderable()
+            {
+                GameObject = go,
+                Renderer = go.GetComponent<MeshRenderer>(),
+                Filter = go.GetComponent<MeshFilter>()
+            };
+
+            m_renderables.Enqueue(renderable);
+            m_createdRenderers++;
+        }
+
+        private static void CreateBoxCollider()
+        {
+            GameObject go = new GameObject("PooledBoxCollider_" + m_boxColliders.Count, typeof(BoxCollider));
+            go.SetActive(false);
+
+            BoxCollideable collideable = new BoxCollideable()
+            {
+                GameObject = go,
+                BoxCollider = go.GetComponent<BoxCollider>()
+            };
+
+            m_boxColliders.Enqueue(collideable);
+            m_createdBoxColliders++;
+        }
+
+        private static void CreateSphereCollider()
+        {
+            GameObject go = new GameObject("PooledSphereCollider_" + m_sphereColliders.Count, typeof(SphereCollider));
+            go.SetActive(false);
+
+            SphereCollideable collideable = new SphereCollideable()
+            {
+                GameObject = go,
+                SphereCollider = go.GetComponent<SphereCollider>()
+            };
+
+            m_sphereColliders.Enqueue(collideable);
+            m_createdSphereColliders++;
+        }
+
+        private static void CreateMeshCollider()
+        {
+            GameObject go = new GameObject("PooledMeshCollider_" + m_meshColliders.Count, typeof(MeshCollider));
+            go.SetActive(false);
+
+            MeshCollideable collideable = new MeshCollideable()
+            {
+                GameObject = go,
+                MeshCollider = go.GetComponent<MeshCollider>()
+            };
+
+            m_meshColliders.Enqueue(collideable);
+            m_createdMeshColliders++;
         }
 
         public static Renderable GetRenderer(Mesh mesh, Material[] materials, Vector3 position, Vector3 rotation, Vector3 scale)
         {
+            if (m_renderables.Count == 0)
+            {
+                Debug.LogError("[GameObjectPool] Out of renderers!");
+                CreateRenderable();
+            }
+            
             var renderable = m_renderables.Dequeue();
 
             renderable.Filter.sharedMesh = mesh;
@@ -118,6 +160,12 @@ namespace StreamDaddy.Pooling
 
         public static BoxCollideable GetBoxCollider(Vector3 position, Vector3 rotation, Vector3 scale, Vector3 center, Vector3 size)
         {
+            if (m_boxColliders.Count == 0)
+            {
+                Debug.LogError("[GameObjectPool] Out of BoxColliders!");
+                CreateBoxCollider();
+            }
+                
             var collideable = m_boxColliders.Dequeue();
 
             collideable.GameObject.transform.position = position;
@@ -139,6 +187,12 @@ namespace StreamDaddy.Pooling
 
         public static SphereCollideable GetSphereCollider(Vector3 position, Vector3 rotation, Vector3 scale, Vector3 center, float radius)
         {
+            if (m_sphereColliders.Count == 0)
+            {
+                Debug.LogError("[GameObjectPool] Out of SphereColliders!");
+                CreateSphereCollider();
+            }
+                
             var collideable = m_sphereColliders.Dequeue();
 
             collideable.GameObject.transform.position = position;
@@ -160,6 +214,12 @@ namespace StreamDaddy.Pooling
 
         public static MeshCollideable GetMeshCollider(Vector3 position, Vector3 rotation, Vector3 scale, Mesh mesh)
         {
+            if (m_meshColliders.Count == 0)
+            {
+                Debug.LogError("[GameObjectPool] Out of MeshColiders!");
+                CreateMeshCollider();
+            }
+                
             var collideable = m_meshColliders.Dequeue();
             collideable.MeshCollider.sharedMesh = mesh;
 

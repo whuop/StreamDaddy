@@ -9,7 +9,7 @@ namespace StreamDaddy.AssetManagement
         private IAssetContainer<Mesh> m_meshContainer;
         private IAssetContainer<Material> m_materialContainer;
         private IAssetContainer<AssetChunkData> m_chunkDataContainer;
-
+        
         [SerializeField]
         private List<GameObject> m_builtInMeshes;
         /// <summary>
@@ -50,15 +50,38 @@ namespace StreamDaddy.AssetManagement
 
                 if (type.IsAssignableFrom(meshType))
                 {
-                    m_meshContainer.Add(asset.name, (Mesh)asset);
+                    if (m_meshContainer.Contains(asset.name))
+                    {
+                        Debug.LogError(string.Format("AssetManager already contains Mesh asset with name {0}", asset.name));
+                    }
+                    else
+                    {
+                        m_meshContainer.Add(asset.name, (Mesh)asset);
+                    }
+                    
                 }
                 else if (type.IsAssignableFrom(materialType))
                 {
-                    m_materialContainer.Add(asset.name, (Material)asset);
+                    if (m_materialContainer.Contains(asset.name))
+                    {
+                        Debug.LogError(string.Format("AssetManager already contains Material asset with name {0}", asset.name));
+                    }
+                    else
+                    {
+                        m_materialContainer.Add(asset.name, (Material)asset);
+                    }
                 }
                 else if (type.IsAssignableFrom(assetChunkDataType))
                 {
-                    m_chunkDataContainer.Add(asset.name, (AssetChunkData)asset);
+                    if (m_chunkDataContainer.Contains(asset.name))
+                    {
+                        Debug.LogError(string.Format("AssetManager already contains ChunkData asset with name {0}", asset.name));
+                    }
+                    else
+                    {
+                        m_chunkDataContainer.Add(asset.name, (AssetChunkData)asset);
+                    }
+                    
                 }
 
                 Debug.Log("Added asset: " + asset.name);
