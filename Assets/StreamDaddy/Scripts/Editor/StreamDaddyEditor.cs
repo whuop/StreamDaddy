@@ -113,10 +113,10 @@ namespace StreamDaddy.Editor
                 new BuildChunkLayoutTask().Execute(m_worldNameProp.stringValue, m_chunkManager.Chunks, ref m_chunkLayoutResult);
             }
 
-            if (GUILayout.Button("Export Assets"))
+            /*if (GUILayout.Button("Export Assets"))
             {
                 new ExportChunkAssetsTask().Execute(m_worldNameProp.stringValue, m_chunkManager.Chunks);
-            }
+            }*/
 
             if (GUILayout.Button("Export World Stream"))
             {

@@ -1,5 +1,4 @@
 ﻿using StreamDaddy.Chunking;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
@@ -11,36 +10,31 @@ namespace StreamDaddy.Editor.Chunking
         private ChunkID m_id;
         public ChunkID ChunkID { get { return m_id; } }
 
-        private List<GameObject> m_children = new List<GameObject>();
+        private List<MeshFilter> m_meshFilters = new List<MeshFilter>();
+        public List<MeshFilter> MeshFilters { get { return m_meshFilters; } }
 
+        private List<Collider> m_colliders = new List<Collider>();
+        public List<Collider> Colliders { get { return m_colliders; } }
+        
         private Bounds m_boundingBox;
+        
 
         public EditorChunk(ChunkID id, Vector3Int size)
         {
             m_id = id;
             m_boundingBox = new Bounds(m_id.ID, size);
-
+            
             Debug.Log("Created chunk with size: " + size.x + " " + size.y + " " + size.z);
         }
 
-        public void AddChild(GameObject go)
+        public void AddMeshFilter(MeshFilter filter)
         {
-            m_children.Add(go);
+            m_meshFilters.Add(filter);
         }
 
-        public bool HasChild(GameObject go)
+        public void AddCollider(Collider collider)
         {
-            return m_children.Contains(go);
-        }
-
-        public void RemoveChild(GameObject go)
-        {
-            m_children.Remove(go);
-        }
-
-        public GameObject[] GetAllChildren()
-        {
-            return m_children.ToArray();
+            m_colliders.Add(collider);
         }
 
         public bool ContainsPoint(Vector3 point)

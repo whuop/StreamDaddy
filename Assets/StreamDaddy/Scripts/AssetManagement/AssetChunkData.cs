@@ -29,9 +29,9 @@ namespace StreamDaddy.AssetManagement
     public class MeshData : PositionData
     {
         [SerializeField]
-        public string MeshName;
+        public string MeshAddress;
         [SerializeField]
-        public string[] MaterialNames;
+        public string[] MaterialAddresses;
     }
 
     [System.Serializable]
@@ -56,7 +56,7 @@ namespace StreamDaddy.AssetManagement
     public class MeshColliderData : PositionData
     {
         [SerializeField]
-        public string MeshName;
+        public string MeshAddress;
     }
 }
 

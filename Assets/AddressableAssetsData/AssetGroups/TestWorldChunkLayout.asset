@@ -1,0 +1,57 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: TestWorldChunkLayout
+  m_EditorClassIdentifier: 
+  m_name: TestWorldChunkLayout
+  m_data:
+    m_serializedData: []
+  m_guid: d24cb74ca05f101489a7048b7e5a941d
+  m_serializeEntries:
+  - m_guid: 0d3f14905c6c5c14487605f423f470b2
+    m_address: Assets/StreamDaddy/Worlds/TestWorld/ChunkLayout/chunklayout_2_0_2.asset
+    m_readOnly: 0
+    m_serializedLabels: []
+  - m_guid: 1954b1a2fddd7cb4baedb18eb1b4a012
+    m_address: Assets/StreamDaddy/Worlds/TestWorld/ChunkLayout/chunklayout_2_0_3.asset
+    m_readOnly: 0
+    m_serializedLabels: []
+  - m_guid: 1a098036289ffbc439fd10eac4a46315
+    m_address: Assets/StreamDaddy/Worlds/TestWorld/ChunkLayout/chunklayout_2_0_1.asset
+    m_readOnly: 0
+    m_serializedLabels: []
+  - m_guid: 2a38a017981e36c42bbbdd8188168ada
+    m_address: Assets/StreamDaddy/Worlds/TestWorld/ChunkLayout/chunklayout_2_0_0.asset
+    m_readOnly: 0
+    m_serializedLabels: []
+  - m_guid: 3ce5aef6b3d657a45baf953bbc0f0a79
+    m_address: Assets/StreamDaddy/Worlds/TestWorld/ChunkLayout/chunklayout_1_0_2.asset
+    m_readOnly: 0
+    m_serializedLabels: []
+  - m_guid: 47b20a24f2718f74faf701cc6c8db1a9
+    m_address: Assets/StreamDaddy/Worlds/TestWorld/ChunkLayout/chunklayout_0_0_1.asset
+    m_readOnly: 0
+    m_serializedLabels: []
+  - m_guid: 772135c5f167642418b6e5fe355ddf4a
+    m_address: Assets/StreamDaddy/Worlds/TestWorld/ChunkLayout/chunklayout_3_0_1.asset
+    m_readOnly: 0
+    m_serializedLabels: []
+  - m_guid: cda8d38ec41e38c46b143473338a5808
+    m_address: Assets/StreamDaddy/Worlds/TestWorld/ChunkLayout/chunklayout_1_0_1.asset
+    m_readOnly: 0
+    m_serializedLabels: []
+  m_readOnly: 0
+  m_settings: {fileID: 11400000, guid: 012533c8f9714d74488e54f4588d1b2e, type: 2}
+  m_schemaSet:
+    m_schemas:
+    - {fileID: 11400000, guid: 45cbc74fe0d8d1841ab9ef12016573a1, type: 2}
+    - {fileID: 11400000, guid: 657352cc37df909478a1f6e5da0f30a3, type: 2}

@@ -63,14 +63,15 @@ namespace StreamDaddy.Streaming
 
                     MeshData meshdata = m_chunkData.Meshes[i];
 
-                    string meshName = meshdata.MeshName;
-                    string[] materialNames = meshdata.MaterialNames;
+                    // TODO: Change to adresses
+                    //string meshName = meshdata.MeshName;
+                    //string[] materialNames = meshdata.MaterialNames;
 
                     Vector3 position = meshdata.Position;
                     Vector3 rotation = meshdata.Rotation;
                     Vector3 scale = meshdata.Scale;
 
-                    Mesh mesh = assetManager.GetMeshAsset(meshName);
+                    /*Mesh mesh = assetManager.GetMeshAsset(meshName);
                     Material[] materials = new Material[materialNames.Length];
 
                     for (int j = 0; j < materialNames.Length; j++)
@@ -79,10 +80,12 @@ namespace StreamDaddy.Streaming
                     }
 
                     Renderable renderer = GameObjectPool.GetRenderer(mesh, materials, position, rotation, scale);
+                    */
+
 
                     //  Add the renderable to the list of renderables that have been spawned in this chunk
                     //  so that we can easily unload them later.
-                    m_renderers.Add(renderer);
+                    // m_renderers.Add(renderer);
                 }
 
                 for (int i = 0; i < m_chunkData.BoxColliders.Length; i++)
@@ -109,14 +112,14 @@ namespace StreamDaddy.Streaming
                     yield return new WaitForEndOfFrame();
                     MeshColliderData data = m_chunkData.MeshColliders[i];
 
-                    string meshName = data.MeshName;
+                    //string meshName = data.MeshName;
                     Vector3 position = data.Position;
                     Vector3 rotation = data.Rotation;
                     Vector3 scale = data.Scale;
 
-                    Mesh mesh = assetManager.GetMeshAsset(meshName);
-                    MeshCollideable collideable = GameObjectPool.GetMeshCollider(position, rotation, scale, mesh);
-                    m_meshColliders.Add(collideable);
+                    //Mesh mesh = assetManager.GetMeshAsset(meshName);
+                    //MeshCollideable collideable = GameObjectPool.GetMeshCollider(position, rotation, scale, mesh);
+                    //m_meshColliders.Add(collideable);
                 }
             }
             

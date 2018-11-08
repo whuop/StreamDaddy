@@ -20,19 +20,33 @@ namespace StreamDaddy.Editor.Chunking
         {
             m_chunks.Clear();
         }
-        
-        public void AddGameObject(GameObject go)
+
+        public void AddMeshFilter(MeshFilter filter, Vector3 position)
+        {
+            EditorChunk chunk = CreateChunkIfMissing(position);
+
+            chunk.AddMeshFilter(filter);
+        }
+
+        public void AddCollider(Collider collider, Vector3 position)
+        {
+            EditorChunk chunk = CreateChunkIfMissing(position);
+
+            chunk.AddCollider(collider);
+        }
+
+        private EditorChunk CreateChunkIfMissing(Vector3 position)
         {
             //  Round to approximate chunk position
-            float x = go.transform.position.x / (float)m_chunkSize.x;
-            float y = go.transform.position.y / (float)m_chunkSize.y;
-            float z = go.transform.position.z / (float)m_chunkSize.z;
-            
+            float x = position.x / (float)m_chunkSize.x;
+            float y = position.y / (float)m_chunkSize.y;
+            float z = position.z / (float)m_chunkSize.z;
+
             //  Floor to chunk position ID ( chunk index in EditorChunkManager )
             int cx = (int)Mathf.Floor(x);
             int cy = (int)Mathf.Floor(y);
             int cz = (int)Mathf.Floor(z);
-            
+
             ChunkID chunkKey = new ChunkID((int)cx, (int)cy, (int)cz);
             //  Create a new chunk if no chunk exists with the given key
             if (!m_chunks.ContainsKey(chunkKey))
@@ -40,10 +54,7 @@ namespace StreamDaddy.Editor.Chunking
                 m_chunks.Add(chunkKey, new EditorChunk(chunkKey, m_chunkSize));
             }
 
-            if (m_chunks[chunkKey].HasChild(go))
-                return;
-
-            m_chunks[chunkKey].AddChild(go);
+            return m_chunks[chunkKey];
         }
 
         public EditorChunk GetChunk(ChunkID id)

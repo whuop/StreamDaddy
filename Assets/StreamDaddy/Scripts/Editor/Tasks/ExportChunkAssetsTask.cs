@@ -37,13 +37,13 @@ namespace StreamDaddy.Editor.Tasks
                 var chunk = chunks[i];
                 //  Fetch all the game objects in the chunk so that
                 //  all the assets can be extracted.
-                var gameObjects = chunk.GetAllChildren();
+                //var gameObjects = chunk.GetAllChildren();
 
                 if (EditorUtility.DisplayCancelableProgressBar("Exporting Chunk Assets", "Chunk " + i, i / chunks.Count))
                     return false;
 
                 //  Extract all assets to be built into asset bundles.
-                foreach (var go in gameObjects)
+                /*foreach (var go in gameObjects)
                 {
                     var renderer = go.GetComponent<MeshRenderer>();
                     var boxCollider = go.GetComponent<BoxCollider>();
@@ -58,7 +58,7 @@ namespace StreamDaddy.Editor.Tasks
                         allSphereColliders.Add(sphereCollider);
                     if (meshCollider != null)
                         allMeshColliders.Add(meshCollider);
-                }
+                }*/
 
                 foreach(var renderer in allRenderers)
                 {

@@ -2,10 +2,14 @@
 using StreamDaddy.Chunking;
 using StreamDaddy.Editor.Chunking;
 using StreamDaddy.Editor.Utils;
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEditor;
+using UnityEditor.AddressableAssets;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 
 namespace StreamDaddy.Editor.Tasks
 {
@@ -19,38 +23,183 @@ namespace StreamDaddy.Editor.Tasks
             public List<string> ChunkLayoutNames;
             public string ChunkLayoutBundle;
         }
-
+        
         public BuildChunkLayoutTask() : base("Build Chunk Layouts")
         {
 
         }
-
-        private MeshData CreateMeshData(MeshRenderer renderer)
+        
+        public bool Execute(string worldName, List<EditorChunk> chunks, ref BuildChunkLayoutResult result)
         {
-            var meshFilter = renderer.GetComponent<MeshFilter>();
-            if (meshFilter.sharedMesh == null)
-                return null;
-
-            MeshData data = new MeshData();
-
-            List<string> meshMaterials = new List<string>();
-            foreach (var material in renderer.sharedMaterials)
+            if (chunks == null || chunks.Count == 0)
             {
-                //  Make sure the mesh isn't null, can't export nothing.
-                if (material == null)
-                {
-                    Debug.LogError(string.Format("[Task-{0}] Missing Material on MeshRenderer for GameObject {1}", this.Name, renderer.gameObject.name), renderer.gameObject);
-                    continue;
-                }
-                    
-                meshMaterials.Add(material.name);
+                LogError("Chunks must not be null and must have a size that is larger than 0. Task failed!");
+                return false;
             }
 
-            data.MeshName = meshFilter.sharedMesh.name;
-            data.Position = meshFilter.transform.position;
-            data.Rotation = meshFilter.transform.rotation.eulerAngles;
-            data.Scale = meshFilter.transform.lossyScale;
-            data.MaterialNames = meshMaterials.ToArray();
+            if (string.IsNullOrEmpty(worldName))
+            {
+                LogError("World Name is either null or empty. Task failed!");
+                return false;
+            }
+            
+            result.ChunkLayoutNames = new List<string>();
+            
+            //  The name of the asset bundle containing all the layouts for the chunks
+            result.ChunkLayoutBundle = worldName + "ChunkLayout";
+            //  Create the addressables group for the chunk layout object
+            var assetSettings = UnityEditor.AddressableAssets.AddressableAssetSettingsDefaultObject.Settings;
+
+            AddressableAssetGroup chunkLayoutGroup;
+            AddressableAssetGroup chunkAssetsGroup;
+            try
+            {
+                chunkLayoutGroup = assetSettings.groups.Single(g => g.Name == worldName + "ChunkLayout");
+            }
+            catch(Exception e)
+            {
+                chunkLayoutGroup = assetSettings.CreateGroup(string.Format("{0}", result.ChunkLayoutBundle), false, false, true);
+            }
+
+            try
+            {
+                chunkAssetsGroup = assetSettings.groups.Single(g => g.Name == worldName + "ChunkAssets");
+            }
+            catch(Exception e)
+            {
+                chunkAssetsGroup = assetSettings.CreateGroup(worldName + "ChunkAssets", false, false, true);
+            }
+            
+            for (int i = 0; i < chunks.Count; i++)
+            {
+                if (EditorUtility.DisplayCancelableProgressBar("Exporting chunk layout", "Chunk " + i, i / chunks.Count))
+                    return false;
+                List<MeshData> meshData = new List<MeshData>();
+                List<BoxColliderData> boxColliderData = new List<BoxColliderData>();
+                List<SphereColliderData> sphereColliderData = new List<SphereColliderData>();
+                List<MeshColliderData> meshColliderData = new List<MeshColliderData>();
+
+                var chunk = chunks[i];
+                var meshFilters = chunk.MeshFilters;
+                var colliders = chunk.Colliders;
+
+                //  Export mesh assets to an Addressable group
+                foreach(var filter in meshFilters)
+                {
+                    var mesh = filter.sharedMesh;
+                    if (mesh == null)
+                        continue;
+
+                    var renderer = filter.gameObject.GetComponent<MeshRenderer>();
+                    if (renderer == null)
+                        continue;
+
+                    var materials = renderer.sharedMaterials;
+                    
+                    string assetPath = AssetDatabase.GetAssetPath(mesh.GetInstanceID());
+                    string assetGuid = AssetDatabase.AssetPathToGUID(assetPath);
+                    var entry = assetSettings.CreateOrMoveEntry(assetGuid, chunkAssetsGroup);
+                    Debug.Log(string.Format("Adding Mesh {0} with address {1}", mesh.name, entry.address));
+
+                    List<string> materialAddresses = new List<string>();
+                    //  Export all materials associated with the Mesh asset to an addressable group.
+                    foreach(var mat in materials)
+                    {
+                        string matPath = AssetDatabase.GetAssetPath(mat.GetInstanceID());
+                        string matGuid = AssetDatabase.AssetPathToGUID(matPath);
+                        var matEntry = assetSettings.CreateOrMoveEntry(matGuid, chunkAssetsGroup);
+                        materialAddresses.Add(matEntry.address);
+                        Debug.Log(string.Format("Adding Material {0} with address {1}", mat.name, matEntry.address));
+                    }
+                    var md = CreateMeshData(entry.address, materialAddresses.ToArray(), filter.transform.position, filter.transform.rotation.eulerAngles, filter.transform.lossyScale);
+                    meshData.Add(md);
+                }
+
+                //  Export colliders
+                foreach(var collider in colliders)
+                {
+                    if (collider.GetType().IsAssignableFrom(typeof(BoxCollider)))
+                    {
+                        BoxCollider box = (BoxCollider)collider;
+                        var bd = CreateBoxColliderData(box);
+                        boxColliderData.Add(bd);
+                    }
+                    else if (collider.GetType().IsAssignableFrom(typeof(SphereCollider)))
+                    {
+                        SphereCollider sphere = (SphereCollider)collider;
+                        var sd = CreateSphereColliderData(sphere);
+                        sphereColliderData.Add(sd);
+                    }
+                    else if (collider.GetType().IsAssignableFrom(typeof(MeshCollider)))
+                    {
+                        MeshCollider meshCol = (MeshCollider)collider;
+
+                        string assetPath = AssetDatabase.GetAssetPath(meshCol.sharedMesh.GetInstanceID());
+                        string assetGuid = AssetDatabase.AssetPathToGUID(assetPath);
+                        var entry = assetSettings.CreateOrMoveEntry(assetGuid, chunkAssetsGroup);
+
+                        var md = CreateMeshColliderData(entry.address, meshCol.gameObject.transform.position, meshCol.gameObject.transform.rotation.eulerAngles, meshCol.gameObject.transform.lossyScale);
+                        meshColliderData.Add(md);
+                    }
+                }
+
+                string chunkAssetName = "chunklayout_" + chunk.ChunkID.X + "_" + chunk.ChunkID.Y + "_" + chunk.ChunkID.Z;
+                result.ChunkLayoutNames.Add(chunkAssetName);
+
+                //  Create the scriptable object for this chunk layout
+                var chunkLayout = CreateChunkLayout(meshData.ToArray(), boxColliderData.ToArray(), sphereColliderData.ToArray(), meshColliderData.ToArray(), chunk.ChunkID);
+
+                AssetDatabase.StartAssetEditing();
+                SaveChunkLayout(worldName, chunkAssetName, chunkLayout);
+                EditorUtility.SetDirty(chunkLayout);
+                AssetDatabase.SaveAssets();
+                AssetDatabase.StopAssetEditing();
+                AssetDatabase.Refresh(ImportAssetOptions.ForceUpdate);
+
+                string path = EditorPaths.GetWorldChunkLayoutPath(worldName) + chunkAssetName + ".asset";
+                chunkLayout = AssetDatabase.LoadAssetAtPath<AssetChunkData>(path);
+
+                
+                //  Add the chunk layout to the asset group for this world
+                string chunkDataPath = AssetDatabase.GetAssetPath(chunkLayout.GetInstanceID());
+                string guid = AssetDatabase.AssetPathToGUID(chunkDataPath);
+
+                var assetEntry = assetSettings.CreateOrMoveEntry(guid, chunkLayoutGroup, false, true);
+            }
+
+            EditorUtility.ClearProgressBar();
+
+            return true;
+        }
+
+        private AssetChunkData CreateChunkLayout(MeshData[] meshes, BoxColliderData[] boxColliders, SphereColliderData[] sphereColliders, MeshColliderData[] meshColliders, ChunkID chunkID)
+        {
+            AssetChunkData asset = ScriptableObject.CreateInstance<AssetChunkData>();
+            asset.Meshes = meshes;
+            asset.BoxColliders = boxColliders;
+            asset.SphereColliders = sphereColliders;
+            asset.MeshColliders = meshColliders;
+            asset.ChunkID = chunkID.ID;
+
+            return asset;
+        }
+
+        private void SaveChunkLayout(string worldName, string chunkAssetName, AssetChunkData chunkLayout)
+        {
+            string path = EditorPaths.GetWorldChunkLayoutPath(worldName);
+            PathUtils.EnsurePathExists(path);
+            AssetDatabaseUtils.CreateOrReplaceAsset(chunkLayout, path + chunkAssetName + ".asset");
+        }
+
+        private MeshData CreateMeshData(string meshAddress, string[] materialAddresses, Vector3 position, Vector3 rotation, Vector3 scale)
+        {            
+            MeshData data = new MeshData();
+
+            data.MeshAddress = meshAddress;
+            data.MaterialAddresses = materialAddresses;
+            data.Position = position;
+            data.Rotation = rotation;
+            data.Scale = scale;
 
             return data;
         }
@@ -81,141 +230,16 @@ namespace StreamDaddy.Editor.Tasks
             return data;
         }
 
-        private MeshColliderData CreateMeshColliderData(MeshCollider meshCollider)
+        private MeshColliderData CreateMeshColliderData(string meshAddress, Vector3 position, Vector3 rotation, Vector3 scale)
         {
-            if (meshCollider.sharedMesh == null)
-            {
-                Debug.LogError(string.Format("[Task-{0}] Missing Mesh for MeshCollider on GameObject {1}", this.Name, meshCollider.gameObject.name), meshCollider.gameObject);
-                return null;
-            }
             MeshColliderData data = new MeshColliderData();
 
-            data.MeshName = meshCollider.sharedMesh.name;
-            data.Position = meshCollider.transform.position;
-            data.Rotation = meshCollider.transform.rotation.eulerAngles;
-            data.Scale = meshCollider.transform.lossyScale;
+            data.MeshAddress = meshAddress;
+            data.Position = position;
+            data.Rotation = rotation;
+            data.Scale = scale;
 
             return data;
-        }
-
-        public bool Execute(string worldName, List<EditorChunk> chunks, ref BuildChunkLayoutResult result)
-        {
-            if (chunks == null || chunks.Count == 0)
-            {
-                LogError("Chunks must not be null and must have a size that is larger than 0. Task failed!");
-                return false;
-            }
-
-            if (string.IsNullOrEmpty(worldName))
-            {
-                LogError("World Name is either null or empty. Task failed!");
-                return false;
-            }
-            
-            result.ChunkLayoutNames = new List<string>();
-
-            HashSet<int> processedInstanceIDs = new HashSet<int>();
-            
-            //  The name of the asset bundle containing all the layouts for the chunks
-            result.ChunkLayoutBundle = worldName + "_chunklayout";
-            
-            for(int i = 0; i < chunks.Count; i++)
-            {
-                if (EditorUtility.DisplayCancelableProgressBar("Exporting chunk layout", "Chunk " + i, i / chunks.Count))
-                    return false;
-                List<MeshData> meshData = new List<MeshData>();
-                List<BoxColliderData> boxColliderData = new List<BoxColliderData>();
-                List<SphereColliderData> sphereColliderData = new List<SphereColliderData>();
-                List<MeshColliderData> meshColliderData = new List<MeshColliderData>();
-
-                var chunk = chunks[i];
-                var gameObjects = chunk.GetAllChildren();
-
-                for(int j = 0; j < gameObjects.Length; j++)
-                {
-                    var go = gameObjects[j];
-                    if (processedInstanceIDs.Contains(go.GetInstanceID()))
-                    {
-                        continue;
-                    }
-
-                    var renderer = go.GetComponent<MeshRenderer>();
-                    var boxCollider = go.GetComponent<BoxCollider>();
-                    var sphereCollider = go.GetComponent<SphereCollider>();
-                    var meshCollider = go.GetComponent<MeshCollider>();
-
-                    if (renderer != null && renderer.enabled)
-                    {
-                        MeshData md = CreateMeshData(renderer);
-                        if (md != null)
-                            meshData.Add(md);
-                    }
-
-                    if (boxCollider != null)
-                    {
-                        BoxColliderData bd = CreateBoxColliderData(boxCollider);
-                        if (bd != null)
-                            boxColliderData.Add(bd);
-                    }
-
-                    if (sphereCollider != null)
-                    {
-                        SphereColliderData sd = CreateSphereColliderData(sphereCollider);
-                        if (sd != null)
-                            sphereColliderData.Add(sd);
-                    }
-
-                    if (meshCollider != null)
-                    {
-                        MeshColliderData mcd = CreateMeshColliderData(meshCollider);
-                        if (mcd != null)
-                            meshColliderData.Add(mcd);
-                    }
-                }
-
-                string chunkAssetName = "chunklayout_" + chunk.ChunkID.X + "_" + chunk.ChunkID.Y + "_" + chunk.ChunkID.Z;
-                result.ChunkLayoutNames.Add(chunkAssetName);
-
-                //  Create the scriptable object for this chunk layout
-                var chunkLayout = CreateChunkLayout(meshData.ToArray(), boxColliderData.ToArray(), sphereColliderData.ToArray(), meshColliderData.ToArray(), chunk.ChunkID);
-
-                AssetDatabase.StartAssetEditing();
-                SaveChunkLayout(worldName, chunkAssetName, chunkLayout);
-                EditorUtility.SetDirty(chunkLayout);
-                AssetDatabase.SaveAssets();
-                AssetDatabase.StopAssetEditing();
-                AssetDatabase.Refresh(ImportAssetOptions.ForceUpdate);
-
-                string path = EditorPaths.GetWorldChunkLayoutPath(worldName) + chunkAssetName + ".asset";
-                chunkLayout = AssetDatabase.LoadAssetAtPath<AssetChunkData>(path);
-
-                //  Set the asset bundle
-                string chunkDataPath = AssetDatabase.GetAssetPath(chunkLayout.GetInstanceID());
-                AssetImporter.GetAtPath(chunkDataPath).SetAssetBundleNameAndVariant(result.ChunkLayoutBundle, "");
-            }
-
-            EditorUtility.ClearProgressBar();
-
-            return true;
-        }
-
-        private AssetChunkData CreateChunkLayout(MeshData[] meshes, BoxColliderData[] boxColliders, SphereColliderData[] sphereColliders, MeshColliderData[] meshColliders, ChunkID chunkID)
-        {
-            AssetChunkData asset = ScriptableObject.CreateInstance<AssetChunkData>();
-            asset.Meshes = meshes;
-            asset.BoxColliders = boxColliders;
-            asset.SphereColliders = sphereColliders;
-            asset.MeshColliders = meshColliders;
-            asset.ChunkID = chunkID.ID;
-
-            return asset;
-        }
-
-        private void SaveChunkLayout(string worldName, string chunkAssetName, AssetChunkData chunkLayout)
-        {
-            string path = EditorPaths.GetWorldChunkLayoutPath(worldName);
-            PathUtils.EnsurePathExists(path);
-            AssetDatabaseUtils.CreateOrReplaceAsset(chunkLayout, path + chunkAssetName + ".asset");
         }
 
     }

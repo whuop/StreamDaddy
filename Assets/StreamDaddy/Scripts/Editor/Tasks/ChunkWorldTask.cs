@@ -23,16 +23,17 @@ namespace StreamDaddy.Editor.Tasks
             int totalCount = allMeshes.Length + allBoxColliders.Length + allSphereColliders.Length + allMeshColliders.Length;
 
             int i = 0;
-            foreach(var mesh in allMeshes)
+            foreach(var filter in allMeshes)
             {
                 if (EditorUtility.DisplayCancelableProgressBar("Sorting Meshes into Chunks", i.ToString() + "/" + totalCount.ToString(), i / totalCount))
                     return false;
-                var renderer = mesh.GetComponent<MeshRenderer>();
+                var renderer = filter.GetComponent<MeshRenderer>();
                 if (renderer == null)
                     continue;
                 if (renderer.enabled == false)
                     continue;
-                chunkManager.AddGameObject(mesh.gameObject);
+
+                chunkManager.AddMeshFilter(filter, filter.gameObject.transform.position);
                 i++;
             }
 
@@ -40,7 +41,8 @@ namespace StreamDaddy.Editor.Tasks
             {
                 if (EditorUtility.DisplayCancelableProgressBar("Sorting BoxColliders into Chunks", i.ToString() + "/" + totalCount.ToString(), i / totalCount))
                     return false;
-                chunkManager.AddGameObject(box.gameObject);
+
+                chunkManager.AddCollider(box, box.gameObject.transform.position);
                 i++;
             }
 
@@ -48,7 +50,7 @@ namespace StreamDaddy.Editor.Tasks
             {
                 if (EditorUtility.DisplayCancelableProgressBar("Sorting SphereColliders into Chunks", i.ToString() + "/" + totalCount.ToString(), i / totalCount))
                     return false;
-                chunkManager.AddGameObject(sphere.gameObject);
+                chunkManager.AddCollider(sphere, sphere.gameObject.transform.position);
                 i++;
             }
 
@@ -56,7 +58,7 @@ namespace StreamDaddy.Editor.Tasks
             {
                 if (EditorUtility.DisplayCancelableProgressBar("Sorting MeshColliders into Chunks", i.ToString() + "/" + totalCount.ToString(), i / totalCount))
                     return false;
-                chunkManager.AddGameObject(meshCol.gameObject);
+                chunkManager.AddCollider(meshCol, meshCol.gameObject.transform.position);
                 i++;
             }
 

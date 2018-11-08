@@ -61,17 +61,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\Auto Fence Builder\Demos\Custom Demo - Calling AFWB from Custom Script\AFWBCustomDemo.cs" />
-    <Compile Include="Assets\Auto Fence Builder\Scripts\AFBTooltipsText.cs" />
-    <Compile Include="Assets\Auto Fence Builder\Scripts\AutoFenceCreator.cs" />
-    <Compile Include="Assets\Auto Fence Builder\Scripts\AutoFencePreset.cs" />
-    <Compile Include="Assets\Auto Fence Builder\Scripts\FenceCloner.cs" />
-    <Compile Include="Assets\Auto Fence Builder\Scripts\FenceMeshMerge.cs" />
-    <Compile Include="Assets\Auto Fence Builder\Scripts\Timer.cs" />
-    <Compile Include="Assets\Auto Fence Builder\Scripts\Utility Scripts\CleanUpUserMeshAFB.cs" />
-    <Compile Include="Assets\Auto Fence Builder\Scripts\Utility Scripts\CombineChildrenPlus.cs" />
-    <Compile Include="Assets\Auto Fence Builder\Scripts\Utility Scripts\MeshCombineUtilityPlus.cs" />
-    <Compile Include="Assets\Auto Fence Builder\User Custom Object Combine Tool\CustomObjectCombineTool.cs" />
     <Compile Include="Assets\StreamDaddy\Scripts\AssetManagement\AssetBundleManager.cs" />
     <Compile Include="Assets\StreamDaddy\Scripts\AssetManagement\AssetChunkData.cs" />
     <Compile Include="Assets\StreamDaddy\Scripts\AssetManagement\AssetContainer.cs" />
@@ -85,16 +74,8 @@
     <Compile Include="Assets\StreamDaddy\Scripts\Streaming\ChunkManager.cs" />
     <Compile Include="Assets\StreamDaddy\Scripts\Streaming\WorldStream.cs" />
     <Compile Include="Assets\StreamDaddy\Scripts\Streaming\WorldStreamer.cs" />
-    <None Include="Assets\Auto Fence Builder\Docs\Build Size - Unload Assets.txt" />
-    <None Include="Assets\Auto Fence Builder\A QuickStart.txt" />
-    <None Include="Assets\Auto Fence Builder\Docs\Auto Fence Version History.txt" />
     <None Include="Assets\Mega Fantasy Props Pack\README.txt" />
-    <None Include="Assets\Auto Fence Builder\User Custom Object Combine Tool\ReadMe - CustomObjectCombineTool.txt" />
-    <None Include="Assets\Auto Fence Builder\Docs\About Coordinate Systems 1.txt" />
-    <None Include="Assets\Auto Fence Builder\Demos\Custom Demo - Calling AFWB from Custom Script\Custom Script - Read Me.txt" />
     <None Include="Assets\FantasyEnvironments\Environments\README.txt" />
-    <None Include="Assets\Auto Fence Builder\Docs\Problems after Updating 1.x to 2.1.txt" />
-    <None Include="Assets\Auto Fence Builder\Grunge\ReadMe-Grunge.txt" />
     <None Include="Assets\StreamDaddy\TerrainToMesh\Scripts\Shaders\MeshTerrain.shader" />
     <Reference Include="Unity.CacheServer.Client.Editor">
       <HintPath>E:/Repos/StreamDaddy/Library/ScriptAssemblies/Unity.CacheServer.Client.Editor.dll</HintPath>
