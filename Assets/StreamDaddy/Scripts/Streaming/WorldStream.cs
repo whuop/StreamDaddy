@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 
 namespace StreamDaddy.Streaming
 {
@@ -15,11 +16,16 @@ namespace StreamDaddy.Streaming
         public string ChunkLayoutBundle { get { return m_chunkLayoutBundle; } set { m_chunkLayoutBundle = value; } }
 
         [SerializeField]
+        private List<AssetReference> m_chunkLayoutReferences;
+        public List<AssetReference> ChunkLayoutReferences;
+
+
+        /*[SerializeField]
         public string[] m_chunkNames;
         public string[] ChunkNames { get { return m_chunkNames; } set { m_chunkNames = value; } }
-
+        */
         [SerializeField]
-        public Vector3Int m_chunkSize;
+        private Vector3Int m_chunkSize;
         public Vector3Int ChunkSize { get { return m_chunkSize; } set { m_chunkSize = value; } }
 
         [SerializeField]

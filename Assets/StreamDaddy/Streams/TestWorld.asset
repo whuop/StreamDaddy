@@ -14,15 +14,24 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_worldName: TestWorld
   m_chunkLayoutBundle: TestWorldChunkLayout
-  m_chunkNames:
-  - chunklayout_1_0_1
-  - chunklayout_2_0_2
-  - chunklayout_2_0_1
-  - chunklayout_1_0_2
-  - chunklayout_2_0_3
-  - chunklayout_2_0_0
-  - chunklayout_3_0_1
-  - chunklayout_0_0_1
+  m_chunkLayoutReferences: []
+  ChunkLayoutReferences:
+  - m_assetGUID: cda8d38ec41e38c46b143473338a5808
+    m_cachedAsset: {fileID: 0}
+  - m_assetGUID: 0d3f14905c6c5c14487605f423f470b2
+    m_cachedAsset: {fileID: 0}
+  - m_assetGUID: 1a098036289ffbc439fd10eac4a46315
+    m_cachedAsset: {fileID: 0}
+  - m_assetGUID: 3ce5aef6b3d657a45baf953bbc0f0a79
+    m_cachedAsset: {fileID: 0}
+  - m_assetGUID: 1954b1a2fddd7cb4baedb18eb1b4a012
+    m_cachedAsset: {fileID: 0}
+  - m_assetGUID: 2a38a017981e36c42bbbdd8188168ada
+    m_cachedAsset: {fileID: 0}
+  - m_assetGUID: 772135c5f167642418b6e5fe355ddf4a
+    m_cachedAsset: {fileID: 0}
+  - m_assetGUID: 47b20a24f2718f74faf701cc6c8db1a9
+    m_cachedAsset: {fileID: 0}
   m_chunkSize: {x: 128, y: 128, z: 128}
   m_assetBundles:
-  - TestWorld_chunkassets
+  - TestWorldChunkAssets

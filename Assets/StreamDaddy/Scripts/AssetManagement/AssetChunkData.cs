@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 
 namespace StreamDaddy.AssetManagement
 {
@@ -29,9 +30,9 @@ namespace StreamDaddy.AssetManagement
     public class MeshData : PositionData
     {
         [SerializeField]
-        public string MeshAddress;
+        public AssetReference MeshReference;
         [SerializeField]
-        public string[] MaterialAddresses;
+        public AssetReference[] MaterialReferences;
     }
 
     [System.Serializable]
@@ -56,7 +57,7 @@ namespace StreamDaddy.AssetManagement
     public class MeshColliderData : PositionData
     {
         [SerializeField]
-        public string MeshAddress;
+        public AssetReference MeshReference;
     }
 }
 

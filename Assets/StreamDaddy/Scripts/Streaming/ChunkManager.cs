@@ -57,18 +57,20 @@ namespace StreamDaddy.Streaming
             }
         }
 
-        public void PreWarmChunks(AssetChunkData[] chunkData, List<Terrain> terrains)
+        public void PreWarmChunks(List<AssetChunkData> chunkData/*, List<Terrain> terrains*/)
         {
-            for(int i = 0; i < chunkData.Length; i++)
+            for(int i = 0; i < chunkData.Count; i++)
             {
                 AssetChunkData data = chunkData[i];
-                var chunkID = data.ChunkID;
+                var chunkID = new ChunkID(data.ChunkID);
 
-                AddChunk(new ChunkID(chunkID), data);
+                AddChunk(chunkID, data);
+                //  Prewarm chunk making all assets load.
+                m_chunks[chunkID].PrewarmChunk();
             }
 
             //Inject terrains into the chunks.
-            for(int i = 0; i < terrains.Count; i++)
+            /*for(int i = 0; i < terrains.Count; i++)
             {
                 Terrain terrain = terrains[i];
                 GameObject terrainGO = terrain.gameObject;
@@ -91,7 +93,7 @@ namespace StreamDaddy.Streaming
                 }
 
                 m_chunks[chunkKey].SetTerrain(terrain);
-            }
+            }*/
         }
 
         public void AddChunk(ChunkID id, AssetChunkData data)

@@ -20,12 +20,12 @@ namespace StreamDaddy.Streaming
         private AssetChunkData m_chunkData;
         private ChunkState m_chunkState;
         public ChunkState State { get { return m_chunkState; } set { m_chunkState = value; } }
-
+        
         private List<Renderable> m_renderers = new List<Renderable>();
         private List<MeshCollideable> m_meshColliders = new List<MeshCollideable>();
         private List<BoxCollideable> m_boxColliders = new List<BoxCollideable>();
         private List<SphereCollideable> m_sphereColliders = new List<SphereCollideable>();
-
+        
         /// <summary>
         /// Terrain associated with this chunk.
         /// Each chunk can have 1 terrain piece each.
@@ -34,6 +34,7 @@ namespace StreamDaddy.Streaming
 
         private ChunkID m_chunkID;
         public ChunkID ID { get { return m_chunkID; } }
+        
         
         public Chunk(AssetChunkData data)
         {
@@ -46,6 +47,41 @@ namespace StreamDaddy.Streaming
         {
             m_chunkState = ChunkState.Unloaded;
             m_chunkID = id;
+        }
+
+        public void PrewarmChunk()
+        {
+            foreach(var meshData in m_chunkData.Meshes)
+            {
+                var operation = meshData.MeshReference.LoadAsset<GameObject>();
+                operation.Completed += FinishedLoadingMesh;/*(UnityEngine.ResourceManagement.IAsyncOperation < Mesh > obj) => 
+                {
+                    List<Material> materials = new List<Material>();
+
+                    renderable.Mesh = obj.Result;
+                    if (obj.Result == null)
+                        Debug.Log("FAILED LOADING MESH!!!");
+
+                    for(int i = 0; i < meshData.MaterialReferences.Length; i++)
+                    {
+                        var matOperation = meshData.MaterialReferences[i].LoadAsset<Material>();
+                        matOperation.Completed += (UnityEngine.ResourceManagement.IAsyncOperation<Material> matObj) =>
+                        {
+                            materials.Add(matObj.Result);
+                        };
+                    }
+                };*/
+            }
+
+            foreach(var meshColliderData in m_chunkData.MeshColliders)
+            {
+                var operation = meshColliderData.MeshReference.LoadAsset<Mesh>();
+            }
+        }
+
+        private void FinishedLoadingMesh(UnityEngine.ResourceManagement.IAsyncOperation<GameObject> obj)
+        {
+            Debug.Log("Finished loading mesh!");
         }
 
         public IEnumerator LoadChunk()
@@ -62,14 +98,16 @@ namespace StreamDaddy.Streaming
                     yield return new WaitForEndOfFrame();
 
                     MeshData meshdata = m_chunkData.Meshes[i];
-
-                    // TODO: Change to adresses
-                    //string meshName = meshdata.MeshName;
-                    //string[] materialNames = meshdata.MaterialNames;
-
+                    
                     Vector3 position = meshdata.Position;
                     Vector3 rotation = meshdata.Rotation;
                     Vector3 scale = meshdata.Scale;
+                    
+                    
+                    //var operation = meshdata.MeshReference.LoadAsset<Mesh>();
+
+                    //Mesh mesh = operation.Result;
+
 
                     /*Mesh mesh = assetManager.GetMeshAsset(meshName);
                     Material[] materials = new Material[materialNames.Length];

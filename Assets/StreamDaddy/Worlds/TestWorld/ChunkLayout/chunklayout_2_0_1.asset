@@ -16,34 +16,49 @@ MonoBehaviour:
   - Position: {x: 282.21, y: 1.1199999, z: 232.69}
     Rotation: {x: -0, y: 63.802715, z: -0}
     Scale: {x: 2.1, y: 2.1, z: 2.1}
-    MeshAddress: Assets/FantasyEnvironments/Environments/FBX/Rock1.fbx
-    MaterialAddresses:
-    - Assets/FantasyEnvironments/Environments/Materials/Rock1.mat
+    MeshReference:
+      m_assetGUID: 7e7c5a68504558b45bd9e9301d6c579b
+      m_cachedAsset: {fileID: 0}
+    MaterialReferences:
+    - m_assetGUID: a533ed8eb4eba624da8b36b62d2da8f8
+      m_cachedAsset: {fileID: 0}
   - Position: {x: 320.38, y: 0.8499999, z: 225.3}
     Rotation: {x: -0, y: 161.93825, z: -0}
     Scale: {x: 2.1000025, y: 2.1, z: 2.1000025}
-    MeshAddress: Assets/FantasyEnvironments/Environments/FBX/Rock1.fbx
-    MaterialAddresses:
-    - Assets/FantasyEnvironments/Environments/Materials/Rock1.mat
+    MeshReference:
+      m_assetGUID: 7e7c5a68504558b45bd9e9301d6c579b
+      m_cachedAsset: {fileID: 0}
+    MaterialReferences:
+    - m_assetGUID: a533ed8eb4eba624da8b36b62d2da8f8
+      m_cachedAsset: {fileID: 0}
   - Position: {x: 354, y: 1.5299997, z: 254.08}
     Rotation: {x: 0, y: 318.44534, z: 0}
     Scale: {x: 1, y: 1, z: 1}
-    MeshAddress: Assets/FantasyEnvironments/Environments/FBX/Rock1.fbx
-    MaterialAddresses:
-    - Assets/FantasyEnvironments/Environments/Materials/Rock1.mat
+    MeshReference:
+      m_assetGUID: 7e7c5a68504558b45bd9e9301d6c579b
+      m_cachedAsset: {fileID: 0}
+    MaterialReferences:
+    - m_assetGUID: a533ed8eb4eba624da8b36b62d2da8f8
+      m_cachedAsset: {fileID: 0}
   BoxColliders: []
   SphereColliders: []
   MeshColliders:
   - Position: {x: 282.21, y: 1.1199999, z: 232.69}
     Rotation: {x: -0, y: 63.802715, z: -0}
     Scale: {x: 2.1, y: 2.1, z: 2.1}
-    MeshAddress: Assets/FantasyEnvironments/Environments/FBX/Rock1.fbx
+    MeshReference:
+      m_assetGUID: 7e7c5a68504558b45bd9e9301d6c579b
+      m_cachedAsset: {fileID: 0}
   - Position: {x: 320.38, y: 0.8499999, z: 225.3}
     Rotation: {x: -0, y: 161.93825, z: -0}
     Scale: {x: 2.1000025, y: 2.1, z: 2.1000025}
-    MeshAddress: Assets/FantasyEnvironments/Environments/FBX/Rock1.fbx
+    MeshReference:
+      m_assetGUID: 7e7c5a68504558b45bd9e9301d6c579b
+      m_cachedAsset: {fileID: 0}
   - Position: {x: 354, y: 1.5299997, z: 254.08}
     Rotation: {x: 0, y: 318.44534, z: 0}
     Scale: {x: 1, y: 1, z: 1}
-    MeshAddress: Assets/FantasyEnvironments/Environments/FBX/Rock1.fbx
+    MeshReference:
+      m_assetGUID: 7e7c5a68504558b45bd9e9301d6c579b
+      m_cachedAsset: {fileID: 0}
   ChunkID: {x: 2, y: 0, z: 1}

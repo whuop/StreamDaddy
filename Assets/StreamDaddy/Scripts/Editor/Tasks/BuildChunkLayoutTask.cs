@@ -20,7 +20,7 @@ namespace StreamDaddy.Editor.Tasks
         
         public struct BuildChunkLayoutResult
         {
-            public List<string> ChunkLayoutNames;
+            public List<AssetReference> ChunkLayoutReferences;
             public string ChunkLayoutBundle;
             public List<string> AssetBundles;
         }
@@ -44,7 +44,7 @@ namespace StreamDaddy.Editor.Tasks
                 return false;
             }
             
-            result.ChunkLayoutNames = new List<string>();
+            result.ChunkLayoutReferences = new List<AssetReference>();
             result.AssetBundles = new List<string>();
 
             string chunkLayoutGroupName = worldName + "ChunkLayout";
@@ -56,11 +56,7 @@ namespace StreamDaddy.Editor.Tasks
             result.ChunkLayoutBundle = chunkLayoutGroupName;
             //  Create the addressables group for the chunk layout object
             var assetSettings = UnityEditor.AddressableAssets.AddressableAssetSettingsDefaultObject.Settings;
-
-            //  Create Addressables labels
-            assetSettings.AddLabel(chunkLayoutGroupName);
-            assetSettings.AddLabel(chunkAssetGroupName);
-
+            
             AddressableAssetGroup chunkLayoutGroup;
             AddressableAssetGroup chunkAssetsGroup;
             try
@@ -109,25 +105,24 @@ namespace StreamDaddy.Editor.Tasks
                     
                     string assetPath = AssetDatabase.GetAssetPath(mesh.GetInstanceID());
                     string assetGuid = AssetDatabase.AssetPathToGUID(assetPath);
+                    //  Add mesh to Assets Addressables group
                     var entry = assetSettings.CreateOrMoveEntry(assetGuid, chunkAssetsGroup);
-                    entry.SetLabel(chunkAssetGroupName, true);
-
+                    
                     Debug.Log(string.Format("Adding Mesh {0} with address {1}", mesh.name, entry.address));
 
-                    List<string> materialAddresses = new List<string>();
+                    List<AssetReference> materialReferences = new List<AssetReference>();
                     //  Export all materials associated with the Mesh asset to an addressable group.
                     foreach(var mat in materials)
                     {
                         string matPath = AssetDatabase.GetAssetPath(mat.GetInstanceID());
                         string matGuid = AssetDatabase.AssetPathToGUID(matPath);
+                        //  Add material to Assets Addressables group
                         var matEntry = assetSettings.CreateOrMoveEntry(matGuid, chunkAssetsGroup);
-                        materialAddresses.Add(matEntry.address);
-                        //  Set mesh label
-                        matEntry.SetLabel(chunkAssetGroupName, true);
+                        materialReferences.Add(new AssetReference(matEntry.guid));
 
                         Debug.Log(string.Format("Adding Material {0} with address {1}", mat.name, matEntry.address));
                     }
-                    var md = CreateMeshData(entry.address, materialAddresses.ToArray(), filter.transform.position, filter.transform.rotation.eulerAngles, filter.transform.lossyScale);
+                    var md = CreateMeshData(new AssetReference(entry.guid), materialReferences.ToArray(), filter.transform.position, filter.transform.rotation.eulerAngles, filter.transform.lossyScale);
                     meshData.Add(md);
                 }
 
@@ -153,17 +148,14 @@ namespace StreamDaddy.Editor.Tasks
                         string assetPath = AssetDatabase.GetAssetPath(meshCol.sharedMesh.GetInstanceID());
                         string assetGuid = AssetDatabase.AssetPathToGUID(assetPath);
                         var entry = assetSettings.CreateOrMoveEntry(assetGuid, chunkAssetsGroup);
-                        //  Set mesh label
-                        entry.SetLabel(chunkAssetGroupName, true);
 
-                        var md = CreateMeshColliderData(entry.address, meshCol.gameObject.transform.position, meshCol.gameObject.transform.rotation.eulerAngles, meshCol.gameObject.transform.lossyScale);
+                        var md = CreateMeshColliderData(new AssetReference(entry.guid), meshCol.gameObject.transform.position, meshCol.gameObject.transform.rotation.eulerAngles, meshCol.gameObject.transform.lossyScale);
                         meshColliderData.Add(md);
                     }
                 }
 
                 string chunkAssetName = "chunklayout_" + chunk.ChunkID.X + "_" + chunk.ChunkID.Y + "_" + chunk.ChunkID.Z;
-                result.ChunkLayoutNames.Add(chunkAssetName);
-
+                
                 //  Create the scriptable object for this chunk layout
                 var chunkLayout = CreateChunkLayout(meshData.ToArray(), boxColliderData.ToArray(), sphereColliderData.ToArray(), meshColliderData.ToArray(), chunk.ChunkID);
 
@@ -181,10 +173,12 @@ namespace StreamDaddy.Editor.Tasks
                 //  Add the chunk layout to the asset group for this world
                 string chunkDataPath = AssetDatabase.GetAssetPath(chunkLayout.GetInstanceID());
                 string guid = AssetDatabase.AssetPathToGUID(chunkDataPath);
-
+                
+                //  Add layout to the Addressables layout group
                 var assetEntry = assetSettings.CreateOrMoveEntry(guid, chunkLayoutGroup, false, true);
-                //  Set layout asset label
-                assetEntry.SetLabel(chunkLayoutGroupName, true);
+
+                //  Create a reference to the layout asset
+                result.ChunkLayoutReferences.Add(new AssetReference(guid));
             }
 
             EditorUtility.ClearProgressBar();
@@ -211,12 +205,12 @@ namespace StreamDaddy.Editor.Tasks
             AssetDatabaseUtils.CreateOrReplaceAsset(chunkLayout, path + chunkAssetName + ".asset");
         }
 
-        private MeshData CreateMeshData(string meshAddress, string[] materialAddresses, Vector3 position, Vector3 rotation, Vector3 scale)
+        private MeshData CreateMeshData(AssetReference meshReference, AssetReference[] materialReferences, Vector3 position, Vector3 rotation, Vector3 scale)
         {            
             MeshData data = new MeshData();
 
-            data.MeshAddress = meshAddress;
-            data.MaterialAddresses = materialAddresses;
+            data.MeshReference = meshReference;
+            data.MaterialReferences = materialReferences;
             data.Position = position;
             data.Rotation = rotation;
             data.Scale = scale;
@@ -250,11 +244,11 @@ namespace StreamDaddy.Editor.Tasks
             return data;
         }
 
-        private MeshColliderData CreateMeshColliderData(string meshAddress, Vector3 position, Vector3 rotation, Vector3 scale)
+        private MeshColliderData CreateMeshColliderData(AssetReference meshReference, Vector3 position, Vector3 rotation, Vector3 scale)
         {
             MeshColliderData data = new MeshColliderData();
 
-            data.MeshAddress = meshAddress;
+            data.MeshReference = meshReference;
             data.Position = position;
             data.Rotation = rotation;
             data.Scale = scale;

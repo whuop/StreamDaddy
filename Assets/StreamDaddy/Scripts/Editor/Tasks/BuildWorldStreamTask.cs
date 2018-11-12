@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 
 namespace StreamDaddy.Editor.Tasks
 {
@@ -11,7 +12,7 @@ namespace StreamDaddy.Editor.Tasks
     {
         public BuildWorldStreamTask() : base("Build World Stream") { }
 
-        public bool Execute(string worldName, string chunkLayoutBundle, Vector3Int chunkSize, List<string> chunkLayoutNames, List<string> assetBundles)
+        public bool Execute(string worldName, string chunkLayoutBundle, Vector3Int chunkSize, List<AssetReference> chunkLayoutReferences, List<string> assetBundles)
         {
             if (string.IsNullOrEmpty(chunkLayoutBundle))
             {
@@ -19,7 +20,7 @@ namespace StreamDaddy.Editor.Tasks
                 return false;
             }
 
-            if (chunkLayoutNames == null || chunkLayoutNames.Count == 0)
+            if (chunkLayoutReferences == null || chunkLayoutReferences.Count == 0)
             {
                 LogError("ChunkLayoutNames is null or has a count of 0. Task failed!");
                 return false;
@@ -38,7 +39,9 @@ namespace StreamDaddy.Editor.Tasks
             world.WorldName = worldName;
             world.AssetBundles = assetBundles.ToArray();
             world.ChunkLayoutBundle = chunkLayoutBundle;
-            world.ChunkNames = chunkLayoutNames.ToArray();
+
+            world.ChunkLayoutReferences = chunkLayoutReferences;
+            //world.ChunkNames = chunkLayoutNames.ToArray();
             world.ChunkSize = chunkSize;
 
             string path = EditorPaths.GetWorldStreamsFolder() + worldName + ".asset";

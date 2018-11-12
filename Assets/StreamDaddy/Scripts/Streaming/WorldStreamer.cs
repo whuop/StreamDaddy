@@ -1,8 +1,10 @@
 ﻿using StreamDaddy.AssetManagement;
 using StreamDaddy.Pooling;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 
 namespace StreamDaddy.Streaming
 {
@@ -36,10 +38,13 @@ namespace StreamDaddy.Streaming
         private List<AreaOfInterest> m_areasOfInterest = new List<AreaOfInterest>();
 
         public Vector3Int ChunkSize { get { return m_worldStream.ChunkSize; } }
-        
+
+        private AddressablesLoader m_addressablesLoader;
+
         private void Awake()
         {
             m_chunkManager = new ChunkManager(this, m_worldStream.ChunkSize);
+            m_addressablesLoader = new AddressablesLoader(OnFinishedLoadingLayouts);
         }
 
         private void OnDestroy()
@@ -49,16 +54,7 @@ namespace StreamDaddy.Streaming
         // Use this for initialization
         void Start()
         {
-            string[] bundles = new string[m_worldStream.AssetBundles.Length + 1];
-
-            for(int i = 0; i < m_worldStream.AssetBundles.Length; i++)
-            {
-                bundles[i] = m_worldStream.AssetBundles[i];
-            }
-            bundles[bundles.Length - 1] = m_worldStream.ChunkLayoutBundle;
-            
-            //m_bundleManager.LoadBundles(bundles);
-            Debug.Log("Loaded all asset bundles for world");
+            PrewarmWorld();
         }
 
         private void Update()
@@ -71,15 +67,21 @@ namespace StreamDaddy.Streaming
             m_numMeshColliders = GameObjectPool.CreatedMeshColliders;
         }
 
-        private void FinishedLoadingBundles()
-        {
-            StartCoroutine(CheckAreasOfInterest());
-        }
-
         private void PrewarmWorld()
         {
-            //AssetChunkData[] chunkData = m_assetManager.GetAllAssetChunkData();
-            //m_chunkManager.PreWarmChunks(chunkData, m_worldTerrains);
+            Debug.Log(string.Format("[StreamDaddy] Loading bundle {0}", m_worldStream.ChunkLayoutBundle));
+
+            m_addressablesLoader.LoadWorldLayouts(m_worldStream);
+            
+        }
+
+        private void OnFinishedLoadingLayouts(List<AssetChunkData> chunkLayouts)
+        {
+            Debug.Log("Finished loading layouts!!");
+            m_chunkManager.PreWarmChunks(chunkLayouts);
+
+            //  Start the area of interest check.
+            StartCoroutine(CheckAreasOfInterest());
         }
 
         private IEnumerator LoadAllChunks()
