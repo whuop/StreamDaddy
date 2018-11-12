@@ -3,15 +3,17 @@
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: cea6878e0e307ef4c9192c404c8b1d46, type: 3}
   m_Name: TestWorld
   m_EditorClassIdentifier: 
-  m_chunkLayoutBundle: TestWorld_chunklayout
+  m_worldName: TestWorld
+  m_chunkLayoutBundle: TestWorldChunkLayout
   m_chunkNames:
   - chunklayout_1_0_1
   - chunklayout_2_0_2

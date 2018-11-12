@@ -35,6 +35,7 @@ namespace StreamDaddy.Editor.Tasks
                 return false;
 
             WorldStream world = ScriptableObject.CreateInstance<WorldStream>();
+            world.WorldName = worldName;
             world.AssetBundles = assetBundles.ToArray();
             world.ChunkLayoutBundle = chunkLayoutBundle;
             world.ChunkNames = chunkLayoutNames.ToArray();

@@ -31,9 +31,6 @@ namespace StreamDaddy.Streaming
         [SerializeField]
         private int m_numMeshColliders;
 
-        private AssetBundleManager m_bundleManager;
-        private AssetManager m_assetManager;
-
         private ChunkManager m_chunkManager;
         
         private List<AreaOfInterest> m_areasOfInterest = new List<AreaOfInterest>();
@@ -42,16 +39,11 @@ namespace StreamDaddy.Streaming
         
         private void Awake()
         {
-            m_bundleManager = GetComponent<AssetBundleManager>();
-            m_assetManager = GetComponent<AssetManager>();
-            m_chunkManager = new ChunkManager(m_assetManager, m_worldStream.ChunkSize);
-
-            m_bundleManager.OnFinishedLoadingBundles += FinishedLoadingBundles;
+            m_chunkManager = new ChunkManager(this, m_worldStream.ChunkSize);
         }
 
         private void OnDestroy()
         {
-            m_bundleManager.OnFinishedLoadingBundles -= FinishedLoadingBundles;
         }
 
         // Use this for initialization
@@ -65,7 +57,7 @@ namespace StreamDaddy.Streaming
             }
             bundles[bundles.Length - 1] = m_worldStream.ChunkLayoutBundle;
             
-            m_bundleManager.LoadBundles(bundles);
+            //m_bundleManager.LoadBundles(bundles);
             Debug.Log("Loaded all asset bundles for world");
         }
 
@@ -86,8 +78,8 @@ namespace StreamDaddy.Streaming
 
         private void PrewarmWorld()
         {
-            AssetChunkData[] chunkData = m_assetManager.GetAllAssetChunkData();
-            m_chunkManager.PreWarmChunks(chunkData, m_worldTerrains);
+            //AssetChunkData[] chunkData = m_assetManager.GetAllAssetChunkData();
+            //m_chunkManager.PreWarmChunks(chunkData, m_worldTerrains);
         }
 
         private IEnumerator LoadAllChunks()
@@ -115,7 +107,7 @@ namespace StreamDaddy.Streaming
         private IEnumerator CheckAreasOfInterest()
         {
             Debug.Log("Booting up AOI check");
-            PrewarmWorld();
+            //PrewarmWorld();
             Vector3Int chunkSize = m_worldStream.ChunkSize;
             while (true)
             {

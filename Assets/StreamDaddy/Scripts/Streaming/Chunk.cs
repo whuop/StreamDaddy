@@ -48,7 +48,7 @@ namespace StreamDaddy.Streaming
             m_chunkID = id;
         }
 
-        public IEnumerator LoadChunk(AssetManager assetManager)
+        public IEnumerator LoadChunk()
         {
             m_chunkState = ChunkState.Loading;
 

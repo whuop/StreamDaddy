@@ -22,6 +22,7 @@ namespace StreamDaddy.Editor.Tasks
         {
             public List<string> ChunkLayoutNames;
             public string ChunkLayoutBundle;
+            public List<string> AssetBundles;
         }
         
         public BuildChunkLayoutTask() : base("Build Chunk Layouts")
@@ -44,30 +45,40 @@ namespace StreamDaddy.Editor.Tasks
             }
             
             result.ChunkLayoutNames = new List<string>();
+            result.AssetBundles = new List<string>();
+
+            string chunkLayoutGroupName = worldName + "ChunkLayout";
+            string chunkAssetGroupName = worldName + "ChunkAssets";
+
+            result.AssetBundles.Add(chunkAssetGroupName);
             
             //  The name of the asset bundle containing all the layouts for the chunks
-            result.ChunkLayoutBundle = worldName + "ChunkLayout";
+            result.ChunkLayoutBundle = chunkLayoutGroupName;
             //  Create the addressables group for the chunk layout object
             var assetSettings = UnityEditor.AddressableAssets.AddressableAssetSettingsDefaultObject.Settings;
+
+            //  Create Addressables labels
+            assetSettings.AddLabel(chunkLayoutGroupName);
+            assetSettings.AddLabel(chunkAssetGroupName);
 
             AddressableAssetGroup chunkLayoutGroup;
             AddressableAssetGroup chunkAssetsGroup;
             try
             {
-                chunkLayoutGroup = assetSettings.groups.Single(g => g.Name == worldName + "ChunkLayout");
+                chunkLayoutGroup = assetSettings.groups.Single(g => g.Name == chunkLayoutGroupName);
             }
             catch(Exception e)
             {
-                chunkLayoutGroup = assetSettings.CreateGroup(string.Format("{0}", result.ChunkLayoutBundle), false, false, true);
+                chunkLayoutGroup = assetSettings.CreateGroup(chunkLayoutGroupName, false, false, true);
             }
 
             try
             {
-                chunkAssetsGroup = assetSettings.groups.Single(g => g.Name == worldName + "ChunkAssets");
+                chunkAssetsGroup = assetSettings.groups.Single(g => g.Name == chunkAssetGroupName);
             }
             catch(Exception e)
             {
-                chunkAssetsGroup = assetSettings.CreateGroup(worldName + "ChunkAssets", false, false, true);
+                chunkAssetsGroup = assetSettings.CreateGroup(chunkAssetGroupName, false, false, true);
             }
             
             for (int i = 0; i < chunks.Count; i++)
@@ -99,6 +110,8 @@ namespace StreamDaddy.Editor.Tasks
                     string assetPath = AssetDatabase.GetAssetPath(mesh.GetInstanceID());
                     string assetGuid = AssetDatabase.AssetPathToGUID(assetPath);
                     var entry = assetSettings.CreateOrMoveEntry(assetGuid, chunkAssetsGroup);
+                    entry.SetLabel(chunkAssetGroupName, true);
+
                     Debug.Log(string.Format("Adding Mesh {0} with address {1}", mesh.name, entry.address));
 
                     List<string> materialAddresses = new List<string>();
@@ -109,6 +122,9 @@ namespace StreamDaddy.Editor.Tasks
                         string matGuid = AssetDatabase.AssetPathToGUID(matPath);
                         var matEntry = assetSettings.CreateOrMoveEntry(matGuid, chunkAssetsGroup);
                         materialAddresses.Add(matEntry.address);
+                        //  Set mesh label
+                        matEntry.SetLabel(chunkAssetGroupName, true);
+
                         Debug.Log(string.Format("Adding Material {0} with address {1}", mat.name, matEntry.address));
                     }
                     var md = CreateMeshData(entry.address, materialAddresses.ToArray(), filter.transform.position, filter.transform.rotation.eulerAngles, filter.transform.lossyScale);
@@ -137,6 +153,8 @@ namespace StreamDaddy.Editor.Tasks
                         string assetPath = AssetDatabase.GetAssetPath(meshCol.sharedMesh.GetInstanceID());
                         string assetGuid = AssetDatabase.AssetPathToGUID(assetPath);
                         var entry = assetSettings.CreateOrMoveEntry(assetGuid, chunkAssetsGroup);
+                        //  Set mesh label
+                        entry.SetLabel(chunkAssetGroupName, true);
 
                         var md = CreateMeshColliderData(entry.address, meshCol.gameObject.transform.position, meshCol.gameObject.transform.rotation.eulerAngles, meshCol.gameObject.transform.lossyScale);
                         meshColliderData.Add(md);
@@ -165,6 +183,8 @@ namespace StreamDaddy.Editor.Tasks
                 string guid = AssetDatabase.AssetPathToGUID(chunkDataPath);
 
                 var assetEntry = assetSettings.CreateOrMoveEntry(guid, chunkLayoutGroup, false, true);
+                //  Set layout asset label
+                assetEntry.SetLabel(chunkLayoutGroupName, true);
             }
 
             EditorUtility.ClearProgressBar();

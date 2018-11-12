@@ -84,7 +84,6 @@ namespace StreamDaddy.Editor
                 m_serializedConfig.ApplyModifiedProperties();
             }
 
-            
 
             if (GUILayout.Button("Split Terrain"))
             {
@@ -120,9 +119,7 @@ namespace StreamDaddy.Editor
 
             if (GUILayout.Button("Export World Stream"))
             {
-                List<string> assetBundles = new List<string>();
-                assetBundles.Add(m_worldNameProp.stringValue + "_chunkassets");
-                new BuildWorldStreamTask().Execute(m_worldNameProp.stringValue, m_chunkLayoutResult.ChunkLayoutBundle, m_chunkSizeProp.vector3IntValue, m_chunkLayoutResult.ChunkLayoutNames, assetBundles);
+                new BuildWorldStreamTask().Execute(m_worldNameProp.stringValue, m_chunkLayoutResult.ChunkLayoutBundle, m_chunkSizeProp.vector3IntValue, m_chunkLayoutResult.ChunkLayoutNames, m_chunkLayoutResult.AssetBundles);
             }
 
             if (GUILayout.Button("Construct Stream Scene for World"))

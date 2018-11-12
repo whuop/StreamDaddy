@@ -13,21 +13,6 @@ MonoBehaviour:
   m_Name: chunklayout_1_0_2
   m_EditorClassIdentifier: 
   Meshes:
-  - Position: {x: 239.97679, y: 4.292594, z: 346.46234}
-    Rotation: {x: -0, y: -0, z: -0}
-    Scale: {x: 1, y: 1, z: 1}
-    MeshAddress: Assets/Mega Fantasy Props Pack/FBX/bed.fbx
-    MaterialAddresses:
-    - Assets/Mega Fantasy Props Pack/Materials/wood_1_d.mat
-    - Assets/Mega Fantasy Props Pack/Materials/fabric_2_d.mat
-  - Position: {x: 228.33154, y: 2.771051, z: 301.13797}
-    Rotation: {x: -0, y: -0, z: -0}
-    Scale: {x: 1, y: 1, z: 1}
-    MeshAddress: Assets/Mega Fantasy Props Pack/FBX/barrel.001.fbx
-    MaterialAddresses:
-    - Assets/Mega Fantasy Props Pack/Materials/wooden-boards-texture_d.mat
-    - Assets/Mega Fantasy Props Pack/Materials/timber_1_fixed_d.mat
-    - Assets/Mega Fantasy Props Pack/Materials/dark_iron.mat
   - Position: {x: 227.62, y: 0.8699999, z: 274.6}
     Rotation: {x: 0, y: 318.44534, z: 0}
     Scale: {x: 1, y: 1, z: 1}

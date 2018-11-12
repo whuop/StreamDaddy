@@ -7,6 +7,10 @@ namespace StreamDaddy.Streaming
     public class WorldStream : ScriptableObject
     {
         [SerializeField]
+        private string m_worldName;
+        public string WorldName { get { return m_worldName; } set { m_worldName = value; } }
+
+        [SerializeField]
         private string m_chunkLayoutBundle;
         public string ChunkLayoutBundle { get { return m_chunkLayoutBundle; } set { m_chunkLayoutBundle = value; } }
 

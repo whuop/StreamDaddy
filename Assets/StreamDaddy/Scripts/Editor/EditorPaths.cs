@@ -20,7 +20,7 @@ namespace StreamDaddy.Editor
         private static string RELATIVE_TERRAIN_MESH_DIRECTORY_PATH = "TerrainMesh/";
         private static string RELATIVE_TERRAIN_MESH_SPLAT_PATH = "TerrainMesh/Splats/";
 
-        private static string WORLD_STREAMS_DIRECTORY_PATH = "Streams/";
+        private static string WORLD_STREAMS_DIRECTORY_PATH = "StreamDaddy/Streams/";
 
         private static string APPLICATION_DATAPATH = Application.dataPath.Replace("Assets", string.Empty);
 
@@ -61,7 +61,7 @@ namespace StreamDaddy.Editor
 
         public static string GetWorldStreamsFolder()
         {
-            string path = WORLD_STREAMS_DIRECTORY_PATH;
+            string path =  WORLD_STREAMS_DIRECTORY_PATH;
             PathUtils.EnsurePathExists(Application.dataPath + "/" + path);
             return "Assets/" + path;
         }

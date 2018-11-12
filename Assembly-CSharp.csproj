@@ -61,13 +61,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\StreamDaddy\Scripts\AssetManagement\AssetBundleManager.cs" />
     <Compile Include="Assets\StreamDaddy\Scripts\AssetManagement\AssetChunkData.cs" />
-    <Compile Include="Assets\StreamDaddy\Scripts\AssetManagement\AssetContainer.cs" />
-    <Compile Include="Assets\StreamDaddy\Scripts\AssetManagement\AssetManager.cs" />
-    <Compile Include="Assets\StreamDaddy\Scripts\AssetManagement\IAssetContainer.cs" />
     <Compile Include="Assets\StreamDaddy\Scripts\Chunking\ChunkID.cs" />
-    <Compile Include="Assets\StreamDaddy\Scripts\Chunking\ChunkIDDelta.cs" />
     <Compile Include="Assets\StreamDaddy\Scripts\Pooling\GameObjectPool.cs" />
     <Compile Include="Assets\StreamDaddy\Scripts\Streaming\AreaOfInterest.cs" />
     <Compile Include="Assets\StreamDaddy\Scripts\Streaming\Chunk.cs" />
@@ -78,28 +73,28 @@
     <None Include="Assets\FantasyEnvironments\Environments\README.txt" />
     <None Include="Assets\StreamDaddy\TerrainToMesh\Scripts\Shaders\MeshTerrain.shader" />
     <Reference Include="Unity.CacheServer.Client.Editor">
-      <HintPath>E:/Repos/StreamDaddy/Library/ScriptAssemblies/Unity.CacheServer.Client.Editor.dll</HintPath>
+      <HintPath>D:/Repos/StreamDaddy/Library/ScriptAssemblies/Unity.CacheServer.Client.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.ScriptableBuildPipeline.Editor">
-      <HintPath>E:/Repos/StreamDaddy/Library/ScriptAssemblies/Unity.ScriptableBuildPipeline.Editor.dll</HintPath>
+      <HintPath>D:/Repos/StreamDaddy/Library/ScriptAssemblies/Unity.ScriptableBuildPipeline.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.ResourceManager">
-      <HintPath>E:/Repos/StreamDaddy/Library/ScriptAssemblies/Unity.ResourceManager.dll</HintPath>
+      <HintPath>D:/Repos/StreamDaddy/Library/ScriptAssemblies/Unity.ResourceManager.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Analytics.Android.Editor">
-      <HintPath>E:/Repos/StreamDaddy/Library/ScriptAssemblies/Unity.Analytics.Android.Editor.dll</HintPath>
+      <HintPath>D:/Repos/StreamDaddy/Library/ScriptAssemblies/Unity.Analytics.Android.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.PackageManagerUI.Editor">
-      <HintPath>E:/Repos/StreamDaddy/Library/ScriptAssemblies/Unity.PackageManagerUI.Editor.dll</HintPath>
+      <HintPath>D:/Repos/StreamDaddy/Library/ScriptAssemblies/Unity.PackageManagerUI.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Addressables.Editor">
-      <HintPath>E:/Repos/StreamDaddy/Library/ScriptAssemblies/Unity.Addressables.Editor.dll</HintPath>
+      <HintPath>D:/Repos/StreamDaddy/Library/ScriptAssemblies/Unity.Addressables.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.AssetBundleBrowser.Editor">
-      <HintPath>E:/Repos/StreamDaddy/Library/ScriptAssemblies/Unity.AssetBundleBrowser.Editor.dll</HintPath>
+      <HintPath>D:/Repos/StreamDaddy/Library/ScriptAssemblies/Unity.AssetBundleBrowser.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Addressables">
-      <HintPath>E:/Repos/StreamDaddy/Library/ScriptAssemblies/Unity.Addressables.dll</HintPath>
+      <HintPath>D:/Repos/StreamDaddy/Library/ScriptAssemblies/Unity.Addressables.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.AIModule">
       <HintPath>C:/Program Files/Unity/Hub/Editor/2018.3.0b9/Editor/Data/Managed/UnityEngine/UnityEngine.AIModule.dll</HintPath>
@@ -303,16 +298,16 @@
       <HintPath>C:/Program Files/Unity/Hub/Editor/2018.3.0b9/Editor/Data/UnityExtensions/Unity/UnitySpatialTracking/RuntimeEditor/UnityEngine.SpatialTracking.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Analytics.Editor">
-      <HintPath>E:/Repos/StreamDaddy/Library/PackageCache/com.unity.analytics@3.0.9/Unity.Analytics.Editor.dll</HintPath>
+      <HintPath>D:/Repos/StreamDaddy/Library/PackageCache/com.unity.analytics@3.0.9/Unity.Analytics.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Analytics.StandardEvents">
-      <HintPath>E:/Repos/StreamDaddy/Library/PackageCache/com.unity.analytics@3.0.9/Unity.Analytics.StandardEvents.dll</HintPath>
+      <HintPath>D:/Repos/StreamDaddy/Library/PackageCache/com.unity.analytics@3.0.9/Unity.Analytics.StandardEvents.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Analytics.Tracker">
-      <HintPath>E:/Repos/StreamDaddy/Library/PackageCache/com.unity.analytics@3.0.9/Unity.Analytics.Tracker.dll</HintPath>
+      <HintPath>D:/Repos/StreamDaddy/Library/PackageCache/com.unity.analytics@3.0.9/Unity.Analytics.Tracker.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Analytics">
-      <HintPath>E:/Repos/StreamDaddy/Library/PackageCache/com.unity.analytics@3.0.9/Android/Unity.Analytics.dll</HintPath>
+      <HintPath>D:/Repos/StreamDaddy/Library/PackageCache/com.unity.analytics@3.0.9/Android/Unity.Analytics.dll</HintPath>
     </Reference>
     <Reference Include="mscorlib">
       <HintPath>C:/Program Files/Unity/Hub/Editor/2018.3.0b9/Editor/Data/MonoBleedingEdge/lib/mono/unity/mscorlib.dll</HintPath>

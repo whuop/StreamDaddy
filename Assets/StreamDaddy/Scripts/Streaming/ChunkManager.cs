@@ -9,7 +9,6 @@ namespace StreamDaddy.Streaming
     public class ChunkManager
     {
         private Dictionary<ChunkID, Chunk> m_chunks = new Dictionary<ChunkID, Chunk>();
-        private AssetManager m_assetManager;
         private MonoBehaviour m_coroutineStarter;
 
         private List<Chunk> m_unloadList = new List<Chunk>();
@@ -22,11 +21,10 @@ namespace StreamDaddy.Streaming
             get { return m_chunks.Values; }
         }
 
-        public ChunkManager(AssetManager assetManager, Vector3Int chunkSize)
+        public ChunkManager(MonoBehaviour coroutineStarter, Vector3Int chunkSize)
         {
             m_chunkSize = chunkSize;
-            m_assetManager = assetManager;
-            m_coroutineStarter = assetManager;
+            m_coroutineStarter = coroutineStarter;
             GameObjectPool.PreWarm(3500, 2500, 1500, 1500);
         }
 
@@ -44,7 +42,7 @@ namespace StreamDaddy.Streaming
                 if (chunk.State == ChunkState.Unloaded)
                 {
                     m_loadList.Remove(chunk);
-                    m_coroutineStarter.StartCoroutine(chunk.LoadChunk(m_assetManager));
+                    m_coroutineStarter.StartCoroutine(chunk.LoadChunk());
                 }
             }
             //  Loop through all chunks that should be unloaded and make sure they are.
