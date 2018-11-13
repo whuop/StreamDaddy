@@ -33,6 +33,8 @@ namespace StreamDaddy.Editor
         private SplitTerrainTask.SplitTerrainResult m_splitTerrainResult;
         private BuildChunkLayoutTask.BuildChunkLayoutResult m_chunkLayoutResult;
 
+        public Mesh m_mesh;
+
         private void OnDestroy()
         {
             SceneView.onSceneGUIDelegate -= this.OnSceneGUI;
@@ -78,12 +80,19 @@ namespace StreamDaddy.Editor
             EditorGUILayout.PropertyField(m_chunkSizeProp);
             m_terrainToSplit = (Terrain)EditorGUILayout.ObjectField("Terrain to split", m_terrainToSplit, typeof(Terrain), true);
 
+            m_mesh = (Mesh)EditorGUILayout.ObjectField("Mesh to LOD", m_mesh, typeof(Mesh), true);
+
             if (EditorGUI.EndChangeCheck())
             {
                 //  Apply changes to the serialized config, making it save changes. 
                 m_serializedConfig.ApplyModifiedProperties();
             }
 
+
+            if (GUILayout.Button("Generate LOD 1"))
+            {
+                new GenerateMeshLodsTask().GenerateLOD(m_mesh, 1);
+            }
 
             if (GUILayout.Button("Split Terrain"))
             {
