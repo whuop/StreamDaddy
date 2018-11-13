@@ -49,41 +49,6 @@ namespace StreamDaddy.Streaming
             m_chunkID = id;
         }
 
-        public void PrewarmChunk()
-        {
-            foreach(var meshData in m_chunkData.Meshes)
-            {
-                var operation = meshData.MeshReference.LoadAsset<GameObject>();
-                operation.Completed += FinishedLoadingMesh;/*(UnityEngine.ResourceManagement.IAsyncOperation < Mesh > obj) => 
-                {
-                    List<Material> materials = new List<Material>();
-
-                    renderable.Mesh = obj.Result;
-                    if (obj.Result == null)
-                        Debug.Log("FAILED LOADING MESH!!!");
-
-                    for(int i = 0; i < meshData.MaterialReferences.Length; i++)
-                    {
-                        var matOperation = meshData.MaterialReferences[i].LoadAsset<Material>();
-                        matOperation.Completed += (UnityEngine.ResourceManagement.IAsyncOperation<Material> matObj) =>
-                        {
-                            materials.Add(matObj.Result);
-                        };
-                    }
-                };*/
-            }
-
-            foreach(var meshColliderData in m_chunkData.MeshColliders)
-            {
-                var operation = meshColliderData.MeshReference.LoadAsset<Mesh>();
-            }
-        }
-
-        private void FinishedLoadingMesh(UnityEngine.ResourceManagement.IAsyncOperation<GameObject> obj)
-        {
-            Debug.Log("Finished loading mesh!");
-        }
-
         public IEnumerator LoadChunk()
         {
             m_chunkState = ChunkState.Loading;
@@ -102,28 +67,16 @@ namespace StreamDaddy.Streaming
                     Vector3 position = meshdata.Position;
                     Vector3 rotation = meshdata.Rotation;
                     Vector3 scale = meshdata.Scale;
-                    
-                    
-                    //var operation = meshdata.MeshReference.LoadAsset<Mesh>();
 
-                    //Mesh mesh = operation.Result;
-
-
-                    /*Mesh mesh = assetManager.GetMeshAsset(meshName);
-                    Material[] materials = new Material[materialNames.Length];
-
-                    for (int j = 0; j < materialNames.Length; j++)
+                    var mesh = AddressablesLoader.GetMesh(meshdata.MeshReference.RuntimeKey);
+                    Material[] materials = new Material[meshdata.MaterialReferences.Length];
+                    for(int j = 0; j < meshdata.MaterialReferences.Length; j++)
                     {
-                        materials[j] = assetManager.GetMaterialAsset(materialNames[j]);
+                        materials[j] = AddressablesLoader.GetMaterial(meshdata.MaterialReferences[j].RuntimeKey);
                     }
 
                     Renderable renderer = GameObjectPool.GetRenderer(mesh, materials, position, rotation, scale);
-                    */
-
-
-                    //  Add the renderable to the list of renderables that have been spawned in this chunk
-                    //  so that we can easily unload them later.
-                    // m_renderers.Add(renderer);
+                    m_renderers.Add(renderer);
                 }
 
                 for (int i = 0; i < m_chunkData.BoxColliders.Length; i++)
@@ -149,15 +102,14 @@ namespace StreamDaddy.Streaming
                 {
                     yield return new WaitForEndOfFrame();
                     MeshColliderData data = m_chunkData.MeshColliders[i];
-
-                    //string meshName = data.MeshName;
+                    
                     Vector3 position = data.Position;
                     Vector3 rotation = data.Rotation;
                     Vector3 scale = data.Scale;
 
-                    //Mesh mesh = assetManager.GetMeshAsset(meshName);
-                    //MeshCollideable collideable = GameObjectPool.GetMeshCollider(position, rotation, scale, mesh);
-                    //m_meshColliders.Add(collideable);
+                    Mesh mesh = AddressablesLoader.GetMesh(data.MeshReference.RuntimeKey);
+                    MeshCollideable collideable = GameObjectPool.GetMeshCollider(position, rotation, scale, mesh);
+                    m_meshColliders.Add(collideable);
                 }
             }
             
@@ -183,7 +135,7 @@ namespace StreamDaddy.Streaming
                 {
                     GameObjectPool.ReturnBoxCollideable(m_boxColliders[i]);
                 }
-
+                
                 for (int i = 0; i < m_sphereColliders.Count; i++)
                 {
                     GameObjectPool.ReturnSphereCollideable(m_sphereColliders[i]);

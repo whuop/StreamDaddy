@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: TestWorld
   m_EditorClassIdentifier: 
   m_worldName: TestWorld
+  m_chunkSize: {x: 128, y: 128, z: 128}
   m_chunkLayoutBundle: TestWorldChunkLayout
   m_chunkLayoutReferences: []
   ChunkLayoutReferences:
@@ -32,6 +33,5 @@ MonoBehaviour:
     m_cachedAsset: {fileID: 0}
   - m_assetGUID: 47b20a24f2718f74faf701cc6c8db1a9
     m_cachedAsset: {fileID: 0}
-  m_chunkSize: {x: 128, y: 128, z: 128}
   m_assetBundles:
   - TestWorldChunkAssets

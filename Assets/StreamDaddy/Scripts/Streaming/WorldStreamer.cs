@@ -38,13 +38,11 @@ namespace StreamDaddy.Streaming
         private List<AreaOfInterest> m_areasOfInterest = new List<AreaOfInterest>();
 
         public Vector3Int ChunkSize { get { return m_worldStream.ChunkSize; } }
-
-        private AddressablesLoader m_addressablesLoader;
-
+        
         private void Awake()
         {
             m_chunkManager = new ChunkManager(this, m_worldStream.ChunkSize);
-            m_addressablesLoader = new AddressablesLoader(OnFinishedLoadingLayouts);
+            AddressablesLoader.Initialize(OnFinishedLoadingLayouts);
         }
 
         private void OnDestroy()
@@ -71,7 +69,7 @@ namespace StreamDaddy.Streaming
         {
             Debug.Log(string.Format("[StreamDaddy] Loading bundle {0}", m_worldStream.ChunkLayoutBundle));
 
-            m_addressablesLoader.LoadWorldLayouts(m_worldStream);
+            AddressablesLoader.LoadWorldLayouts(m_worldStream);
             
         }
 
@@ -79,6 +77,11 @@ namespace StreamDaddy.Streaming
         {
             Debug.Log("Finished loading layouts!!");
             m_chunkManager.PreWarmChunks(chunkLayouts);
+
+            for(int i = 0; i < chunkLayouts.Count; i++)
+            {
+                AddressablesLoader.LoadChunkAssets(chunkLayouts[i]);
+            }
 
             //  Start the area of interest check.
             StartCoroutine(CheckAreasOfInterest());

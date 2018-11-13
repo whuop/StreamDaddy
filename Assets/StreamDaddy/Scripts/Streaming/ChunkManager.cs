@@ -66,7 +66,7 @@ namespace StreamDaddy.Streaming
 
                 AddChunk(chunkID, data);
                 //  Prewarm chunk making all assets load.
-                m_chunks[chunkID].PrewarmChunk();
+                
             }
 
             //Inject terrains into the chunks.
