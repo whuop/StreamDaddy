@@ -61,6 +61,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\StreamDaddy\Scripts\Editor\AssetBundleUtils.cs" />
+    <Compile Include="Assets\StreamDaddy\Scripts\Editor\AssetImporters\MeshLODImporter.cs" />
     <Compile Include="Assets\StreamDaddy\Scripts\Editor\Chunking\EditorChunk.cs" />
     <Compile Include="Assets\StreamDaddy\Scripts\Editor\Chunking\EditorChunkManager.cs" />
     <Compile Include="Assets\StreamDaddy\Scripts\Editor\Configs\Attributes\ConfigPathAttribute.cs" />
