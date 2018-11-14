@@ -89,9 +89,9 @@ namespace StreamDaddy.Editor
             }
 
 
-            if (GUILayout.Button("Generate LOD 1"))
+            if (GUILayout.Button("Generate LODs"))
             {
-                new GenerateMeshLodsTask().GenerateLOD(m_mesh, 1);
+                new GenerateMeshLodsTask().Execute(m_worldNameProp.stringValue, m_chunkManager.Chunks);
             }
 
             if (GUILayout.Button("Split Terrain"))
