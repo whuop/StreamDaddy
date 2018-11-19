@@ -60,7 +60,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\StreamDaddy\Scripts\Editor\AssetBundleUtils.cs" />
     <Compile Include="Assets\StreamDaddy\Scripts\Editor\AssetImporters\MeshLODImporter.cs" />
     <Compile Include="Assets\StreamDaddy\Scripts\Editor\Chunking\EditorChunk.cs" />
     <Compile Include="Assets\StreamDaddy\Scripts\Editor\Chunking\EditorChunkManager.cs" />
@@ -77,7 +76,6 @@
     <Compile Include="Assets\StreamDaddy\Scripts\Editor\Tasks\GenerateMeshLodsTask.cs" />
     <Compile Include="Assets\StreamDaddy\Scripts\Editor\Tasks\SplitTerrainTask.cs" />
     <Compile Include="Assets\StreamDaddy\Scripts\Editor\Tasks\Task.cs" />
-    <Compile Include="Assets\StreamDaddy\Scripts\Editor\Tasks\TaskArguments.cs" />
     <Compile Include="Assets\StreamDaddy\Scripts\Editor\Tasks\TaskChain.cs" />
     <Compile Include="Assets\StreamDaddy\Scripts\Editor\Tasks\TerrainToMeshTask.cs" />
     <Compile Include="Assets\StreamDaddy\Scripts\Editor\TerrainTools\TerrainSplitter.cs" />

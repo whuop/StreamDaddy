@@ -5,6 +5,7 @@ using UnityEditor;
 using UnityEngine;
 using StreamDaddy.Editor.Tasks;
 using UnityEditor.SceneManagement;
+using static StreamDaddy.Editor.Tasks.GenerateMeshLodsTask;
 
 namespace StreamDaddy.Editor
 {
@@ -24,6 +25,7 @@ namespace StreamDaddy.Editor
         private SerializedObject m_serializedConfig;
         private SerializedProperty m_chunkSizeProp;
         private SerializedProperty m_worldNameProp;
+        private LodFormat m_lodFormat;
 
         private Terrain m_terrainToSplit;
         private Material m_terrainMeshMaterial;
@@ -78,6 +80,7 @@ namespace StreamDaddy.Editor
 
             EditorGUILayout.PropertyField(m_worldNameProp);
             EditorGUILayout.PropertyField(m_chunkSizeProp);
+            m_lodFormat = (LodFormat)EditorGUILayout.EnumPopup("LOD output format", m_lodFormat);
             m_terrainToSplit = (Terrain)EditorGUILayout.ObjectField("Terrain to split", m_terrainToSplit, typeof(Terrain), true);
 
             m_mesh = (Mesh)EditorGUILayout.ObjectField("Mesh to LOD", m_mesh, typeof(Mesh), true);
@@ -87,13 +90,7 @@ namespace StreamDaddy.Editor
                 //  Apply changes to the serialized config, making it save changes. 
                 m_serializedConfig.ApplyModifiedProperties();
             }
-
-
-            if (GUILayout.Button("Generate LODs"))
-            {
-                new GenerateMeshLodsTask().Execute(m_worldNameProp.stringValue, m_chunkManager.Chunks);
-            }
-
+            
             if (GUILayout.Button("Split Terrain"))
             {
                 m_splitTerrainResult = new SplitTerrainTask.SplitTerrainResult();
@@ -114,17 +111,17 @@ namespace StreamDaddy.Editor
                 new ChunkWorldTask().Execute(m_chunkManager);
                 GUI.changed = true;
             }
-            
+
+            if (GUILayout.Button("Generate LODs"))
+            {
+                new GenerateMeshLodsTask().Execute(m_worldNameProp.stringValue, m_lodFormat, m_chunkManager.Chunks);
+            }
+
             if (GUILayout.Button("Export Chunk Layouts"))
             {
                 m_chunkLayoutResult = new BuildChunkLayoutTask.BuildChunkLayoutResult();
-                new BuildChunkLayoutTask().Execute(m_worldNameProp.stringValue, m_chunkManager.Chunks, ref m_chunkLayoutResult);
+                new BuildChunkLayoutTask().Execute(m_worldNameProp.stringValue, m_lodFormat, m_chunkManager.Chunks, ref m_chunkLayoutResult);
             }
-
-            /*if (GUILayout.Button("Export Assets"))
-            {
-                new ExportChunkAssetsTask().Execute(m_worldNameProp.stringValue, m_chunkManager.Chunks);
-            }*/
 
             if (GUILayout.Button("Export World Stream"))
             {
@@ -146,9 +143,45 @@ namespace StreamDaddy.Editor
                 new ChunkWorldTask().Execute(m_chunkManager);
                 GUI.changed = true;
 
+                //  Generate LODs
+                new GenerateMeshLodsTask().Execute(m_worldNameProp.stringValue, m_lodFormat, m_chunkManager.Chunks);
+
                 //  Export chunk layouts
                 m_chunkLayoutResult = new BuildChunkLayoutTask.BuildChunkLayoutResult();
-                new BuildChunkLayoutTask().Execute(m_worldNameProp.stringValue, m_chunkManager.Chunks, ref m_chunkLayoutResult);
+                new BuildChunkLayoutTask().Execute(m_worldNameProp.stringValue, m_lodFormat, m_chunkManager.Chunks, ref m_chunkLayoutResult);
+
+                //  Export Assets
+                new ExportChunkAssetsTask().Execute(m_worldNameProp.stringValue, m_chunkManager.Chunks);
+
+                //  Export WorldStream scriptable object
+                List<string> assetBundles = new List<string>();
+                assetBundles.Add(m_worldNameProp.stringValue + "_chunkassets");
+                new BuildWorldStreamTask().Execute(m_worldNameProp.stringValue, m_chunkLayoutResult.ChunkLayoutBundle, m_chunkSizeProp.vector3IntValue, m_chunkLayoutResult.ChunkLayoutReferences, assetBundles);
+
+                //  Construct the stream scene
+                List<Terrain> terrainsToMove = new List<Terrain>(GameObject.FindObjectsOfType<Terrain>());
+                terrainsToMove.Remove(m_terrainToSplit);
+
+                new CreateStreamedSceneTask().Execute(m_worldNameProp.stringValue, terrainsToMove);
+            }
+
+            if (GUILayout.Button("Full Export (including terrain split)"))
+            {
+                //  Split terrain into chunks
+                m_splitTerrainResult = new SplitTerrainTask.SplitTerrainResult();
+                new SplitTerrainTask().Execute(m_worldNameProp.stringValue, m_terrainToSplit, m_chunkSizeProp.vector3IntValue, ref m_splitTerrainResult);
+
+                //  Chunk World
+                m_chunkManager = new EditorChunkManager(m_chunkSizeProp.vector3IntValue);
+                new ChunkWorldTask().Execute(m_chunkManager);
+                GUI.changed = true;
+
+                //  Generate LODs
+                new GenerateMeshLodsTask().Execute(m_worldNameProp.stringValue, m_lodFormat, m_chunkManager.Chunks);
+
+                //  Export chunk layouts
+                m_chunkLayoutResult = new BuildChunkLayoutTask.BuildChunkLayoutResult();
+                new BuildChunkLayoutTask().Execute(m_worldNameProp.stringValue, m_lodFormat, m_chunkManager.Chunks, ref m_chunkLayoutResult);
 
                 //  Export Assets
                 new ExportChunkAssetsTask().Execute(m_worldNameProp.stringValue, m_chunkManager.Chunks);

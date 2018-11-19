@@ -17,12 +17,39 @@ namespace StreamDaddy.Editor.Tasks
             { 3, 25 } // 25%
         };
 
+        public enum LodFormat : int
+        {
+            FBX_2013_Binary     = 0,
+            FBX_2013_ASCII      = 1,
+            DAE                 = 2,
+            FBX_6_0_Binary      = 3,
+            FBX_6_0_ASCII       = 4,
+            OBJ                 = 5,
+            DXF                 = 6
+        }
+
+        private static Dictionary<LodFormat, string> LOD_FORMAT = new Dictionary<LodFormat, string>
+        {
+            { LodFormat.FBX_2013_Binary, ".fbx" },  // FBX_2013_binary
+            { LodFormat.FBX_2013_ASCII, ".fbx" },   // FBX_2013_ASCII
+            { LodFormat.DAE, ".dae" },              // DAE
+            { LodFormat.FBX_6_0_Binary, ".fbx" },   // FBX_6.0_Binary
+            { LodFormat.FBX_6_0_ASCII, ".fbx" },    // FBX_6.0_ASCII
+            { LodFormat.OBJ, ".obj" },              // OBJ
+            { LodFormat.DXF, ".dxf" }               //  DXF
+        };
+
+        public static string GetLodFormat(LodFormat format)
+        {
+            return LOD_FORMAT[format];
+        }
+
         public GenerateMeshLodsTask() : base("Generate Mesh LODs")
         {
 
         }
 
-        public bool Execute(string worldName, List<EditorChunk> chunks)
+        public bool Execute(string worldName, LodFormat lodFormat, List<EditorChunk> chunks)
         {
             HashSet<int> processedIds = new HashSet<int>();
 
@@ -43,10 +70,10 @@ namespace StreamDaddy.Editor.Tasks
                         
                         //  For some reason mle.exe is better at creating less verts when creating a 100% lod first and 
                         //  using that to create the other lods
-                        var mesh = GenerateLOD(filter.sharedMesh, 0, outputPath);
-                        GenerateLOD(mesh, 1, outputPath);
-                        GenerateLOD(mesh, 2, outputPath);
-                        GenerateLOD(mesh, 3, outputPath);
+                        var mesh = GenerateLOD(filter.sharedMesh, lodFormat, 0, outputPath);
+                        GenerateLOD(mesh, lodFormat, 1, outputPath);
+                        GenerateLOD(mesh, lodFormat, 2, outputPath);
+                        GenerateLOD(mesh, lodFormat, 3, outputPath);
 
                         AssetDatabase.StartAssetEditing();
                         //  Remove the LOD 0, it's just temporary trash
@@ -56,33 +83,6 @@ namespace StreamDaddy.Editor.Tasks
                         
                         processedIds.Add(filter.sharedMesh.GetInstanceID());
                     }
-
-                    /*foreach (var collider in chunk.Colliders)
-                    {
-                        MeshCollider col = collider as MeshCollider;
-                        if (col != null)
-                        {
-                            if (processedIds.Contains(col.sharedMesh.GetInstanceID()))
-                                continue;
-
-                            string baseAssetPath = AssetDatabase.GetAssetPath(col.sharedMesh.GetInstanceID());
-                            string outputPath = "GeneratedLODS/" + baseAssetPath.Replace("Assets/", "");
-
-                            //  remove the file extension from the output.
-                            outputPath = RemoveFileExtension(outputPath);
-
-                            //  For some reason mle.exe is better at creating less verts when creating a 100% lod first and 
-                            //  using that to create the other lods
-                            var mesh = GenerateLOD(col.sharedMesh, 0, outputPath);
-                            //GenerateLOD(mesh, 0, outputPath);
-                            //GenerateLOD(mesh, 0, outputPath);
-                            //GenerateLOD(mesh, 0, outputPath);
-
-
-
-                            processedIds.Add(col.sharedMesh.GetInstanceID());
-                        }
-                    }*/
                 }
             }
             catch(Exception e)
@@ -94,13 +94,16 @@ namespace StreamDaddy.Editor.Tasks
             return true;
         }
 
-        public Mesh GenerateLOD(Mesh mesh, int lodLevel, string outputPath)
+        public Mesh GenerateLOD(Mesh mesh, LodFormat lodFormat, int lodLevel, string outputPath)
         {
             string path = AssetDatabase.GetAssetPath(mesh);
             string meshName = mesh.name;
+            string lodFormatName = GetLodFormat(lodFormat);
+            string inputMeshFileFormat = "." + ExtractFileFormatFromPath(path);
 
             LogInfo(string.Format("Mesh Path is {0}", path));
             LogInfo(string.Format("Mesh Name is {0}", meshName));
+            LogInfo(string.Format("Mesh format is {0}", inputMeshFileFormat));
 
             string inputPath = path.Replace("Assets/", "");
             inputPath = RemoveFileExtension(inputPath);
@@ -113,8 +116,8 @@ namespace StreamDaddy.Editor.Tasks
             // Add the LOD level to the output path, so that it doesn't override any of the other LOD levels for this LOD.
             outputPath += "_LOD" + lodLevel;
             
-            string globalInputPath = Application.dataPath + "/" + inputPath + ".fbx";
-            string globalOutputPath = Application.dataPath + "/" + outputPath + ".fbx";
+            string globalInputPath = Application.dataPath + "/" + inputPath + inputMeshFileFormat;
+            string globalOutputPath = Application.dataPath + "/" + outputPath + lodFormatName;
 
             string workingDir = Directory.GetCurrentDirectory();
             LogInfo(string.Format("WorkingDir: {0}", workingDir));
@@ -128,7 +131,7 @@ namespace StreamDaddy.Editor.Tasks
 
             LogInfo(string.Format("MLE Path: {0}", mlePath));
 
-            string args = "-b n -d n -s n -t " + LOD_LEVELS[lodLevel] + "% -i \"" + globalInputPath + "\" -o \"" + globalOutputPath + "\"";
+            string args = "-b y -d y -s y -t " + LOD_LEVELS[lodLevel] + "% -i \"" + globalInputPath + "\" -o \"" + globalOutputPath + "\"" + " -f " + (int)lodFormat;
 
             args = args.Replace("/", @"\");
             LogInfo(string.Format("mle arguments: {0}", args));
@@ -170,18 +173,29 @@ namespace StreamDaddy.Editor.Tasks
             LogInfo(string.Format("Local Output Path {0}", localOutputPath));
             Mesh outputMesh = AssetDatabase.LoadAssetAtPath<Mesh>(localOutputPath);
 
+            outputMesh.name = outputMesh.name + "_LOD" + lodLevel;
+            
+
             //AssetDatabase.SetLabels(outputMesh, new string[] { "dont-import-materials", "dont-import-animations" });
 
             return outputMesh;
         }
 
-        private string RemoveFileExtension(string path)
+        private string ExtractFileFormatFromPath(string path)
+        {
+            string[] split = path.Split('.');
+            string format = split[split.Length - 1];
+            return format;
+        }
+
+        public static string RemoveFileExtension(string path)
         {
             string outPath = path;
-            outPath = outPath.Replace(".FBX", "");
-            outPath = outPath.Replace(".fbx", "");
-            outPath = outPath.Replace(".OBJ", "");
-            outPath = outPath.Replace(".obj", "");
+            foreach(var format in LOD_FORMAT.Values)
+            {
+                outPath = outPath.Replace(format.ToLower(), "");
+                outPath = outPath.Replace(format.ToUpper(), "");
+            }
             return outPath;
         }
     }

@@ -12,7 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 84ebf7035f21c914f99124845425d2cc, type: 3}
   m_Name: chunklayout_0_0_1
   m_EditorClassIdentifier: 
-  Meshes: []
+  MeshLayers:
+  - Meshes: []
+  - Meshes: []
+  - Meshes: []
+  - Meshes: []
+  MeshTransforms: []
   BoxColliders:
   - Position: {x: 56.2, y: 21.5, z: 250}
     Rotation: {x: -0, y: 0, z: 0}
@@ -20,5 +25,10 @@ MonoBehaviour:
     Center: {x: 0, y: 0, z: 0}
     Size: {x: 1, y: 1, z: 1}
   SphereColliders: []
-  MeshColliders: []
+  MeshColliderLayers:
+  - MeshColliders: []
+  - MeshColliders: []
+  - MeshColliders: []
+  - MeshColliders: []
+  MeshColliderTransforms: []
   ChunkID: {x: 0, y: 0, z: 1}

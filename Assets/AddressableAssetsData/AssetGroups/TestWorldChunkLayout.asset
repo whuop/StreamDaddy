@@ -15,7 +15,7 @@ MonoBehaviour:
   m_name: TestWorldChunkLayout
   m_data:
     m_serializedData: []
-  m_guid: d24cb74ca05f101489a7048b7e5a941d
+  m_guid: 31d70108ba5c11d44b2fa7fa67db8c75
   m_serializeEntries:
   - m_guid: 0d3f14905c6c5c14487605f423f470b2
     m_address: Assets/StreamDaddy/Worlds/TestWorld/ChunkLayout/chunklayout_2_0_2.asset
@@ -53,5 +53,5 @@ MonoBehaviour:
   m_settings: {fileID: 11400000, guid: 012533c8f9714d74488e54f4588d1b2e, type: 2}
   m_schemaSet:
     m_schemas:
-    - {fileID: 11400000, guid: 45cbc74fe0d8d1841ab9ef12016573a1, type: 2}
-    - {fileID: 11400000, guid: 657352cc37df909478a1f6e5da0f30a3, type: 2}
+    - {fileID: 11400000, guid: 0562154b8afee8c4697443fb811f70a5, type: 2}
+    - {fileID: 11400000, guid: 9f03634aade7b524bad810bd81f75f7d, type: 2}

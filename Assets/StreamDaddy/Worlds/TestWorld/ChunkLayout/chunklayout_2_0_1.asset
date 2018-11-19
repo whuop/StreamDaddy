@@ -12,53 +12,222 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 84ebf7035f21c914f99124845425d2cc, type: 3}
   m_Name: chunklayout_2_0_1
   m_EditorClassIdentifier: 
-  Meshes:
-  - Position: {x: 282.21, y: 1.1199999, z: 232.69}
+  MeshLayers:
+  - Meshes:
+    - MeshReference:
+        m_assetGUID: 98a38d5f3e1bdf34b85171136b4c6c00
+        m_cachedAsset: {fileID: 0}
+      MaterialReferences:
+      - m_assetGUID: f50fd987009300249ad223e750bb4396
+        m_cachedAsset: {fileID: 0}
+      - m_assetGUID: 8ea231131c0ecc64ca078b074ddd7129
+        m_cachedAsset: {fileID: 0}
+    - MeshReference:
+        m_assetGUID: 2a3f8090f2c9a654b9b4cb36280e1a65
+        m_cachedAsset: {fileID: 0}
+      MaterialReferences:
+      - m_assetGUID: f98fac1cf2116764bb0b3f63b9fd4050
+        m_cachedAsset: {fileID: 0}
+      - m_assetGUID: da27f5b7bdd1f3d4da0ab822cb7d1408
+        m_cachedAsset: {fileID: 0}
+      - m_assetGUID: f50fd987009300249ad223e750bb4396
+        m_cachedAsset: {fileID: 0}
+    - MeshReference:
+        m_assetGUID: 7e7c5a68504558b45bd9e9301d6c579b
+        m_cachedAsset: {fileID: 0}
+      MaterialReferences:
+      - m_assetGUID: a533ed8eb4eba624da8b36b62d2da8f8
+        m_cachedAsset: {fileID: 0}
+    - MeshReference:
+        m_assetGUID: 7e7c5a68504558b45bd9e9301d6c579b
+        m_cachedAsset: {fileID: 0}
+      MaterialReferences:
+      - m_assetGUID: a533ed8eb4eba624da8b36b62d2da8f8
+        m_cachedAsset: {fileID: 0}
+    - MeshReference:
+        m_assetGUID: 7e7c5a68504558b45bd9e9301d6c579b
+        m_cachedAsset: {fileID: 0}
+      MaterialReferences:
+      - m_assetGUID: a533ed8eb4eba624da8b36b62d2da8f8
+        m_cachedAsset: {fileID: 0}
+  - Meshes:
+    - MeshReference:
+        m_assetGUID: da0d473fbb0cdba498ba3242de93d315
+        m_cachedAsset: {fileID: 0}
+      MaterialReferences:
+      - m_assetGUID: f50fd987009300249ad223e750bb4396
+        m_cachedAsset: {fileID: 0}
+      - m_assetGUID: 8ea231131c0ecc64ca078b074ddd7129
+        m_cachedAsset: {fileID: 0}
+    - MeshReference:
+        m_assetGUID: a1001b637862f5e4d871f958c43f6648
+        m_cachedAsset: {fileID: 0}
+      MaterialReferences:
+      - m_assetGUID: f98fac1cf2116764bb0b3f63b9fd4050
+        m_cachedAsset: {fileID: 0}
+      - m_assetGUID: da27f5b7bdd1f3d4da0ab822cb7d1408
+        m_cachedAsset: {fileID: 0}
+      - m_assetGUID: f50fd987009300249ad223e750bb4396
+        m_cachedAsset: {fileID: 0}
+    - MeshReference:
+        m_assetGUID: 8c73b718a8f7c444991c2d3f104e3502
+        m_cachedAsset: {fileID: 0}
+      MaterialReferences:
+      - m_assetGUID: a533ed8eb4eba624da8b36b62d2da8f8
+        m_cachedAsset: {fileID: 0}
+    - MeshReference:
+        m_assetGUID: 8c73b718a8f7c444991c2d3f104e3502
+        m_cachedAsset: {fileID: 0}
+      MaterialReferences:
+      - m_assetGUID: a533ed8eb4eba624da8b36b62d2da8f8
+        m_cachedAsset: {fileID: 0}
+    - MeshReference:
+        m_assetGUID: 8c73b718a8f7c444991c2d3f104e3502
+        m_cachedAsset: {fileID: 0}
+      MaterialReferences:
+      - m_assetGUID: a533ed8eb4eba624da8b36b62d2da8f8
+        m_cachedAsset: {fileID: 0}
+  - Meshes:
+    - MeshReference:
+        m_assetGUID: 10607e2f46eabe64485adbcd502e1eaa
+        m_cachedAsset: {fileID: 0}
+      MaterialReferences:
+      - m_assetGUID: f50fd987009300249ad223e750bb4396
+        m_cachedAsset: {fileID: 0}
+      - m_assetGUID: 8ea231131c0ecc64ca078b074ddd7129
+        m_cachedAsset: {fileID: 0}
+    - MeshReference:
+        m_assetGUID: 5db3fb0241897924b8fcbc649ff3316f
+        m_cachedAsset: {fileID: 0}
+      MaterialReferences:
+      - m_assetGUID: f98fac1cf2116764bb0b3f63b9fd4050
+        m_cachedAsset: {fileID: 0}
+      - m_assetGUID: da27f5b7bdd1f3d4da0ab822cb7d1408
+        m_cachedAsset: {fileID: 0}
+      - m_assetGUID: f50fd987009300249ad223e750bb4396
+        m_cachedAsset: {fileID: 0}
+    - MeshReference:
+        m_assetGUID: e490e0599fdfcbb48836ca94f4812928
+        m_cachedAsset: {fileID: 0}
+      MaterialReferences:
+      - m_assetGUID: a533ed8eb4eba624da8b36b62d2da8f8
+        m_cachedAsset: {fileID: 0}
+    - MeshReference:
+        m_assetGUID: e490e0599fdfcbb48836ca94f4812928
+        m_cachedAsset: {fileID: 0}
+      MaterialReferences:
+      - m_assetGUID: a533ed8eb4eba624da8b36b62d2da8f8
+        m_cachedAsset: {fileID: 0}
+    - MeshReference:
+        m_assetGUID: e490e0599fdfcbb48836ca94f4812928
+        m_cachedAsset: {fileID: 0}
+      MaterialReferences:
+      - m_assetGUID: a533ed8eb4eba624da8b36b62d2da8f8
+        m_cachedAsset: {fileID: 0}
+  - Meshes:
+    - MeshReference:
+        m_assetGUID: 7966d2d38521cd340be86622e674dca9
+        m_cachedAsset: {fileID: 0}
+      MaterialReferences:
+      - m_assetGUID: f50fd987009300249ad223e750bb4396
+        m_cachedAsset: {fileID: 0}
+      - m_assetGUID: 8ea231131c0ecc64ca078b074ddd7129
+        m_cachedAsset: {fileID: 0}
+    - MeshReference:
+        m_assetGUID: 1090dd05654c60447bb567ec286dc359
+        m_cachedAsset: {fileID: 0}
+      MaterialReferences:
+      - m_assetGUID: f98fac1cf2116764bb0b3f63b9fd4050
+        m_cachedAsset: {fileID: 0}
+      - m_assetGUID: da27f5b7bdd1f3d4da0ab822cb7d1408
+        m_cachedAsset: {fileID: 0}
+      - m_assetGUID: f50fd987009300249ad223e750bb4396
+        m_cachedAsset: {fileID: 0}
+    - MeshReference:
+        m_assetGUID: 774cc9b4814c1bf46b9de7fee5dbf5b0
+        m_cachedAsset: {fileID: 0}
+      MaterialReferences:
+      - m_assetGUID: a533ed8eb4eba624da8b36b62d2da8f8
+        m_cachedAsset: {fileID: 0}
+    - MeshReference:
+        m_assetGUID: 774cc9b4814c1bf46b9de7fee5dbf5b0
+        m_cachedAsset: {fileID: 0}
+      MaterialReferences:
+      - m_assetGUID: a533ed8eb4eba624da8b36b62d2da8f8
+        m_cachedAsset: {fileID: 0}
+    - MeshReference:
+        m_assetGUID: 774cc9b4814c1bf46b9de7fee5dbf5b0
+        m_cachedAsset: {fileID: 0}
+      MaterialReferences:
+      - m_assetGUID: a533ed8eb4eba624da8b36b62d2da8f8
+        m_cachedAsset: {fileID: 0}
+  MeshTransforms:
+  - Position: {x: 297.05917, y: 4.3127985, z: 204.8259}
+    Rotation: {x: -0, y: -0, z: -0}
+    Scale: {x: 1, y: 1, z: 1}
+  - Position: {x: 267.83145, y: 1.1174996, z: 172.69547}
+    Rotation: {x: -0, y: -0, z: -0}
+    Scale: {x: 1, y: 1, z: 1}
+  - Position: {x: 346.3, y: 1.1199999, z: 232.69}
     Rotation: {x: -0, y: 63.802715, z: -0}
-    Scale: {x: 2.1, y: 2.1, z: 2.1}
-    MeshReference:
-      m_assetGUID: 7e7c5a68504558b45bd9e9301d6c579b
-      m_cachedAsset: {fileID: 0}
-    MaterialReferences:
-    - m_assetGUID: a533ed8eb4eba624da8b36b62d2da8f8
-      m_cachedAsset: {fileID: 0}
+    Scale: {x: 1, y: 1, z: 1}
   - Position: {x: 320.38, y: 0.8499999, z: 225.3}
     Rotation: {x: -0, y: 161.93825, z: -0}
-    Scale: {x: 2.1000025, y: 2.1, z: 2.1000025}
-    MeshReference:
-      m_assetGUID: 7e7c5a68504558b45bd9e9301d6c579b
-      m_cachedAsset: {fileID: 0}
-    MaterialReferences:
-    - m_assetGUID: a533ed8eb4eba624da8b36b62d2da8f8
-      m_cachedAsset: {fileID: 0}
+    Scale: {x: 1.0000002, y: 1, z: 1.0000002}
   - Position: {x: 354, y: 1.5299997, z: 254.08}
     Rotation: {x: 0, y: 318.44534, z: 0}
     Scale: {x: 1, y: 1, z: 1}
-    MeshReference:
-      m_assetGUID: 7e7c5a68504558b45bd9e9301d6c579b
-      m_cachedAsset: {fileID: 0}
-    MaterialReferences:
-    - m_assetGUID: a533ed8eb4eba624da8b36b62d2da8f8
-      m_cachedAsset: {fileID: 0}
   BoxColliders: []
   SphereColliders: []
-  MeshColliders:
-  - Position: {x: 282.21, y: 1.1199999, z: 232.69}
+  MeshColliderLayers:
+  - MeshColliders:
+    - MeshReference:
+        m_assetGUID: 7e7c5a68504558b45bd9e9301d6c579b
+        m_cachedAsset: {fileID: 0}
+    - MeshReference:
+        m_assetGUID: 7e7c5a68504558b45bd9e9301d6c579b
+        m_cachedAsset: {fileID: 0}
+    - MeshReference:
+        m_assetGUID: 7e7c5a68504558b45bd9e9301d6c579b
+        m_cachedAsset: {fileID: 0}
+  - MeshColliders:
+    - MeshReference:
+        m_assetGUID: 8c73b718a8f7c444991c2d3f104e3502
+        m_cachedAsset: {fileID: 0}
+    - MeshReference:
+        m_assetGUID: 8c73b718a8f7c444991c2d3f104e3502
+        m_cachedAsset: {fileID: 0}
+    - MeshReference:
+        m_assetGUID: 8c73b718a8f7c444991c2d3f104e3502
+        m_cachedAsset: {fileID: 0}
+  - MeshColliders:
+    - MeshReference:
+        m_assetGUID: e490e0599fdfcbb48836ca94f4812928
+        m_cachedAsset: {fileID: 0}
+    - MeshReference:
+        m_assetGUID: e490e0599fdfcbb48836ca94f4812928
+        m_cachedAsset: {fileID: 0}
+    - MeshReference:
+        m_assetGUID: e490e0599fdfcbb48836ca94f4812928
+        m_cachedAsset: {fileID: 0}
+  - MeshColliders:
+    - MeshReference:
+        m_assetGUID: 774cc9b4814c1bf46b9de7fee5dbf5b0
+        m_cachedAsset: {fileID: 0}
+    - MeshReference:
+        m_assetGUID: 774cc9b4814c1bf46b9de7fee5dbf5b0
+        m_cachedAsset: {fileID: 0}
+    - MeshReference:
+        m_assetGUID: 774cc9b4814c1bf46b9de7fee5dbf5b0
+        m_cachedAsset: {fileID: 0}
+  MeshColliderTransforms:
+  - Position: {x: 346.3, y: 1.1199999, z: 232.69}
     Rotation: {x: -0, y: 63.802715, z: -0}
-    Scale: {x: 2.1, y: 2.1, z: 2.1}
-    MeshReference:
-      m_assetGUID: 7e7c5a68504558b45bd9e9301d6c579b
-      m_cachedAsset: {fileID: 0}
+    Scale: {x: 1, y: 1, z: 1}
   - Position: {x: 320.38, y: 0.8499999, z: 225.3}
     Rotation: {x: -0, y: 161.93825, z: -0}
-    Scale: {x: 2.1000025, y: 2.1, z: 2.1000025}
-    MeshReference:
-      m_assetGUID: 7e7c5a68504558b45bd9e9301d6c579b
-      m_cachedAsset: {fileID: 0}
+    Scale: {x: 1.0000002, y: 1, z: 1.0000002}
   - Position: {x: 354, y: 1.5299997, z: 254.08}
     Rotation: {x: 0, y: 318.44534, z: 0}
     Scale: {x: 1, y: 1, z: 1}
-    MeshReference:
-      m_assetGUID: 7e7c5a68504558b45bd9e9301d6c579b
-      m_cachedAsset: {fileID: 0}
   ChunkID: {x: 2, y: 0, z: 1}

@@ -6,14 +6,29 @@ using UnityEngine;
 
 namespace StreamDaddy.Streaming
 {
+    /*public struct ChunkLODLoader
+    {
+        public ChunkID ChunkID;
+        public int LodLevel;
+    }*/
+
     public class AreaOfInterest : MonoBehaviour
     {
+        [SerializeField]
+        private int m_maxDepth;
+
         /// <summary>
         /// The size of the area to be loaded.
         /// The size is in number of chunks, not in any other unit of measurement.
         /// </summary>
+        /*[SerializeField]
+        private int m_lod0Depth;
         [SerializeField]
-        private int m_maxDepth;
+        private int m_lod1Depth;
+        [SerializeField]
+        private int m_lod2Depth;
+        [SerializeField]
+        private int m_lod3Depth;*/
 
         [SerializeField]
         private bool m_debugRender = true;

@@ -12,38 +12,102 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 84ebf7035f21c914f99124845425d2cc, type: 3}
   m_Name: chunklayout_2_0_2
   m_EditorClassIdentifier: 
-  Meshes:
+  MeshLayers:
+  - Meshes:
+    - MeshReference:
+        m_assetGUID: 7e7c5a68504558b45bd9e9301d6c579b
+        m_cachedAsset: {fileID: 0}
+      MaterialReferences:
+      - m_assetGUID: a533ed8eb4eba624da8b36b62d2da8f8
+        m_cachedAsset: {fileID: 0}
+    - MeshReference:
+        m_assetGUID: 7e7c5a68504558b45bd9e9301d6c579b
+        m_cachedAsset: {fileID: 0}
+      MaterialReferences:
+      - m_assetGUID: a533ed8eb4eba624da8b36b62d2da8f8
+        m_cachedAsset: {fileID: 0}
+  - Meshes:
+    - MeshReference:
+        m_assetGUID: 8c73b718a8f7c444991c2d3f104e3502
+        m_cachedAsset: {fileID: 0}
+      MaterialReferences:
+      - m_assetGUID: a533ed8eb4eba624da8b36b62d2da8f8
+        m_cachedAsset: {fileID: 0}
+    - MeshReference:
+        m_assetGUID: 8c73b718a8f7c444991c2d3f104e3502
+        m_cachedAsset: {fileID: 0}
+      MaterialReferences:
+      - m_assetGUID: a533ed8eb4eba624da8b36b62d2da8f8
+        m_cachedAsset: {fileID: 0}
+  - Meshes:
+    - MeshReference:
+        m_assetGUID: e490e0599fdfcbb48836ca94f4812928
+        m_cachedAsset: {fileID: 0}
+      MaterialReferences:
+      - m_assetGUID: a533ed8eb4eba624da8b36b62d2da8f8
+        m_cachedAsset: {fileID: 0}
+    - MeshReference:
+        m_assetGUID: e490e0599fdfcbb48836ca94f4812928
+        m_cachedAsset: {fileID: 0}
+      MaterialReferences:
+      - m_assetGUID: a533ed8eb4eba624da8b36b62d2da8f8
+        m_cachedAsset: {fileID: 0}
+  - Meshes:
+    - MeshReference:
+        m_assetGUID: 774cc9b4814c1bf46b9de7fee5dbf5b0
+        m_cachedAsset: {fileID: 0}
+      MaterialReferences:
+      - m_assetGUID: a533ed8eb4eba624da8b36b62d2da8f8
+        m_cachedAsset: {fileID: 0}
+    - MeshReference:
+        m_assetGUID: 774cc9b4814c1bf46b9de7fee5dbf5b0
+        m_cachedAsset: {fileID: 0}
+      MaterialReferences:
+      - m_assetGUID: a533ed8eb4eba624da8b36b62d2da8f8
+        m_cachedAsset: {fileID: 0}
+  MeshTransforms:
   - Position: {x: 295.6, y: 3.4700003, z: 285.4}
     Rotation: {x: -0, y: 63.802715, z: -0}
-    Scale: {x: 2.1, y: 2.1, z: 2.1}
-    MeshReference:
-      m_assetGUID: 7e7c5a68504558b45bd9e9301d6c579b
-      m_cachedAsset: {fileID: 0}
-    MaterialReferences:
-    - m_assetGUID: a533ed8eb4eba624da8b36b62d2da8f8
-      m_cachedAsset: {fileID: 0}
+    Scale: {x: 1, y: 1, z: 1}
   - Position: {x: 366.46, y: 1.6500001, z: 264.36}
     Rotation: {x: -0, y: 161.93825, z: -0}
-    Scale: {x: 2.1000025, y: 2.1, z: 2.1000025}
-    MeshReference:
-      m_assetGUID: 7e7c5a68504558b45bd9e9301d6c579b
-      m_cachedAsset: {fileID: 0}
-    MaterialReferences:
-    - m_assetGUID: a533ed8eb4eba624da8b36b62d2da8f8
-      m_cachedAsset: {fileID: 0}
+    Scale: {x: 1.0000002, y: 1, z: 1.0000002}
   BoxColliders: []
   SphereColliders: []
-  MeshColliders:
+  MeshColliderLayers:
+  - MeshColliders:
+    - MeshReference:
+        m_assetGUID: 7e7c5a68504558b45bd9e9301d6c579b
+        m_cachedAsset: {fileID: 0}
+    - MeshReference:
+        m_assetGUID: 7e7c5a68504558b45bd9e9301d6c579b
+        m_cachedAsset: {fileID: 0}
+  - MeshColliders:
+    - MeshReference:
+        m_assetGUID: 8c73b718a8f7c444991c2d3f104e3502
+        m_cachedAsset: {fileID: 0}
+    - MeshReference:
+        m_assetGUID: 8c73b718a8f7c444991c2d3f104e3502
+        m_cachedAsset: {fileID: 0}
+  - MeshColliders:
+    - MeshReference:
+        m_assetGUID: e490e0599fdfcbb48836ca94f4812928
+        m_cachedAsset: {fileID: 0}
+    - MeshReference:
+        m_assetGUID: e490e0599fdfcbb48836ca94f4812928
+        m_cachedAsset: {fileID: 0}
+  - MeshColliders:
+    - MeshReference:
+        m_assetGUID: 774cc9b4814c1bf46b9de7fee5dbf5b0
+        m_cachedAsset: {fileID: 0}
+    - MeshReference:
+        m_assetGUID: 774cc9b4814c1bf46b9de7fee5dbf5b0
+        m_cachedAsset: {fileID: 0}
+  MeshColliderTransforms:
   - Position: {x: 295.6, y: 3.4700003, z: 285.4}
     Rotation: {x: -0, y: 63.802715, z: -0}
-    Scale: {x: 2.1, y: 2.1, z: 2.1}
-    MeshReference:
-      m_assetGUID: 7e7c5a68504558b45bd9e9301d6c579b
-      m_cachedAsset: {fileID: 0}
+    Scale: {x: 1, y: 1, z: 1}
   - Position: {x: 366.46, y: 1.6500001, z: 264.36}
     Rotation: {x: -0, y: 161.93825, z: -0}
-    Scale: {x: 2.1000025, y: 2.1, z: 2.1000025}
-    MeshReference:
-      m_assetGUID: 7e7c5a68504558b45bd9e9301d6c579b
-      m_cachedAsset: {fileID: 0}
+    Scale: {x: 1.0000002, y: 1, z: 1.0000002}
   ChunkID: {x: 2, y: 0, z: 2}

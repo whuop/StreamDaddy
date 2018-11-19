@@ -3,13 +3,13 @@ using StreamDaddy.Chunking;
 using StreamDaddy.Editor.Chunking;
 using StreamDaddy.Editor.Utils;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
 using UnityEditor.AddressableAssets;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
+using static StreamDaddy.Editor.Tasks.GenerateMeshLodsTask;
 
 namespace StreamDaddy.Editor.Tasks
 {
@@ -30,7 +30,7 @@ namespace StreamDaddy.Editor.Tasks
 
         }
         
-        public bool Execute(string worldName, List<EditorChunk> chunks, ref BuildChunkLayoutResult result)
+        public bool Execute(string worldName, LodFormat lodFormat, List<EditorChunk> chunks, ref BuildChunkLayoutResult result)
         {
             if (chunks == null || chunks.Count == 0)
             {
@@ -56,35 +56,36 @@ namespace StreamDaddy.Editor.Tasks
             result.ChunkLayoutBundle = chunkLayoutGroupName;
             //  Create the addressables group for the chunk layout object
             var assetSettings = UnityEditor.AddressableAssets.AddressableAssetSettingsDefaultObject.Settings;
-            
-            AddressableAssetGroup chunkLayoutGroup;
-            AddressableAssetGroup chunkAssetsGroup;
-            try
-            {
-                chunkLayoutGroup = assetSettings.groups.Single(g => g.Name == chunkLayoutGroupName);
-            }
-            catch(Exception e)
-            {
-                chunkLayoutGroup = assetSettings.CreateGroup(chunkLayoutGroupName, false, false, true);
-            }
 
-            try
-            {
-                chunkAssetsGroup = assetSettings.groups.Single(g => g.Name == chunkAssetGroupName);
-            }
-            catch(Exception e)
-            {
-                chunkAssetsGroup = assetSettings.CreateGroup(chunkAssetGroupName, false, false, true);
-            }
+            var chunkLayoutGroup = CreateAddressablesGroup(chunkLayoutGroupName, assetSettings);
+            var chunkAssetsGroup = CreateAddressablesGroup(chunkAssetGroupName, assetSettings);
             
             for (int i = 0; i < chunks.Count; i++)
             {
                 if (EditorUtility.DisplayCancelableProgressBar("Exporting chunk layout", "Chunk " + i, i / chunks.Count))
                     return false;
-                List<MeshData> meshData = new List<MeshData>();
+
+                List<MeshLayerData> meshLayers = new List<MeshLayerData>();
+                //  Add all the 4 LOD levels, 0, 1, 2 and 3.
+                meshLayers.Add(new MeshLayerData());
+                meshLayers.Add(new MeshLayerData());
+                meshLayers.Add(new MeshLayerData());
+                meshLayers.Add(new MeshLayerData());
+                //  Create the Lists holding the different lod levels that are then
+                // assigned to the corresponding MeshLayer
+                List<MeshData> lod0 = new List<MeshData>();
+                List<MeshData> lod1 = new List<MeshData>();
+                List<MeshData> lod2 = new List<MeshData>();
+                List<MeshData> lod3 = new List<MeshData>();
+                //  Create the list holding the transforms for the lod level meshes.
+                //  The different lod levels all share the same transform, so the ordering of the meshes in the 
+                //  different lod levels is very important for things to be placed correctly in the world.
+                List<TransformData> meshTransforms = new List<TransformData>();
+
+                
+
                 List<BoxColliderData> boxColliderData = new List<BoxColliderData>();
                 List<SphereColliderData> sphereColliderData = new List<SphereColliderData>();
-                List<MeshColliderData> meshColliderData = new List<MeshColliderData>();
 
                 var chunk = chunks[i];
                 var meshFilters = chunk.MeshFilters;
@@ -122,12 +123,74 @@ namespace StreamDaddy.Editor.Tasks
 
                         Debug.Log(string.Format("Adding Material {0} with address {1}", mat.name, matEntry.address));
                     }
-                    var md = CreateMeshData(new AssetReference(entry.guid), materialReferences.ToArray(), filter.transform.position, filter.transform.rotation.eulerAngles, filter.transform.lossyScale);
-                    meshData.Add(md);
+
+                    var td = CreateTransformData(filter.transform.position, filter.transform.rotation, filter.transform.lossyScale);
+                    var md = CreateMeshData(new AssetReference(entry.guid), materialReferences.ToArray());
+
+                    //  Create the mesh data for LOD 1, 2 and 3.
+                    //  Remove assets from the path temporarily.
+                    string lodPath = assetPath.Replace("Assets/", "");
+                    //  Reconstruct the path adding the generated lods directory to the path
+                    //  This is where all the lods are automatically put.
+                    lodPath = "Assets/GeneratedLODS/" + lodPath;
+
+                    // Create the specific paths for the different LODs
+                    lodPath = GenerateMeshLodsTask.RemoveFileExtension(lodPath);
+
+                    string lod1Path = lodPath + "_LOD1" + GenerateMeshLodsTask.GetLodFormat(lodFormat);
+                    string lod2Path = lodPath + "_LOD2" + GenerateMeshLodsTask.GetLodFormat(lodFormat);
+                    string lod3Path = lodPath + "_LOD3" + GenerateMeshLodsTask.GetLodFormat(lodFormat);
+
+                    Mesh meshLod1 = AssetDatabase.LoadAssetAtPath<Mesh>(lod1Path);
+                    if (meshLod1 == null)
+                        LogError(string.Format("Could not find LOD1 for asset {0}", assetPath));
+                    Mesh meshLod2 = AssetDatabase.LoadAssetAtPath<Mesh>(lod2Path);
+                    if (meshLod2 == null)
+                        LogError(string.Format("Could not find LOD2 for asset {0}", assetPath));
+                    Mesh meshLod3 = AssetDatabase.LoadAssetAtPath<Mesh>(lod3Path);
+                    if (meshLod3 == null)
+                        LogError(string.Format("Could not find LOD3 for asset {0}", assetPath));
+
+                    //  Add the different lods to the Addressable Groups
+                    var lod1Entry = assetSettings.CreateOrMoveEntry(AssetDatabase.AssetPathToGUID(lod1Path), chunkAssetsGroup);
+                    var lod2Entry = assetSettings.CreateOrMoveEntry(AssetDatabase.AssetPathToGUID(lod2Path), chunkAssetsGroup);
+                    var lod3Entry = assetSettings.CreateOrMoveEntry(AssetDatabase.AssetPathToGUID(lod3Path), chunkAssetsGroup);
+
+                    //  Create the serializable mesh data for the different LODs
+                    var lod1md = CreateMeshData(new AssetReference(lod1Entry.guid), materialReferences.ToArray());
+                    var lod2md = CreateMeshData(new AssetReference(lod2Entry.guid), materialReferences.ToArray());
+                    var lod3md = CreateMeshData(new AssetReference(lod3Entry.guid), materialReferences.ToArray());
+
+                    //  The original mesh is LOD 0
+                    lod0.Add(md);
+                    lod1.Add(lod1md);
+                    lod2.Add(lod2md);
+                    lod3.Add(lod3md);
+                    meshTransforms.Add(td);
                 }
 
+                //  Add the different LODs to the different layers
+                meshLayers[0].Meshes = lod0.ToArray();
+                meshLayers[1].Meshes = lod1.ToArray();
+                meshLayers[2].Meshes = lod2.ToArray();
+                meshLayers[3].Meshes = lod3.ToArray();
+
+                //  Create the 4 different LOD level layers for the mesh colliders, 0, 1, 2, 3
+                List<MeshColliderLayerData> meshColliderLayers = new List<MeshColliderLayerData>();
+                meshColliderLayers.Add(new MeshColliderLayerData());
+                meshColliderLayers.Add(new MeshColliderLayerData());
+                meshColliderLayers.Add(new MeshColliderLayerData());
+                meshColliderLayers.Add(new MeshColliderLayerData());
+                //  Create the list hold the transfors for the mesh collider lods
+                List<TransformData> meshColliderTransforms = new List<TransformData>();
+                //  Create the different lists of the lodded meshes for the MeshColliderLayers
+                List<MeshColliderData> cLod0 = new List<MeshColliderData>();
+                List<MeshColliderData> cLod1 = new List<MeshColliderData>();
+                List<MeshColliderData> cLod2 = new List<MeshColliderData>();
+                List<MeshColliderData> cLod3 = new List<MeshColliderData>();
+
                 //  Export colliders
-                foreach(var collider in colliders)
+                foreach (var collider in colliders)
                 {
                     if (collider.GetType().IsAssignableFrom(typeof(BoxCollider)))
                     {
@@ -149,15 +212,64 @@ namespace StreamDaddy.Editor.Tasks
                         string assetGuid = AssetDatabase.AssetPathToGUID(assetPath);
                         var entry = assetSettings.CreateOrMoveEntry(assetGuid, chunkAssetsGroup);
 
-                        var md = CreateMeshColliderData(new AssetReference(entry.guid), meshCol.gameObject.transform.position, meshCol.gameObject.transform.rotation.eulerAngles, meshCol.gameObject.transform.lossyScale);
-                        meshColliderData.Add(md);
+                        
+
+                        //  Create the mesh data for LOD 1, 2 and 3.
+                        //  Remove assets from the path temporarily.
+                        string lodPath = assetPath.Replace("Assets/", "");
+                        //  Reconstruct the path adding the generated lods directory to the path
+                        //  This is where all the lods are automatically put.
+                        lodPath = "Assets/GeneratedLODS/" + lodPath;
+
+                        // Create the specific paths for the different LODs
+                        lodPath = GenerateMeshLodsTask.RemoveFileExtension(lodPath);
+
+                        string lod1Path = lodPath + "_LOD1" + GenerateMeshLodsTask.GetLodFormat(lodFormat);
+                        string lod2Path = lodPath + "_LOD2" + GenerateMeshLodsTask.GetLodFormat(lodFormat);
+                        string lod3Path = lodPath + "_LOD3" + GenerateMeshLodsTask.GetLodFormat(lodFormat);
+
+                        Mesh meshLod1 = AssetDatabase.LoadAssetAtPath<Mesh>(lod1Path);
+                        if (meshLod1 == null)
+                            LogError(string.Format("Could not find LOD1 for asset {0}", assetPath));
+                        Mesh meshLod2 = AssetDatabase.LoadAssetAtPath<Mesh>(lod2Path);
+                        if (meshLod2 == null)
+                            LogError(string.Format("Could not find LOD2 for asset {0}", assetPath));
+                        Mesh meshLod3 = AssetDatabase.LoadAssetAtPath<Mesh>(lod3Path);
+                        if (meshLod3 == null)
+                            LogError(string.Format("Could not find LOD3 for asset {0}", assetPath));
+
+                        //  Add the different lods to the Addressable Groups
+                        var lod1Entry = assetSettings.CreateOrMoveEntry(AssetDatabase.AssetPathToGUID(lod1Path), chunkAssetsGroup);
+                        var lod2Entry = assetSettings.CreateOrMoveEntry(AssetDatabase.AssetPathToGUID(lod2Path), chunkAssetsGroup);
+                        var lod3Entry = assetSettings.CreateOrMoveEntry(AssetDatabase.AssetPathToGUID(lod3Path), chunkAssetsGroup);
+
+                        //  Create the serializable mesh data for the different LODs
+                        var lod0md = CreateMeshColliderData(new AssetReference(entry.guid));
+                        var lod1md = CreateMeshColliderData(new AssetReference(lod1Entry.guid));
+                        var lod2md = CreateMeshColliderData(new AssetReference(lod2Entry.guid));
+                        var lod3md = CreateMeshColliderData(new AssetReference(lod3Entry.guid));
+
+                        var td = CreateTransformData(meshCol.gameObject.transform.position, meshCol.gameObject.transform.rotation, meshCol.transform.lossyScale);
+                        meshColliderTransforms.Add(td);
+
+                        cLod0.Add(lod0md);
+                        cLod1.Add(lod1md);
+                        cLod2.Add(lod2md);
+                        cLod3.Add(lod3md);
                     }
                 }
+
+                //  Add the different LODs to the different layers
+                meshColliderLayers[0].MeshColliders = cLod0.ToArray();
+                meshColliderLayers[1].MeshColliders = cLod1.ToArray();
+                meshColliderLayers[2].MeshColliders = cLod2.ToArray();
+                meshColliderLayers[3].MeshColliders = cLod3.ToArray();
+
 
                 string chunkAssetName = "chunklayout_" + chunk.ChunkID.X + "_" + chunk.ChunkID.Y + "_" + chunk.ChunkID.Z;
                 
                 //  Create the scriptable object for this chunk layout
-                var chunkLayout = CreateChunkLayout(meshData.ToArray(), boxColliderData.ToArray(), sphereColliderData.ToArray(), meshColliderData.ToArray(), chunk.ChunkID);
+                var chunkLayout = CreateChunkLayout(meshLayers.ToArray(), meshTransforms.ToArray(), boxColliderData.ToArray(), sphereColliderData.ToArray(), meshColliderLayers.ToArray(), meshColliderTransforms.ToArray(), chunk.ChunkID);
 
                 AssetDatabase.StartAssetEditing();
                 SaveChunkLayout(worldName, chunkAssetName, chunkLayout);
@@ -186,13 +298,40 @@ namespace StreamDaddy.Editor.Tasks
             return true;
         }
 
-        private AssetChunkData CreateChunkLayout(MeshData[] meshes, BoxColliderData[] boxColliders, SphereColliderData[] sphereColliders, MeshColliderData[] meshColliders, ChunkID chunkID)
+        private AddressableAssetGroup CreateAddressablesGroup(string groupName, AddressableAssetSettings settings)
+        {
+            AddressableAssetGroup assetGroup;
+            try
+            {
+                assetGroup = settings.groups.Single(g => g.Name == groupName);
+            }
+            catch (Exception e)
+            {
+                assetGroup = settings.CreateGroup(groupName, false, false, true);
+            }
+            return assetGroup;
+        }
+
+        private TransformData CreateTransformData(Vector3 position, Quaternion rotation, Vector3 scale)
+        {
+            TransformData data = new TransformData
+            {
+                Position = position,
+                Rotation = rotation.eulerAngles,
+                Scale = scale
+            };
+            return data;
+        }
+
+        private AssetChunkData CreateChunkLayout(MeshLayerData[] meshLayers, TransformData[] meshTransforms, BoxColliderData[] boxColliders, SphereColliderData[] sphereColliders, MeshColliderLayerData[] meshColliderLayers, TransformData[] meshColliderTransforms, ChunkID chunkID)
         {
             AssetChunkData asset = ScriptableObject.CreateInstance<AssetChunkData>();
-            asset.Meshes = meshes;
+            asset.MeshLayers = meshLayers;
+            asset.MeshTransforms = meshTransforms;
             asset.BoxColliders = boxColliders;
             asset.SphereColliders = sphereColliders;
-            asset.MeshColliders = meshColliders;
+            asset.MeshColliderLayers = meshColliderLayers;
+            asset.MeshColliderTransforms = meshColliderTransforms;
             asset.ChunkID = chunkID.ID;
 
             return asset;
@@ -205,15 +344,11 @@ namespace StreamDaddy.Editor.Tasks
             AssetDatabaseUtils.CreateOrReplaceAsset(chunkLayout, path + chunkAssetName + ".asset");
         }
 
-        private MeshData CreateMeshData(AssetReference meshReference, AssetReference[] materialReferences, Vector3 position, Vector3 rotation, Vector3 scale)
+        private MeshData CreateMeshData(AssetReference meshReference, AssetReference[] materialReferences)
         {            
             MeshData data = new MeshData();
-
             data.MeshReference = meshReference;
             data.MaterialReferences = materialReferences;
-            data.Position = position;
-            data.Rotation = rotation;
-            data.Scale = scale;
 
             return data;
         }
@@ -244,14 +379,10 @@ namespace StreamDaddy.Editor.Tasks
             return data;
         }
 
-        private MeshColliderData CreateMeshColliderData(AssetReference meshReference, Vector3 position, Vector3 rotation, Vector3 scale)
+        private MeshColliderData CreateMeshColliderData(AssetReference meshReference)
         {
             MeshColliderData data = new MeshColliderData();
-
             data.MeshReference = meshReference;
-            data.Position = position;
-            data.Rotation = rotation;
-            data.Scale = scale;
 
             return data;
         }

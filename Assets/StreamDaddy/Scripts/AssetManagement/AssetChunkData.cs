@@ -7,16 +7,45 @@ namespace StreamDaddy.AssetManagement
 {
     public class AssetChunkData : ScriptableObject
     {
-        public MeshData[] Meshes;
+        /// <summary>
+        /// Renderable meshes 
+        /// </summary>
+        public MeshLayerData[] MeshLayers;
+        public TransformData[] MeshTransforms;
+
+        /// <summary>
+        /// Colliders
+        /// </summary>
         public BoxColliderData[] BoxColliders;
         public SphereColliderData[] SphereColliders;
-        public MeshColliderData[] MeshColliders;
 
+        /// <summary>
+        /// Mesh Colliders, these are special compared to the other colliders as they
+        /// have a mesh. Which means we might want to LOD them as well.
+        /// </summary>
+        public MeshColliderLayerData[] MeshColliderLayers;
+        public TransformData[] MeshColliderTransforms;
+        
+        /// <summary>
+        /// Where the Chunk is located in the world.
+        /// </summary>
         public Vector3Int ChunkID;
     }
 
     [System.Serializable]
-    public class PositionData
+    public class MeshLayerData
+    {
+        public MeshData[] Meshes;
+    }
+
+    [System.Serializable]
+    public class MeshColliderLayerData
+    {
+        public MeshColliderData[] MeshColliders;
+    }
+
+    [System.Serializable]
+    public class TransformData
     {
         [SerializeField]
         public Vector3 Position;
@@ -27,7 +56,7 @@ namespace StreamDaddy.AssetManagement
     }
 
     [System.Serializable]
-    public class MeshData : PositionData
+    public class MeshData
     {
         [SerializeField]
         public AssetReference MeshReference;
@@ -36,7 +65,14 @@ namespace StreamDaddy.AssetManagement
     }
 
     [System.Serializable]
-    public class BoxColliderData : PositionData
+    public class MeshColliderData
+    {
+        [SerializeField]
+        public AssetReference MeshReference;
+    }
+
+    [System.Serializable]
+    public class BoxColliderData : TransformData
     {
         [SerializeField]
         public Vector3 Center;
@@ -45,19 +81,12 @@ namespace StreamDaddy.AssetManagement
     }
 
     [System.Serializable]
-    public class SphereColliderData : PositionData
+    public class SphereColliderData : TransformData
     {
         [SerializeField]
         public Vector3 Center;
         [SerializeField]
         public float Radius;
-    }
-
-    [System.Serializable]
-    public class MeshColliderData : PositionData
-    {
-        [SerializeField]
-        public AssetReference MeshReference;
     }
 }
 

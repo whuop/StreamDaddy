@@ -55,43 +55,62 @@ namespace StreamDaddy.AssetManagement
         public static void LoadChunkAssets(AssetChunkData chunkAssets)
         {
             //  Load meshes for renderables
-            for(int i = 0; i < chunkAssets.Meshes.Length; i++)
+            for(int i = 0; i < chunkAssets.MeshLayers.Length; i++)
             {
-                var renderable = chunkAssets.Meshes[i];
-
-                //  If the mesh has already been loaded, skip it.
-                if (m_loadedMeshes.ContainsKey(renderable.MeshReference.RuntimeKey))
-                    continue;
-
-                var meshOperation = renderable.MeshReference.LoadAsset<GameObject>();
-                m_loadedMeshes.Add(renderable.MeshReference.RuntimeKey, null);
-
-                meshOperation.Completed += MeshOperationCompleted;
-
-                for (int j = 0; j < renderable.MaterialReferences.Length; j++)
+                var layer = chunkAssets.MeshLayers[i];
+                
+                //  Loop through the different LOD levels
+                for(int j = 0; j < layer.Meshes.Length; j++)
                 {
-                    //   If the material has already been loaded, skip it.
-                    if (m_loadedMaterials.ContainsKey(renderable.MaterialReferences[j].RuntimeKey))
+                    var lod = layer.Meshes[j];
+
+                    //  If this mesh has already been loaded, then skip it.
+                    if (m_loadedMeshes.ContainsKey(lod.MeshReference.RuntimeKey))
                         continue;
 
-                    var materialOperation = renderable.MaterialReferences[j].LoadAsset<Material>();
-                    m_loadedMaterials.Add(renderable.MaterialReferences[j].RuntimeKey, null);
+                    //  Load the mesh and create an empty entry to chuck it into in the loaded meshes dictionary.
+                    var meshOperation = lod.MeshReference.LoadAsset<GameObject>();
+                    m_loadedMeshes.Add(lod.MeshReference.RuntimeKey, null);
 
-                    materialOperation.Completed += MaterialOperationCompleted;
+                    meshOperation.Completed += MeshOperationCompleted;
+
+                    //  Load all the materials for this mesh
+                    for(int k = 0; k < lod.MaterialReferences.Length; k++)
+                    {
+                        var material = lod.MaterialReferences[k];
+                        //  If the material has already been loaded, then skip it
+                        if (m_loadedMaterials.ContainsKey(material.RuntimeKey))
+                            continue;
+
+                        //  Load the material and create an empty slot to chuck it into in the loaded materials dictionary.
+                        var materialOperation = material.LoadAsset<Material>();
+                        m_loadedMaterials.Add(material.RuntimeKey, null);
+
+                        materialOperation.Completed += MaterialOperationCompleted;
+                    }
                 }
             }
 
             //  Load meshes for MeshColliders
-            for(int i = 0; i < chunkAssets.MeshColliders.Length; i++)
+            for(int i = 0; i < chunkAssets.MeshColliderLayers.Length; i++)
             {
-                var meshCollider = chunkAssets.MeshColliders[i];
-                //  If the mesh has already been loaded, skip it.
-                if (m_loadedMeshes.ContainsKey(meshCollider.MeshReference.RuntimeKey))
-                    continue;
-                var meshOperation = meshCollider.MeshReference.LoadAsset<GameObject>();
-                m_loadedMeshes.Add(meshCollider.MeshReference.RuntimeKey, null);
+                var layer = chunkAssets.MeshColliderLayers[i];
 
-                meshOperation.Completed += MeshOperationCompleted;
+                //  Load all the different LODs of the mesh
+                for(int j = 0; j < layer.MeshColliders.Length; j++)
+                {
+                    var lod = layer.MeshColliders[j];
+
+                    //  If the mesh has already been loaded, then skip it.
+                    if (m_loadedMeshes.ContainsKey(lod.MeshReference.RuntimeKey))
+                        continue;
+
+                    //  Load the mesh and create an empty slot to chuck it into in the loaded meshes dictionary
+                    var meshOperation = lod.MeshReference.LoadAsset<GameObject>();
+                    m_loadedMeshes.Add(lod.MeshReference.RuntimeKey, null);
+
+                    meshOperation.Completed += MeshOperationCompleted;
+                }
             }
         }
 

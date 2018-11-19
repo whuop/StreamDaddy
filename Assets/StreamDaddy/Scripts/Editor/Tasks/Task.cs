@@ -17,19 +17,19 @@ namespace StreamDaddy.Editor.Tasks
             m_name = name;
         }
 
-        protected void LogInfo(string msg)
+        protected void LogInfo(string msg, UnityEngine.Object context = null)
         {
-            Debug.Log(string.Format("[Task-{0}] " + msg, Name));
+            Debug.Log(string.Format("[Task-{0}] " + msg, Name), context);
         }
 
-        protected void LogWarning(string msg)
+        protected void LogWarning(string msg, UnityEngine.Object context = null)
         {
-            Debug.LogWarning(string.Format("[Task-{0}] " + msg, Name));
+            Debug.LogWarning(string.Format("[Task-{0}] " + msg, Name), context);
         }
 
-        protected void LogError(string msg)
+        protected void LogError(string msg, UnityEngine.Object context = null)
         {
-            Debug.LogError(string.Format("[Task-{0}] " + msg, Name));
+            Debug.LogError(string.Format("[Task-{0}] " + msg, Name), context);
         }
     }
 }

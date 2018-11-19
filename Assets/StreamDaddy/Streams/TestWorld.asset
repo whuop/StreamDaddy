@@ -17,13 +17,13 @@ MonoBehaviour:
   m_chunkLayoutBundle: TestWorldChunkLayout
   m_chunkLayoutReferences: []
   ChunkLayoutReferences:
-  - m_assetGUID: cda8d38ec41e38c46b143473338a5808
+  - m_assetGUID: 3ce5aef6b3d657a45baf953bbc0f0a79
     m_cachedAsset: {fileID: 0}
-  - m_assetGUID: 0d3f14905c6c5c14487605f423f470b2
+  - m_assetGUID: cda8d38ec41e38c46b143473338a5808
     m_cachedAsset: {fileID: 0}
   - m_assetGUID: 1a098036289ffbc439fd10eac4a46315
     m_cachedAsset: {fileID: 0}
-  - m_assetGUID: 3ce5aef6b3d657a45baf953bbc0f0a79
+  - m_assetGUID: 0d3f14905c6c5c14487605f423f470b2
     m_cachedAsset: {fileID: 0}
   - m_assetGUID: 1954b1a2fddd7cb4baedb18eb1b4a012
     m_cachedAsset: {fileID: 0}
@@ -34,4 +34,4 @@ MonoBehaviour:
   - m_assetGUID: 47b20a24f2718f74faf701cc6c8db1a9
     m_cachedAsset: {fileID: 0}
   m_assetBundles:
-  - TestWorldChunkAssets
+  - TestWorld_chunkassets
