@@ -20,7 +20,7 @@ namespace StreamDaddy.Streaming
         
         [SerializeField]
         private List<AssetReference> m_chunkLayoutReferences;
-        public List<AssetReference> ChunkLayoutReferences;
+        public List<AssetReference> ChunkLayoutReferences { get { return m_chunkLayoutReferences; } set { m_chunkLayoutReferences = value; } }
         
         [SerializeField]
         private string[] m_assetBundles;

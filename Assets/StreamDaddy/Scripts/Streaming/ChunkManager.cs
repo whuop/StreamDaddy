@@ -42,7 +42,7 @@ namespace StreamDaddy.Streaming
                 if (chunk.State == ChunkState.Unloaded)
                 {
                     m_loadList.Remove(chunk);
-                    m_coroutineStarter.StartCoroutine(chunk.LoadChunk(3));
+                    m_coroutineStarter.StartCoroutine(chunk.LoadChunk(1));
                 }
             }
             //  Loop through all chunks that should be unloaded and make sure they are.

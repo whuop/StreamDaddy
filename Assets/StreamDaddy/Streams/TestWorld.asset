@@ -15,23 +15,22 @@ MonoBehaviour:
   m_worldName: TestWorld
   m_chunkSize: {x: 128, y: 128, z: 128}
   m_chunkLayoutBundle: TestWorldChunkLayout
-  m_chunkLayoutReferences: []
-  ChunkLayoutReferences:
-  - m_assetGUID: 3ce5aef6b3d657a45baf953bbc0f0a79
+  m_chunkLayoutReferences:
+  - m_assetGUID: de5d2fc6edfc8a847aa57f3811d94b8a
     m_cachedAsset: {fileID: 0}
-  - m_assetGUID: cda8d38ec41e38c46b143473338a5808
+  - m_assetGUID: bb5b840d5b7a2a148b9c095a4b0b443c
     m_cachedAsset: {fileID: 0}
-  - m_assetGUID: 1a098036289ffbc439fd10eac4a46315
+  - m_assetGUID: 27dd471f0e17b274298754f8c836a65f
     m_cachedAsset: {fileID: 0}
-  - m_assetGUID: 0d3f14905c6c5c14487605f423f470b2
+  - m_assetGUID: 09f9c540efd31db42979c0a3eb115495
     m_cachedAsset: {fileID: 0}
-  - m_assetGUID: 1954b1a2fddd7cb4baedb18eb1b4a012
+  - m_assetGUID: 5a7fe3cc05291a048b23ae2dd403e61a
     m_cachedAsset: {fileID: 0}
-  - m_assetGUID: 2a38a017981e36c42bbbdd8188168ada
+  - m_assetGUID: 01398f6d3091c6c4da92e7947cb842a8
     m_cachedAsset: {fileID: 0}
-  - m_assetGUID: 772135c5f167642418b6e5fe355ddf4a
+  - m_assetGUID: 9eff55af637b1ef449fb30abedc71ef6
     m_cachedAsset: {fileID: 0}
-  - m_assetGUID: 47b20a24f2718f74faf701cc6c8db1a9
+  - m_assetGUID: 6fd644c252eb0e34b9e04610413d3651
     m_cachedAsset: {fileID: 0}
   m_assetBundles:
   - TestWorld_chunkassets
