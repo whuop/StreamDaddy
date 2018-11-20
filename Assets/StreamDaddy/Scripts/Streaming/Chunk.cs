@@ -64,13 +64,14 @@ namespace StreamDaddy.Streaming
                 {
                     yield return new WaitForEndOfFrame();
                     var meshData = layer.Meshes[i];
+                    var materialsData = m_chunkData.MeshMaterials[i];
                     var transform = m_chunkData.MeshTransforms[i];
 
                     var mesh = AddressablesLoader.GetMesh(meshData.MeshReference.RuntimeKey);
-                    Material[] materials = new Material[meshData.MaterialReferences.Length];
-                    for(int j = 0; j < meshData.MaterialReferences.Length; j++)
+                    Material[] materials = new Material[materialsData.MaterialReferences.Length];
+                    for(int j = 0; j < materials.Length; j++)
                     {
-                        materials[j] = AddressablesLoader.GetMaterial(meshData.MaterialReferences[j].RuntimeKey);
+                        materials[j] = AddressablesLoader.GetMaterial(materialsData.MaterialReferences[j].RuntimeKey);
                     }
 
                     Renderable renderer = GameObjectPool.GetRenderer(mesh, materials, transform.Position, transform.Rotation, transform.Scale);
@@ -97,10 +98,10 @@ namespace StreamDaddy.Streaming
                 }
 
                 var colliderLayer = m_chunkData.MeshColliderLayers[lodLevel];
-                for(int i = 0; i < colliderLayer.MeshColliders.Length; i++)
+                for(int i = 0; i < colliderLayer.Meshes.Length; i++)
                 {
                     yield return new WaitForEndOfFrame();
-                    MeshColliderData data = colliderLayer.MeshColliders[i];
+                    MeshData data = colliderLayer.Meshes[i];
                     TransformData transform = m_chunkData.MeshColliderTransforms[i];
 
                     Mesh mesh = AddressablesLoader.GetMesh(data.MeshReference.RuntimeKey);

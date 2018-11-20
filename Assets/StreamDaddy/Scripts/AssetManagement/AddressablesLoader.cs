@@ -3,6 +3,7 @@ using StreamDaddy.Streaming;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
+using UnityEngine.ResourceManagement;
 
 namespace StreamDaddy.AssetManagement
 {
@@ -70,24 +71,25 @@ namespace StreamDaddy.AssetManagement
 
                     //  Load the mesh and create an empty entry to chuck it into in the loaded meshes dictionary.
                     var meshOperation = lod.MeshReference.LoadAsset<GameObject>();
-                    m_loadedMeshes.Add(lod.MeshReference.RuntimeKey, null);
 
                     meshOperation.Completed += MeshOperationCompleted;
+                }
+            }
 
-                    //  Load all the materials for this mesh
-                    for(int k = 0; k < lod.MaterialReferences.Length; k++)
-                    {
-                        var material = lod.MaterialReferences[k];
-                        //  If the material has already been loaded, then skip it
-                        if (m_loadedMaterials.ContainsKey(material.RuntimeKey))
-                            continue;
+            //  Load all materials
+            for(int i = 0; i < chunkAssets.MeshMaterials.Length; i++)
+            {
+                var materials = chunkAssets.MeshMaterials[i];
 
-                        //  Load the material and create an empty slot to chuck it into in the loaded materials dictionary.
-                        var materialOperation = material.LoadAsset<Material>();
-                        m_loadedMaterials.Add(material.RuntimeKey, null);
+                for(int j = 0; j < materials.MaterialReferences.Length; j++)
+                {
+                    var materialRef = materials.MaterialReferences[j];
+                    if (m_loadedMaterials.ContainsKey(materialRef.RuntimeKey))
+                        continue;
 
-                        materialOperation.Completed += MaterialOperationCompleted;
-                    }
+                    var materialOperation = materialRef.LoadAsset<Material>();
+
+                    materialOperation.Completed += MaterialOperationCompleted;
                 }
             }
 
@@ -97,9 +99,9 @@ namespace StreamDaddy.AssetManagement
                 var layer = chunkAssets.MeshColliderLayers[i];
 
                 //  Load all the different LODs of the mesh
-                for(int j = 0; j < layer.MeshColliders.Length; j++)
+                for(int j = 0; j < layer.Meshes.Length; j++)
                 {
-                    var lod = layer.MeshColliders[j];
+                    var lod = layer.Meshes[j];
 
                     //  If the mesh has already been loaded, then skip it.
                     if (m_loadedMeshes.ContainsKey(lod.MeshReference.RuntimeKey))
@@ -107,7 +109,7 @@ namespace StreamDaddy.AssetManagement
 
                     //  Load the mesh and create an empty slot to chuck it into in the loaded meshes dictionary
                     var meshOperation = lod.MeshReference.LoadAsset<GameObject>();
-                    m_loadedMeshes.Add(lod.MeshReference.RuntimeKey, null);
+                    //m_loadedMeshes.Add(lod.MeshReference.RuntimeKey, null);
 
                     meshOperation.Completed += MeshOperationCompleted;
                 }
@@ -117,13 +119,35 @@ namespace StreamDaddy.AssetManagement
         private static void MeshOperationCompleted(UnityEngine.ResourceManagement.IAsyncOperation<GameObject> obj)
         {
             Hash128 key = (Hash128)obj.Key;
-            m_loadedMeshes[key] = obj.Result.GetComponent<MeshFilter>().sharedMesh;
+            IResourceLocation location = (IResourceLocation)obj.Context;
+            
+            var meshfilters = obj.Result.GetComponentsInChildren<MeshFilter>();
+
+            string meshRootAddress = location.InternalId;
+            for(int i = 0; i < meshfilters.Length; i++)
+            {
+                var filter = meshfilters[i];
+                string meshAddress = location.InternalId + "_" + filter.sharedMesh.name;
+                Hash128 meshKey = Hash128.Compute(meshAddress);
+                if (m_loadedMeshes.ContainsKey(meshKey))
+                {
+                    Debug.LogError(string.Format("Trying to add duplicate mesh with address {0} and hash {1}", meshAddress, meshKey.ToString()));
+                    continue;
+                }
+                m_loadedMeshes.Add(meshKey, filter.sharedMesh);
+            }
+            
         }
 
         private static void MaterialOperationCompleted(UnityEngine.ResourceManagement.IAsyncOperation<Material> obj)
         {
             Hash128 key = (Hash128)obj.Key;
-            m_loadedMaterials[key] = obj.Result;
+            if (m_loadedMaterials.ContainsKey(key))
+            {
+                IResourceLocation location = (IResourceLocation)obj.Context;
+                Debug.LogError(string.Format("Trying to add duplicate material with address {0} and hash {1}", location.InternalId, key.ToString()));
+            }
+            m_loadedMaterials.Add(key, obj.Result);
         }
 
         private static void LayoutLoaderCompleted(UnityEngine.ResourceManagement.IAsyncOperation<AssetChunkData> obj)

@@ -3,6 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
+
 namespace StreamDaddy.AssetManagement
 {
     public class AssetChunkData : ScriptableObject
@@ -11,6 +15,7 @@ namespace StreamDaddy.AssetManagement
         /// Renderable meshes 
         /// </summary>
         public MeshLayerData[] MeshLayers;
+        public MaterialData[] MeshMaterials;
         public TransformData[] MeshTransforms;
 
         /// <summary>
@@ -23,7 +28,7 @@ namespace StreamDaddy.AssetManagement
         /// Mesh Colliders, these are special compared to the other colliders as they
         /// have a mesh. Which means we might want to LOD them as well.
         /// </summary>
-        public MeshColliderLayerData[] MeshColliderLayers;
+        public MeshLayerData[] MeshColliderLayers;
         public TransformData[] MeshColliderTransforms;
         
         /// <summary>
@@ -36,12 +41,6 @@ namespace StreamDaddy.AssetManagement
     public class MeshLayerData
     {
         public MeshData[] Meshes;
-    }
-
-    [System.Serializable]
-    public class MeshColliderLayerData
-    {
-        public MeshColliderData[] MeshColliders;
     }
 
     [System.Serializable]
@@ -61,14 +60,16 @@ namespace StreamDaddy.AssetManagement
         [SerializeField]
         public AssetReference MeshReference;
         [SerializeField]
-        public AssetReference[] MaterialReferences;
+        public string SubMeshName;
+
+        public Hash128 RuntimeHash;
     }
 
     [System.Serializable]
-    public class MeshColliderData
+    public class MaterialData
     {
         [SerializeField]
-        public AssetReference MeshReference;
+        public AssetReference[] MaterialReferences;
     }
 
     [System.Serializable]
@@ -88,6 +89,53 @@ namespace StreamDaddy.AssetManagement
         [SerializeField]
         public float Radius;
     }
+    /*
+#if UNITY_EDITOR
+
+    [CustomEditor(typeof(AssetChunkData))]
+    public class AssetChunkDataEditor : Editor
+    {
+        private AssetChunkData m_chunkData;
+
+        private bool[] m_meshLayerFoldouts;
+
+        public void OnEnable()
+        {
+            m_chunkData = (AssetChunkData)target;
+
+            m_meshLayerFoldouts = new bool[m_chunkData.MeshLayers.Length];
+            for(int i = 0; i < m_meshLayerFoldouts.Length; i++)
+            {
+                m_meshLayerFoldouts[i] = false;
+            }
+        }
+
+        public override void OnInspectorGUI()
+        {
+            EditorGUILayout.LabelField("Mesh Layers");
+            var assetSettings = UnityEditor.AddressableAssets.AddressableAssetSettingsDefaultObject.Settings;
+
+            EditorGUI.indentLevel = 1;
+            for (int i = 0; i < m_chunkData.MeshLayers.Length; i++)
+            {
+                m_meshLayerFoldouts[i] = EditorGUILayout.Foldout(m_meshLayerFoldouts[i], "LOD " + i);
+                if (m_meshLayerFoldouts[i])
+                {
+                    for(int j = 0; j < m_chunkData.MeshLayers[i].Meshes.Length; j++)
+                    {
+                        var meshData = m_chunkData.MeshLayers[i].Meshes[j];
+                        
+                        EditorGUILayout.LabelField(meshData.MeshReference.ToString());
+                    }
+                }
+            }
+            EditorGUI.indentLevel = 0;
+
+        }
+    }
+
+#endif
+*/
 }
 
 
