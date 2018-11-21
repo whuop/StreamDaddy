@@ -329,7 +329,7 @@ namespace StreamDaddy.Editor.Tasks
         {            
             MeshData data = new MeshData();
             data.MeshReference = meshReference;
-            data.SubMeshName = submeshName;
+            data.SubmeshName = submeshName;
             
             return data;
         }

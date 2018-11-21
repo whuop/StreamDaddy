@@ -7,6 +7,7 @@ using UnityEngine.ResourceManagement;
 
 namespace StreamDaddy.AssetManagement
 {
+
     public class AddressablesLoader
     {
         private static List<UnityEngine.ResourceManagement.IAsyncOperation<AssetChunkData>> m_layoutsLoading = new List<UnityEngine.ResourceManagement.IAsyncOperation<AssetChunkData>>();
@@ -20,7 +21,7 @@ namespace StreamDaddy.AssetManagement
         /// Contains all of the meshes that have been loaded.
         /// The key is the runtime key of the asset reference.
         /// </summary>
-        private static Dictionary<Hash128, Mesh> m_loadedMeshes = new Dictionary<Hash128, Mesh>();
+        private static Dictionary<Hash128, Dictionary<Hash128, Mesh>> m_loadedMeshes = new Dictionary<Hash128, Dictionary<Hash128, Mesh>>();
 
         /// <summary>
         /// Contains all of the loaded materials.
@@ -33,9 +34,9 @@ namespace StreamDaddy.AssetManagement
             m_onFinishedLoadingLayouts = onFinishedLoadingLayouts;
         }
 
-        public static Mesh GetMesh(Hash128 runtimeKey)
+        public static Mesh GetMesh(Hash128 meshKey, Hash128 submeshKey)
         {
-            return m_loadedMeshes[runtimeKey];
+            return m_loadedMeshes[meshKey][submeshKey];
         }
 
         public static Material GetMaterial(Hash128 runtimeKey)
@@ -127,16 +128,47 @@ namespace StreamDaddy.AssetManagement
             for(int i = 0; i < meshfilters.Length; i++)
             {
                 var filter = meshfilters[i];
-                string meshAddress = location.InternalId + "_" + filter.sharedMesh.name;
-                Hash128 meshKey = Hash128.Compute(meshAddress);
-                if (m_loadedMeshes.ContainsKey(meshKey))
+                Hash128 submeshKey = Hash128.Compute(filter.sharedMesh.name);
+
+                //  Make sure the two containers holding the submeshes exist
+                EnsureMeshContainerExists(key, submeshKey);
+
+                if (MeshExists(key, submeshKey))
                 {
-                    Debug.LogError(string.Format("Trying to add duplicate mesh with address {0} and hash {1}", meshAddress, meshKey.ToString()));
-                    continue;
+                    Debug.LogError(string.Format("Trying to add duplicate mesh with address {0}, MeshKey {1} and SubmeshKey {2}", location.InternalId, key.ToString(), submeshKey.ToString()));
                 }
-                m_loadedMeshes.Add(meshKey, filter.sharedMesh);
+
+                AddSubmesh(key, submeshKey, filter.sharedMesh);
             }
-            
+        }
+
+        private static bool MeshExists(Hash128 meshKey, Hash128 submeshKey)
+        {
+            if (!m_loadedMeshes.ContainsKey(meshKey))
+                return false;
+
+            if (!m_loadedMeshes[meshKey].ContainsKey(submeshKey))
+                return false;
+
+            return true;
+        }
+
+        private static void AddSubmesh(Hash128 meshKey, Hash128 submeshKey, Mesh mesh)
+        {
+            m_loadedMeshes[meshKey][submeshKey] = mesh;
+        }
+
+        private static void EnsureMeshContainerExists(Hash128 meshKey, Hash128 submeshKey)
+        {
+            if (!m_loadedMeshes.ContainsKey(meshKey))
+            {
+                m_loadedMeshes.Add(meshKey, new Dictionary<Hash128, Mesh>());
+            }
+
+            if (!m_loadedMeshes[meshKey].ContainsKey(submeshKey))
+            {
+                m_loadedMeshes[meshKey].Add(submeshKey, null);
+            }
         }
 
         private static void MaterialOperationCompleted(UnityEngine.ResourceManagement.IAsyncOperation<Material> obj)

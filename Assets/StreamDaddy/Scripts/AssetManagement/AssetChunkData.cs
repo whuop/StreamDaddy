@@ -60,9 +60,9 @@ namespace StreamDaddy.AssetManagement
         [SerializeField]
         public AssetReference MeshReference;
         [SerializeField]
-        public string SubMeshName;
+        public string SubmeshName;
 
-        public Hash128 RuntimeHash;
+        public Hash128 SubmeshHash;
     }
 
     [System.Serializable]

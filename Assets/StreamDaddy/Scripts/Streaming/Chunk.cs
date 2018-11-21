@@ -67,7 +67,7 @@ namespace StreamDaddy.Streaming
                     var materialsData = m_chunkData.MeshMaterials[i];
                     var transform = m_chunkData.MeshTransforms[i];
 
-                    var mesh = AddressablesLoader.GetMesh(meshData.MeshReference.RuntimeKey);
+                    var mesh = AddressablesLoader.GetMesh(meshData.MeshReference.RuntimeKey, meshData.SubmeshHash);
                     Material[] materials = new Material[materialsData.MaterialReferences.Length];
                     for(int j = 0; j < materials.Length; j++)
                     {
@@ -104,7 +104,7 @@ namespace StreamDaddy.Streaming
                     MeshData data = colliderLayer.Meshes[i];
                     TransformData transform = m_chunkData.MeshColliderTransforms[i];
 
-                    Mesh mesh = AddressablesLoader.GetMesh(data.MeshReference.RuntimeKey);
+                    Mesh mesh = AddressablesLoader.GetMesh(data.MeshReference.RuntimeKey, data.SubmeshHash);
                     MeshCollideable collideable = GameObjectPool.GetMeshCollider(transform.Position, transform.Rotation, transform.Scale, mesh);
                     m_meshColliders.Add(collideable);
                 }
