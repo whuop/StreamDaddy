@@ -85,28 +85,28 @@
     <Compile Include="Assets\StreamDaddy\Scripts\Editor\Utils\ScriptableObjectUtils.cs" />
     <Compile Include="Assets\StreamDaddy\TerrainToMesh\Scripts\Editor\TerrainToMesh.cs" />
     <Reference Include="Unity.CacheServer.Client.Editor">
-      <HintPath>E:/Repos/StreamDaddy/Library/ScriptAssemblies/Unity.CacheServer.Client.Editor.dll</HintPath>
+      <HintPath>D:/Repos/StreamDaddy/Library/ScriptAssemblies/Unity.CacheServer.Client.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.ScriptableBuildPipeline.Editor">
-      <HintPath>E:/Repos/StreamDaddy/Library/ScriptAssemblies/Unity.ScriptableBuildPipeline.Editor.dll</HintPath>
+      <HintPath>D:/Repos/StreamDaddy/Library/ScriptAssemblies/Unity.ScriptableBuildPipeline.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.ResourceManager">
-      <HintPath>E:/Repos/StreamDaddy/Library/ScriptAssemblies/Unity.ResourceManager.dll</HintPath>
+      <HintPath>D:/Repos/StreamDaddy/Library/ScriptAssemblies/Unity.ResourceManager.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Analytics.Android.Editor">
-      <HintPath>E:/Repos/StreamDaddy/Library/ScriptAssemblies/Unity.Analytics.Android.Editor.dll</HintPath>
+      <HintPath>D:/Repos/StreamDaddy/Library/ScriptAssemblies/Unity.Analytics.Android.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.PackageManagerUI.Editor">
-      <HintPath>E:/Repos/StreamDaddy/Library/ScriptAssemblies/Unity.PackageManagerUI.Editor.dll</HintPath>
+      <HintPath>D:/Repos/StreamDaddy/Library/ScriptAssemblies/Unity.PackageManagerUI.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Addressables.Editor">
-      <HintPath>E:/Repos/StreamDaddy/Library/ScriptAssemblies/Unity.Addressables.Editor.dll</HintPath>
+      <HintPath>D:/Repos/StreamDaddy/Library/ScriptAssemblies/Unity.Addressables.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.AssetBundleBrowser.Editor">
-      <HintPath>E:/Repos/StreamDaddy/Library/ScriptAssemblies/Unity.AssetBundleBrowser.Editor.dll</HintPath>
+      <HintPath>D:/Repos/StreamDaddy/Library/ScriptAssemblies/Unity.AssetBundleBrowser.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Addressables">
-      <HintPath>E:/Repos/StreamDaddy/Library/ScriptAssemblies/Unity.Addressables.dll</HintPath>
+      <HintPath>D:/Repos/StreamDaddy/Library/ScriptAssemblies/Unity.Addressables.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.AIModule">
       <HintPath>C:/Program Files/Unity/Hub/Editor/2018.3.0b9/Editor/Data/Managed/UnityEngine/UnityEngine.AIModule.dll</HintPath>
@@ -339,9 +339,6 @@
     <Reference Include="UnityEditor.Android.Extensions">
       <HintPath>C:/Program Files/Unity/Hub/Editor/2018.3.0b9/Editor/Data/PlaybackEngines/AndroidPlayer/UnityEditor.Android.Extensions.dll</HintPath>
     </Reference>
-    <Reference Include="UnityEditor.iOS.Extensions">
-      <HintPath>C:/Program Files/Unity/Hub/Editor/2018.3.0b9/Editor/Data/PlaybackEngines/iOSSupport/UnityEditor.iOS.Extensions.dll</HintPath>
-    </Reference>
     <Reference Include="UnityEditor.WSA.Extensions">
       <HintPath>C:/Program Files/Unity/Hub/Editor/2018.3.0b9/Editor/Data/PlaybackEngines/MetroSupport/UnityEditor.WSA.Extensions.dll</HintPath>
     </Reference>
@@ -361,22 +358,16 @@
       <HintPath>C:/Program Files (x86)/Microsoft Visual Studio Tools for Unity/15.0/Editor/SyntaxTree.VisualStudio.Unity.Bridge.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Analytics.Editor">
-      <HintPath>E:/Repos/StreamDaddy/Library/PackageCache/com.unity.analytics@3.0.9/Unity.Analytics.Editor.dll</HintPath>
+      <HintPath>D:/Repos/StreamDaddy/Library/PackageCache/com.unity.analytics@3.0.9/Unity.Analytics.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Analytics.StandardEvents">
-      <HintPath>E:/Repos/StreamDaddy/Library/PackageCache/com.unity.analytics@3.0.9/Unity.Analytics.StandardEvents.dll</HintPath>
+      <HintPath>D:/Repos/StreamDaddy/Library/PackageCache/com.unity.analytics@3.0.9/Unity.Analytics.StandardEvents.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Analytics.Tracker">
-      <HintPath>E:/Repos/StreamDaddy/Library/PackageCache/com.unity.analytics@3.0.9/Unity.Analytics.Tracker.dll</HintPath>
+      <HintPath>D:/Repos/StreamDaddy/Library/PackageCache/com.unity.analytics@3.0.9/Unity.Analytics.Tracker.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Analytics">
-      <HintPath>E:/Repos/StreamDaddy/Library/PackageCache/com.unity.analytics@3.0.9/Android/Unity.Analytics.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEditor.iOS.Extensions.Xcode">
-      <HintPath>C:/Program Files/Unity/Hub/Editor/2018.3.0b9/Editor/Data/PlaybackEngines/iOSSupport/UnityEditor.iOS.Extensions.Xcode.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEditor.iOS.Extensions.Common">
-      <HintPath>C:/Program Files/Unity/Hub/Editor/2018.3.0b9/Editor/Data/PlaybackEngines/iOSSupport/UnityEditor.iOS.Extensions.Common.dll</HintPath>
+      <HintPath>D:/Repos/StreamDaddy/Library/PackageCache/com.unity.analytics@3.0.9/Android/Unity.Analytics.dll</HintPath>
     </Reference>
     <Reference Include="mscorlib">
       <HintPath>C:/Program Files/Unity/Hub/Editor/2018.3.0b9/Editor/Data/MonoBleedingEdge/lib/mono/4.7.1-api/mscorlib.dll</HintPath>
