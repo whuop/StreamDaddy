@@ -1,4 +1,5 @@
 ﻿using StreamDaddy.Editor.Chunking;
+using StreamDaddy.Editor.Utils;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -70,6 +71,10 @@ namespace StreamDaddy.Editor.Tasks
                         //  remove the file extension from the output.
                         outputPath = RemoveFileExtension(outputPath);
 
+                        //  Create the directory tree where all the lods and individual mesh assets will be saved.
+                        string outputDirectory = "Assets/" + outputPath + "/";
+                        PathUtils.EnsurePathExists(outputDirectory);
+
                         //  For some reason mle.exe is better at creating less verts when creating a 100% lod first and 
                         //  using that to create the other lods
                         var lod0 = ExtractMeshesFromFilter(filter);//GenerateLOD(filter.sharedMesh, lodFormat, 0, outputPath);
@@ -77,18 +82,10 @@ namespace StreamDaddy.Editor.Tasks
                         var lod2 = GenerateLOD(filter.sharedMesh, lodFormat, 2, outputPath);
                         var lod3 = GenerateLOD(filter.sharedMesh, lodFormat, 3, outputPath);
                         
-                        string assetOutputPath = outputPath;
-                        LogError("Asset output path: " + assetOutputPath);
-
-                        string outDirectory = Application.dataPath + "/" + assetOutputPath;
-                        LogError("Global Asset output path: " + outDirectory);
-                        System.IO.Directory.CreateDirectory(outDirectory);
-
-                        assetOutputPath = "Assets/" + assetOutputPath + "/";
-                        CreateAssetsFromMeshes(lod0, assetOutputPath, "_LOD0");
-                        CreateAssetsFromMeshes(lod1, assetOutputPath, "_LOD1");
-                        CreateAssetsFromMeshes(lod2, assetOutputPath, "_LOD2");
-                        CreateAssetsFromMeshes(lod3, assetOutputPath, "_LOD3");
+                        CreateAssetsFromMeshes(lod0, outputDirectory, "_LOD0");
+                        CreateAssetsFromMeshes(lod1, outputDirectory, "_LOD1");
+                        CreateAssetsFromMeshes(lod2, outputDirectory, "_LOD2");
+                        CreateAssetsFromMeshes(lod3, outputDirectory, "_LOD3");
 
                         //CreateAssetFromMesh(lod0, outputPath + "")
 
@@ -121,9 +118,7 @@ namespace StreamDaddy.Editor.Tasks
                 if (obj.GetType() == typeof(Mesh))
                 {
                     Mesh subMesh = (Mesh)obj;
-                    //subMesh.name += postFix;
                     allMeshes.Add(subMesh);
-                    LogError("ADDED SUBMESH: " + subMesh.name);
                 }
             }
             return allMeshes.ToArray();
@@ -134,7 +129,7 @@ namespace StreamDaddy.Editor.Tasks
             string path = AssetDatabase.GetAssetPath(mesh);
             string meshName = mesh.name;
             string lodFormatName = GetLodFormat(lodFormat);
-            string inputMeshFileFormat = "." + ExtractFileFormatFromPath(path);
+            string inputMeshFileFormat = "." + PathUtils.ExtractFileFormatFromPath(path);
 
             LogInfo(string.Format("Mesh Path is {0}", path));
             LogInfo(string.Format("Mesh Name is {0}", meshName));
@@ -142,12 +137,7 @@ namespace StreamDaddy.Editor.Tasks
 
             string inputPath = path.Replace("Assets/", "");
             inputPath = RemoveFileExtension(inputPath);
-
-            //  Calculate the output directory for the LOD
-            //  Create the output path
-            string outDirectory = Application.dataPath + "/" + RemoveLastPath(outputPath);
-            System.IO.Directory.CreateDirectory(outDirectory);
-
+            
             // Add the LOD level to the output path, so that it doesn't override any of the other LOD levels for this LOD.
             outputPath += "_LOD" + lodLevel;
             
@@ -166,7 +156,7 @@ namespace StreamDaddy.Editor.Tasks
 
             LogInfo(string.Format("MLE Path: {0}", mlePath));
 
-            string args = "-b y -d y -s y -t " + LOD_LEVELS[lodLevel] + "% -i \"" + globalInputPath + "\" -o \"" + globalOutputPath + "\"" + " -f " + (int)lodFormat;
+            string args = "-b y -d n -s n -t " + LOD_LEVELS[lodLevel] + "% -i \"" + globalInputPath + "\" -o \"" + globalOutputPath + "\"" + " -f " + (int)lodFormat;
 
             args = args.Replace("/", @"\");
             LogInfo(string.Format("mle arguments: {0}", args));
@@ -215,9 +205,7 @@ namespace StreamDaddy.Editor.Tasks
                 if (obj.GetType() == typeof(Mesh))
                 {
                     Mesh subMesh = (Mesh)obj;
-                    //subMesh.name += "_LOD" + lodLevel;
                     allMeshes.Add(subMesh);
-                    LogError("ADDED SUBMESH: " + subMesh.name);
                 }
             }
             return allMeshes.ToArray();
@@ -252,17 +240,9 @@ namespace StreamDaddy.Editor.Tasks
             }
             
             AssetDatabase.CreateAsset(newMesh, outputPath);
-            LogError("SAVING ASSET AT PATH: " + outputPath);
             return newMesh;
         }
-
-        private string ExtractFileFormatFromPath(string path)
-        {
-            string[] split = path.Split('.');
-            string format = split[split.Length - 1];
-            return format;
-        }
-
+        
         public static string RemoveFileExtension(string path)
         {
             string outPath = path;
@@ -272,20 +252,6 @@ namespace StreamDaddy.Editor.Tasks
                 outPath = outPath.Replace(format.ToUpper(), "");
             }
             return outPath;
-        }
-
-        private static string RemoveLastPath(string path)
-        {
-            string result = "";
-
-            string[] splits = path.Split(new []{ "/" }, StringSplitOptions.None);
-
-            for(int i = 0; i < splits.Length - 1; i++)
-            {
-                result += splits[i] + "/";
-            }
-
-            return result;
         }
     }
 

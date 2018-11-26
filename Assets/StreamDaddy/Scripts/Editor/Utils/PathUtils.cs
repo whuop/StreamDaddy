@@ -27,6 +27,27 @@ namespace StreamDaddy.Editor.Utils
 
             System.IO.Directory.CreateDirectory(path);
         }
+
+        public static string ExtractFileFormatFromPath(string path)
+        {
+            string[] split = path.Split('.');
+            string format = split[split.Length - 1];
+            return format;
+        }
+
+        public static string RemoveLastInPath(string path)
+        {
+            string result = "";
+
+            string[] splits = path.Split(new[] { "/" }, StringSplitOptions.None);
+
+            for (int i = 0; i < splits.Length - 1; i++)
+            {
+                result += splits[i] + "/";
+            }
+
+            return result;
+        }
     }
 }
 

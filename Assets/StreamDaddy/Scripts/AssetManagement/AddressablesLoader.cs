@@ -21,7 +21,7 @@ namespace StreamDaddy.AssetManagement
         /// Contains all of the meshes that have been loaded.
         /// The key is the runtime key of the asset reference.
         /// </summary>
-        private static Dictionary<Hash128, Dictionary<Hash128, Mesh>> m_loadedMeshes = new Dictionary<Hash128, Dictionary<Hash128, Mesh>>();
+        private static Dictionary<Hash128, Mesh> m_loadedMeshes = new Dictionary<Hash128, Mesh>();
 
         /// <summary>
         /// Contains all of the loaded materials.
@@ -34,9 +34,9 @@ namespace StreamDaddy.AssetManagement
             m_onFinishedLoadingLayouts = onFinishedLoadingLayouts;
         }
 
-        public static Mesh GetMesh(Hash128 meshKey, Hash128 submeshKey)
+        public static Mesh GetMesh(Hash128 meshKey)
         {
-            return m_loadedMeshes[meshKey][submeshKey];
+            return m_loadedMeshes[meshKey];
         }
 
         public static Material GetMaterial(Hash128 runtimeKey)
@@ -71,7 +71,7 @@ namespace StreamDaddy.AssetManagement
                         continue;
 
                     //  Load the mesh and create an empty entry to chuck it into in the loaded meshes dictionary.
-                    var meshOperation = lod.MeshReference.LoadAsset<GameObject>();
+                    var meshOperation = lod.MeshReference.LoadAsset<Mesh>();
 
                     meshOperation.Completed += MeshOperationCompleted;
                 }
@@ -109,7 +109,7 @@ namespace StreamDaddy.AssetManagement
                         continue;
 
                     //  Load the mesh and create an empty slot to chuck it into in the loaded meshes dictionary
-                    var meshOperation = lod.MeshReference.LoadAsset<GameObject>();
+                    var meshOperation = lod.MeshReference.LoadAsset<Mesh>();
                     //m_loadedMeshes.Add(lod.MeshReference.RuntimeKey, null);
 
                     meshOperation.Completed += MeshOperationCompleted;
@@ -117,29 +117,12 @@ namespace StreamDaddy.AssetManagement
             }
         }
 
-        private static void MeshOperationCompleted(UnityEngine.ResourceManagement.IAsyncOperation<GameObject> obj)
+        private static void MeshOperationCompleted(UnityEngine.ResourceManagement.IAsyncOperation<Mesh> obj)
         {
             Hash128 key = (Hash128)obj.Key;
-            IResourceLocation location = (IResourceLocation)obj.Context;
-            
-            var meshfilters = obj.Result.GetComponentsInChildren<MeshFilter>();
 
-            string meshRootAddress = location.InternalId;
-            for(int i = 0; i < meshfilters.Length; i++)
-            {
-                var filter = meshfilters[i];
-                Hash128 submeshKey = Hash128.Compute(filter.sharedMesh.name);
-
-                //  Make sure the two containers holding the submeshes exist
-                EnsureMeshContainerExists(key, submeshKey);
-
-                if (MeshExists(key, submeshKey))
-                {
-                    Debug.LogError(string.Format("Trying to add duplicate mesh with address {0}, MeshKey {1} and SubmeshKey {2}", location.InternalId, key.ToString(), submeshKey.ToString()));
-                }
-
-                AddSubmesh(key, submeshKey, filter.sharedMesh);
-            }
+            Mesh mesh = obj.Result;
+            AddMesh(key, mesh);
         }
 
         private static bool MeshExists(Hash128 meshKey, Hash128 submeshKey)
@@ -147,27 +130,19 @@ namespace StreamDaddy.AssetManagement
             if (!m_loadedMeshes.ContainsKey(meshKey))
                 return false;
 
-            if (!m_loadedMeshes[meshKey].ContainsKey(submeshKey))
-                return false;
-
             return true;
         }
 
-        private static void AddSubmesh(Hash128 meshKey, Hash128 submeshKey, Mesh mesh)
+        private static void AddMesh(Hash128 meshKey, Mesh mesh)
         {
-            m_loadedMeshes[meshKey][submeshKey] = mesh;
+            m_loadedMeshes[meshKey] = mesh;
         }
 
         private static void EnsureMeshContainerExists(Hash128 meshKey, Hash128 submeshKey)
         {
             if (!m_loadedMeshes.ContainsKey(meshKey))
             {
-                m_loadedMeshes.Add(meshKey, new Dictionary<Hash128, Mesh>());
-            }
-
-            if (!m_loadedMeshes[meshKey].ContainsKey(submeshKey))
-            {
-                m_loadedMeshes[meshKey].Add(submeshKey, null);
+                m_loadedMeshes.Add(meshKey, null);
             }
         }
 
@@ -178,6 +153,7 @@ namespace StreamDaddy.AssetManagement
             {
                 IResourceLocation location = (IResourceLocation)obj.Context;
                 Debug.LogError(string.Format("Trying to add duplicate material with address {0} and hash {1}", location.InternalId, key.ToString()));
+                return;
             }
             m_loadedMaterials.Add(key, obj.Result);
         }

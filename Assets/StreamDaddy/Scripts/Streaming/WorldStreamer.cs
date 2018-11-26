@@ -111,6 +111,7 @@ namespace StreamDaddy.Streaming
 
         private IEnumerator CheckAreasOfInterest()
         {
+            yield return new WaitForSeconds(5.0f);
             Debug.Log("Booting up AOI check");
             //PrewarmWorld();
             Vector3Int chunkSize = m_worldStream.ChunkSize;

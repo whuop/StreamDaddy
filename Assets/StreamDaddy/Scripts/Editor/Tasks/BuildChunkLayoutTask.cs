@@ -168,7 +168,7 @@ namespace StreamDaddy.Editor.Tasks
                 string chunkAssetName = "chunklayout_" + chunk.ChunkID.X + "_" + chunk.ChunkID.Y + "_" + chunk.ChunkID.Z;
                 
                 //  Create the scriptable object for this chunk layout
-                var chunkLayout = CreateChunkLayout(meshLayers.ToArray(), meshTransforms.ToArray(), boxColliderData.ToArray(), sphereColliderData.ToArray(), meshColliderLayers.ToArray(), meshColliderTransforms.ToArray(), chunk.ChunkID);
+                var chunkLayout = CreateChunkLayout(meshLayers.ToArray(), meshMaterials.ToArray(), meshTransforms.ToArray(), boxColliderData.ToArray(), sphereColliderData.ToArray(), meshColliderLayers.ToArray(), meshColliderTransforms.ToArray(), chunk.ChunkID);
 
                 AssetDatabase.StartAssetEditing();
                 SaveChunkLayout(worldName, chunkAssetName, chunkLayout);
@@ -202,52 +202,56 @@ namespace StreamDaddy.Editor.Tasks
         {
             string assetPath = AssetDatabase.GetAssetPath(mesh.GetInstanceID());
             string assetGuid = AssetDatabase.AssetPathToGUID(assetPath);
-            //  Add mesh to Assets Addressables group
-            var entry = assetSettings.CreateOrMoveEntry(assetGuid, chunkAssetsGroup);
+            string fileFormat = "." + PathUtils.ExtractFileFormatFromPath(assetPath);
 
-            Debug.Log(string.Format("Adding Mesh {0} with address {1}", mesh.name, entry.address));
+            //  Create the directory path
+            assetPath = assetPath.Replace("Assets/", "Assets/GeneratedLODS/");
+            assetPath = assetPath.Replace(fileFormat, "") + "/";
+            //  Add file name
+            assetPath = assetPath + mesh.name;
 
-            List<AssetReference> materialReferences = new List<AssetReference>();
+            LogError("AssetPath: " + assetPath);
+
+            string lod0Path = assetPath + "_LOD0.asset";
+            string lod1Path = assetPath + "_LOD1.asset";
+            string lod2Path = assetPath + "_LOD2.asset";
+            string lod3Path = assetPath + "_LOD3.asset";
+
+            Mesh mlod0 = AssetDatabase.LoadAssetAtPath<Mesh>(lod0Path);
+            Mesh mlod1 = AssetDatabase.LoadAssetAtPath<Mesh>(lod1Path);
+            Mesh mlod2 = AssetDatabase.LoadAssetAtPath<Mesh>(lod2Path);
+            Mesh mlod3 = AssetDatabase.LoadAssetAtPath<Mesh>(lod3Path);
+
+            if (mlod0 == null)
+                LogError("Can't find LOD0 for mesh " + assetPath + " at path " + lod0Path);
+            if (mlod1 == null)
+                LogError("Can't find LOD1 for mesh " + assetPath + " at path " + lod1Path);
+            if (mlod2 == null)
+                LogError("Can't find LOD2 for mesh " + assetPath + " at path " + lod2Path);
+            if (mlod3 == null)
+                LogError("Can't find LOD3 for mesh " + assetPath + " at path " + lod3Path);
+
+            string lod0Guid = AssetDatabase.AssetPathToGUID(lod0Path);
+            string lod1Guid = AssetDatabase.AssetPathToGUID(lod1Path);
+            string lod2Guid = AssetDatabase.AssetPathToGUID(lod2Path);
+            string lod3Guid = AssetDatabase.AssetPathToGUID(lod3Path);
+
+            var lod0Entry = assetSettings.CreateOrMoveEntry(lod0Guid, chunkAssetsGroup);
+            var lod1Entry = assetSettings.CreateOrMoveEntry(lod1Guid, chunkAssetsGroup);
+            var lod2Entry = assetSettings.CreateOrMoveEntry(lod2Guid, chunkAssetsGroup);
+            var lod3Entry = assetSettings.CreateOrMoveEntry(lod3Guid, chunkAssetsGroup);
             
-            
-            var md = CreateMeshData(new AssetReference(entry.guid), mesh.name);
+            var lod0Ref = new AssetReference(lod0Guid);
+            var lod1Ref = new AssetReference(lod1Guid);
+            var lod2Ref = new AssetReference(lod2Guid);
+            var lod3Ref = new AssetReference(lod3Guid);
 
-            //  Create the mesh data for LOD 1, 2 and 3.
-            //  Remove assets from the path temporarily.
-            string lodPath = assetPath.Replace("Assets/", "");
-            //  Reconstruct the path adding the generated lods directory to the path
-            //  This is where all the lods are automatically put.
-            lodPath = "Assets/GeneratedLODS/" + lodPath;
+            var lod0md = CreateMeshData(lod0Ref);
+            var lod1md = CreateMeshData(lod1Ref);
+            var lod2md = CreateMeshData(lod2Ref);
+            var lod3md = CreateMeshData(lod3Ref);
 
-            // Create the specific paths for the different LODs
-            lodPath = GenerateMeshLodsTask.RemoveFileExtension(lodPath);
-
-            string lod1Path = lodPath + "_LOD1" + GenerateMeshLodsTask.GetLodFormat(lodFormat);
-            string lod2Path = lodPath + "_LOD2" + GenerateMeshLodsTask.GetLodFormat(lodFormat);
-            string lod3Path = lodPath + "_LOD3" + GenerateMeshLodsTask.GetLodFormat(lodFormat);
-
-            Mesh meshLod1 = AssetDatabase.LoadAssetAtPath<Mesh>(lod1Path);
-            if (meshLod1 == null)
-                LogError(string.Format("Could not find LOD1 for asset {0}", assetPath));
-            Mesh meshLod2 = AssetDatabase.LoadAssetAtPath<Mesh>(lod2Path);
-            if (meshLod2 == null)
-                LogError(string.Format("Could not find LOD2 for asset {0}", assetPath));
-            Mesh meshLod3 = AssetDatabase.LoadAssetAtPath<Mesh>(lod3Path);
-            if (meshLod3 == null)
-                LogError(string.Format("Could not find LOD3 for asset {0}", assetPath));
-
-            //  Add the different lods to the Addressable Groups
-            var lod1Entry = assetSettings.CreateOrMoveEntry(AssetDatabase.AssetPathToGUID(lod1Path), chunkAssetsGroup);
-            var lod2Entry = assetSettings.CreateOrMoveEntry(AssetDatabase.AssetPathToGUID(lod2Path), chunkAssetsGroup);
-            var lod3Entry = assetSettings.CreateOrMoveEntry(AssetDatabase.AssetPathToGUID(lod3Path), chunkAssetsGroup);
-
-            //  Create the serializable mesh data for the different LODs
-            var lod1md = CreateMeshData(new AssetReference(lod1Entry.guid), mesh.name);
-            var lod2md = CreateMeshData(new AssetReference(lod2Entry.guid), mesh.name);
-            var lod3md = CreateMeshData(new AssetReference(lod3Entry.guid), mesh.name);
-
-            //  The original mesh is LOD 0
-            lod0.Add(md);
+            lod0.Add(lod0md);
             lod1.Add(lod1md);
             lod2.Add(lod2md);
             lod3.Add(lod3md);
@@ -304,10 +308,11 @@ namespace StreamDaddy.Editor.Tasks
             return data;
         }
 
-        private AssetChunkData CreateChunkLayout(MeshLayerData[] meshLayers, TransformData[] meshTransforms, BoxColliderData[] boxColliders, SphereColliderData[] sphereColliders, MeshLayerData[] meshColliderLayers, TransformData[] meshColliderTransforms, ChunkID chunkID)
+        private AssetChunkData CreateChunkLayout(MeshLayerData[] meshLayers, MaterialData[] meshMaterials, TransformData[] meshTransforms, BoxColliderData[] boxColliders, SphereColliderData[] sphereColliders, MeshLayerData[] meshColliderLayers, TransformData[] meshColliderTransforms, ChunkID chunkID)
         {
             AssetChunkData asset = ScriptableObject.CreateInstance<AssetChunkData>();
             asset.MeshLayers = meshLayers;
+            asset.MeshMaterials = meshMaterials;
             asset.MeshTransforms = meshTransforms;
             asset.BoxColliders = boxColliders;
             asset.SphereColliders = sphereColliders;
@@ -325,11 +330,10 @@ namespace StreamDaddy.Editor.Tasks
             AssetDatabaseUtils.CreateOrReplaceAsset(chunkLayout, path + chunkAssetName + ".asset");
         }
 
-        private MeshData CreateMeshData(AssetReference meshReference, string submeshName)
+        private MeshData CreateMeshData(AssetReference meshReference)
         {            
             MeshData data = new MeshData();
             data.MeshReference = meshReference;
-            data.SubmeshName = submeshName;
             
             return data;
         }

@@ -58,19 +58,6 @@ namespace StreamDaddy.Streaming
             }
         }
 
-        private void PrecaulcateAssetRuntimeHashes(AssetChunkData data)
-        {
-            for(int i = 0; i < data.MeshLayers.Length; i++)
-            {
-                var layer = data.MeshLayers[i];
-                for(int j = 0; j < layer.Meshes.Length; j++)
-                {
-                    var mesh = layer.Meshes[j];
-                    mesh.SubmeshHash = Hash128.Compute(mesh.SubmeshName);
-                }
-            }
-        }
-
         public void PreWarmChunks(List<AssetChunkData> chunkData/*, List<Terrain> terrains*/)
         {
             for(int i = 0; i < chunkData.Count; i++)
@@ -79,8 +66,6 @@ namespace StreamDaddy.Streaming
                 var chunkID = new ChunkID(data.ChunkID);
 
                 AddChunk(chunkID, data);
-                //  Prewarm chunk making all assets load.
-                PrecaulcateAssetRuntimeHashes(data);
             }
 
             //Inject terrains into the chunks.
