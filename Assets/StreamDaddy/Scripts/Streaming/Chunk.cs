@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace StreamDaddy.Streaming
 {
-    public enum ChunkState
+    public enum LoadState
     {
         Unloaded = 0,
         Unloading = 1,
@@ -15,16 +15,51 @@ namespace StreamDaddy.Streaming
         Loaded = 3
     }
 
+    public class LoadedObjects
+    {
+        private List<Renderable> m_renderers = new List<Renderable>();
+        public List<Renderable> Renderers { get { return m_renderers; } }
+
+        private List<MeshCollideable> m_meshColliders = new List<MeshCollideable>();
+        public List<MeshCollideable> MeshColliders { get { return m_meshColliders; } }
+
+        private List<BoxCollideable> m_boxColliders = new List<BoxCollideable>();
+        public List<BoxCollideable> BoxColliders { get { return m_boxColliders; } }
+
+        private List<SphereCollideable> m_sphereColliders = new List<SphereCollideable>();
+        public List<SphereCollideable> SphereColliders { get { return m_sphereColliders; } }
+
+        public void Clear()
+        {
+            m_renderers.Clear();
+            m_meshColliders.Clear();
+            m_boxColliders.Clear();
+            m_sphereColliders.Clear();
+        }
+    }
+
     public class Chunk
     {
         private AssetChunkData m_chunkData;
-        private ChunkState m_chunkState;
-        public ChunkState State { get { return m_chunkState; } set { m_chunkState = value; } }
+
+        private LoadState[] m_loadstates = new LoadState[]
+        {
+            LoadState.Unloaded,
+            LoadState.Unloaded,
+            LoadState.Unloaded,
+            LoadState.Unloaded
+        };
         
-        private List<Renderable> m_renderers = new List<Renderable>();
-        private List<MeshCollideable> m_meshColliders = new List<MeshCollideable>();
-        private List<BoxCollideable> m_boxColliders = new List<BoxCollideable>();
-        private List<SphereCollideable> m_sphereColliders = new List<SphereCollideable>();
+        private int m_currentLodLevel = 0;
+        public int CurrentLodLevel { get { return m_currentLodLevel; } }
+
+        private LoadedObjects[] m_loadedLODObjects = new LoadedObjects[]
+        {
+            new LoadedObjects(),
+            new LoadedObjects(),
+            new LoadedObjects(),
+            new LoadedObjects()
+        };
         
         /// <summary>
         /// Terrain associated with this chunk.
@@ -38,23 +73,34 @@ namespace StreamDaddy.Streaming
         
         public Chunk(AssetChunkData data)
         {
-            m_chunkState = ChunkState.Unloaded;
             m_chunkData = data;
             m_chunkID = new ChunkID(data.ChunkID);
         }
 
         public Chunk(ChunkID id)
         {
-            m_chunkState = ChunkState.Unloaded;
             m_chunkID = id;
+        }
+
+        public LoadState GetLoadState(int lodLevel)
+        {
+            return m_loadstates[lodLevel];
+        }
+
+        private void SetLoadState(int lodLevel, LoadState state)
+        {
+            m_loadstates[lodLevel] = state;
         }
 
         public IEnumerator LoadChunk(int lodLevel)
         {
-            m_chunkState = ChunkState.Loading;
+            SetLoadState(lodLevel, LoadState.Loading);
 
             if (m_terrain != null)
                 m_terrain.gameObject.SetActive(true);
+
+            //  Get the container for this lod level
+            LoadedObjects objectContainer = m_loadedLODObjects[lodLevel];
 
             if (m_chunkData != null)
             {
@@ -75,7 +121,7 @@ namespace StreamDaddy.Streaming
                     }
 
                     Renderable renderer = GameObjectPool.GetRenderer(mesh, materials, transform.Position, transform.Rotation, transform.Scale);
-                    m_renderers.Add(renderer);
+                    objectContainer.Renderers.Add(renderer);
                 }
 
                 for (int i = 0; i < m_chunkData.BoxColliders.Length; i++)
@@ -85,7 +131,7 @@ namespace StreamDaddy.Streaming
                     BoxColliderData data = m_chunkData.BoxColliders[i];
                     BoxCollideable collideable = GameObjectPool.GetBoxCollider(data.Position, data.Rotation, data.Scale, data.Center, data.Size);
 
-                    m_boxColliders.Add(collideable);
+                    objectContainer.BoxColliders.Add(collideable);
                 }
 
                 for (int i = 0; i < m_chunkData.SphereColliders.Length; i++)
@@ -94,7 +140,7 @@ namespace StreamDaddy.Streaming
 
                     SphereColliderData data = m_chunkData.SphereColliders[i];
                     SphereCollideable collideable = GameObjectPool.GetSphereCollider(data.Position, data.Rotation, data.Scale, data.Center, data.Radius);
-                    m_sphereColliders.Add(collideable);
+                    objectContainer.SphereColliders.Add(collideable);
                 }
 
                 var colliderLayer = m_chunkData.MeshColliderLayers[lodLevel];
@@ -106,11 +152,11 @@ namespace StreamDaddy.Streaming
 
                     Mesh mesh = AddressablesLoader.GetMesh(data.MeshReference.RuntimeKey);
                     MeshCollideable collideable = GameObjectPool.GetMeshCollider(transform.Position, transform.Rotation, transform.Scale, mesh);
-                    m_meshColliders.Add(collideable);
+                    objectContainer.MeshColliders.Add(collideable);
                 }
             }
-            
-            m_chunkState = ChunkState.Loaded;
+
+            SetLoadState(lodLevel, LoadState.Loaded);
             yield return null;
         }
 
@@ -119,39 +165,41 @@ namespace StreamDaddy.Streaming
             m_terrain = terrain;
         }
 
-        public IEnumerator UnloadChunk()
+        public IEnumerator UnloadChunk(int lodLevel)
         {
+            SetLoadState(lodLevel, LoadState.Unloading);
+
+            LoadedObjects objectContainer = m_loadedLODObjects[lodLevel];
+
             if (m_chunkData != null)
             {
-                for (int i = 0; i < m_renderers.Count; i++)
+                for (int i = 0; i < objectContainer.Renderers.Count; i++)
                 {
-                    GameObjectPool.ReturnRenderer(m_renderers[i]);
+                    GameObjectPool.ReturnRenderer(objectContainer.Renderers[i]);
                 }
 
-                for (int i = 0; i < m_boxColliders.Count; i++)
+                for (int i = 0; i < objectContainer.BoxColliders.Count; i++)
                 {
-                    GameObjectPool.ReturnBoxCollideable(m_boxColliders[i]);
+                    GameObjectPool.ReturnBoxCollideable(objectContainer.BoxColliders[i]);
                 }
                 
-                for (int i = 0; i < m_sphereColliders.Count; i++)
+                for (int i = 0; i < objectContainer.SphereColliders.Count; i++)
                 {
-                    GameObjectPool.ReturnSphereCollideable(m_sphereColliders[i]);
+                    GameObjectPool.ReturnSphereCollideable(objectContainer.SphereColliders[i]);
                 }
 
-                for (int i = 0; i < m_meshColliders.Count; i++)
+                for (int i = 0; i < objectContainer.MeshColliders.Count; i++)
                 {
-                    GameObjectPool.ReturnMeshCollider(m_meshColliders[i]);
+                    GameObjectPool.ReturnMeshCollider(objectContainer.MeshColliders[i]);
                 }
             }
 
             if (m_terrain != null)
                 m_terrain.gameObject.SetActive(false);
 
-            m_renderers.Clear();
-            m_boxColliders.Clear();
-            m_sphereColliders.Clear();
-            m_meshColliders.Clear();
-            m_chunkState = ChunkState.Unloaded;
+            objectContainer.Clear();
+
+            SetLoadState(lodLevel, LoadState.Loaded);
 
             yield return null;
         }
