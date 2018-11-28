@@ -73,28 +73,28 @@
     <None Include="Assets\FantasyEnvironments\Environments\README.txt" />
     <None Include="Assets\StreamDaddy\TerrainToMesh\Scripts\Shaders\MeshTerrain.shader" />
     <Reference Include="Unity.CacheServer.Client.Editor">
-      <HintPath>D:/Repos/StreamDaddy/Library/ScriptAssemblies/Unity.CacheServer.Client.Editor.dll</HintPath>
+      <HintPath>E:/Repos/StreamDaddy/Library/ScriptAssemblies/Unity.CacheServer.Client.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.ScriptableBuildPipeline.Editor">
-      <HintPath>D:/Repos/StreamDaddy/Library/ScriptAssemblies/Unity.ScriptableBuildPipeline.Editor.dll</HintPath>
+      <HintPath>E:/Repos/StreamDaddy/Library/ScriptAssemblies/Unity.ScriptableBuildPipeline.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.ResourceManager">
-      <HintPath>D:/Repos/StreamDaddy/Library/ScriptAssemblies/Unity.ResourceManager.dll</HintPath>
+      <HintPath>E:/Repos/StreamDaddy/Library/ScriptAssemblies/Unity.ResourceManager.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Analytics.Android.Editor">
-      <HintPath>D:/Repos/StreamDaddy/Library/ScriptAssemblies/Unity.Analytics.Android.Editor.dll</HintPath>
+      <HintPath>E:/Repos/StreamDaddy/Library/ScriptAssemblies/Unity.Analytics.Android.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.PackageManagerUI.Editor">
-      <HintPath>D:/Repos/StreamDaddy/Library/ScriptAssemblies/Unity.PackageManagerUI.Editor.dll</HintPath>
+      <HintPath>E:/Repos/StreamDaddy/Library/ScriptAssemblies/Unity.PackageManagerUI.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Addressables.Editor">
-      <HintPath>D:/Repos/StreamDaddy/Library/ScriptAssemblies/Unity.Addressables.Editor.dll</HintPath>
+      <HintPath>E:/Repos/StreamDaddy/Library/ScriptAssemblies/Unity.Addressables.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.AssetBundleBrowser.Editor">
-      <HintPath>D:/Repos/StreamDaddy/Library/ScriptAssemblies/Unity.AssetBundleBrowser.Editor.dll</HintPath>
+      <HintPath>E:/Repos/StreamDaddy/Library/ScriptAssemblies/Unity.AssetBundleBrowser.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Addressables">
-      <HintPath>D:/Repos/StreamDaddy/Library/ScriptAssemblies/Unity.Addressables.dll</HintPath>
+      <HintPath>E:/Repos/StreamDaddy/Library/ScriptAssemblies/Unity.Addressables.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.AIModule">
       <HintPath>C:/Program Files/Unity/Hub/Editor/2018.3.0b9/Editor/Data/Managed/UnityEngine/UnityEngine.AIModule.dll</HintPath>
@@ -298,16 +298,16 @@
       <HintPath>C:/Program Files/Unity/Hub/Editor/2018.3.0b9/Editor/Data/UnityExtensions/Unity/UnitySpatialTracking/RuntimeEditor/UnityEngine.SpatialTracking.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Analytics.Editor">
-      <HintPath>D:/Repos/StreamDaddy/Library/PackageCache/com.unity.analytics@3.0.9/Unity.Analytics.Editor.dll</HintPath>
+      <HintPath>E:/Repos/StreamDaddy/Library/PackageCache/com.unity.analytics@3.0.9/Unity.Analytics.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Analytics.StandardEvents">
-      <HintPath>D:/Repos/StreamDaddy/Library/PackageCache/com.unity.analytics@3.0.9/Unity.Analytics.StandardEvents.dll</HintPath>
+      <HintPath>E:/Repos/StreamDaddy/Library/PackageCache/com.unity.analytics@3.0.9/Unity.Analytics.StandardEvents.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Analytics.Tracker">
-      <HintPath>D:/Repos/StreamDaddy/Library/PackageCache/com.unity.analytics@3.0.9/Unity.Analytics.Tracker.dll</HintPath>
+      <HintPath>E:/Repos/StreamDaddy/Library/PackageCache/com.unity.analytics@3.0.9/Unity.Analytics.Tracker.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Analytics">
-      <HintPath>D:/Repos/StreamDaddy/Library/PackageCache/com.unity.analytics@3.0.9/Android/Unity.Analytics.dll</HintPath>
+      <HintPath>E:/Repos/StreamDaddy/Library/PackageCache/com.unity.analytics@3.0.9/Android/Unity.Analytics.dll</HintPath>
     </Reference>
     <Reference Include="netstandard">
       <HintPath>C:/Program Files/Unity/Hub/Editor/2018.3.0b9/Editor/Data/NetStandard/ref/2.0.0/netstandard.dll</HintPath>

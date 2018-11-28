@@ -57,8 +57,6 @@ namespace StreamDaddy.Streaming
 
         private void Update()
         {
-            m_chunkManager.Update();
-
             m_numRenderables = GameObjectPool.CreatedRenderers;
             m_numBoxColliders = GameObjectPool.CreatedBoxColliders;
             m_numSphereColliders = GameObjectPool.CreatedSphereColliders;
@@ -86,17 +84,7 @@ namespace StreamDaddy.Streaming
             //  Start the area of interest check.
             StartCoroutine(CheckAreasOfInterest());
         }
-
-        private IEnumerator LoadAllChunks()
-        {
-            yield return new WaitForSeconds(2.0f);
-
-            PrewarmWorld();
-            Debug.Log("Prewarmed chunks for world");
-            m_chunkManager.LoadAllChunks();
-            Debug.Log("Loaded chunks!");
-        }
-
+        
         public void AddAreaOfInterest(AreaOfInterest aoi)
         {
             m_areasOfInterest.Add(aoi);

@@ -3,18 +3,19 @@ using StreamDaddy.Chunking;
 using StreamDaddy.Pooling;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.AddressableAssets;
 
 namespace StreamDaddy.Streaming
 {
+    public struct ChunkLoadRequest
+    {
+        public int LodLevel;
+    }
+
     public class ChunkManager
     {
         private Dictionary<ChunkID, Chunk> m_chunks = new Dictionary<ChunkID, Chunk>();
         private MonoBehaviour m_coroutineStarter;
-
-        private List<Chunk> m_unloadList = new List<Chunk>();
-        private List<Chunk> m_loadList = new List<Chunk>();
-
+        
         private Vector3Int m_chunkSize;
 
         public Dictionary<ChunkID, Chunk>.ValueCollection Chunks
@@ -32,30 +33,6 @@ namespace StreamDaddy.Streaming
         public int GetChunkCount()
         {
             return m_chunks.Count;
-        }
-
-        public void Update()
-        {
-            //  Loop through all chunks to be loaded and make sure they are.
-            for(int i = 0; i < m_loadList.Count; i++)
-            {
-                Chunk chunk = m_loadList[i];
-                if (chunk.State == ChunkState.Unloaded)
-                {
-                    m_loadList.Remove(chunk);
-                    m_coroutineStarter.StartCoroutine(chunk.LoadChunk(1));
-                }
-            }
-            //  Loop through all chunks that should be unloaded and make sure they are.
-            for(int i = 0; i < m_unloadList.Count; i++)
-            {
-                Chunk chunk = m_unloadList[i];
-                if (chunk.State == ChunkState.Loaded)
-                {
-                    m_unloadList.Remove(chunk);
-                    m_coroutineStarter.StartCoroutine(chunk.UnloadChunk());
-                }
-            }
         }
 
         public void PreWarmChunks(List<AssetChunkData> chunkData/*, List<Terrain> terrains*/)
@@ -99,7 +76,7 @@ namespace StreamDaddy.Streaming
         {
             if (!m_chunks.ContainsKey(id))
             {
-                m_chunks.Add(id, new Chunk(data));
+                m_chunks.Add(id, new Chunk(data, m_coroutineStarter));
             }
             else
             {
@@ -107,26 +84,17 @@ namespace StreamDaddy.Streaming
             }
         }
 
-        public void LoadAllChunks()
+        public void LoadChunk(int x, int y, int z, int lodLevel)
         {
-            var chunks = m_chunks.Values;
-            foreach(var chunk in chunks)
-            {
-                LoadChunk(chunk.ID);
-            }
+            LoadChunk(new ChunkID(x, y, z), lodLevel);
         }
 
-        public void LoadChunk(int x, int y, int z)
+        public void LoadChunk(Vector3Int id, int lodLevel)
         {
-            LoadChunk(new ChunkID(x, y, z));
+            LoadChunk(new ChunkID(id), lodLevel);
         }
 
-        public void LoadChunk(Vector3Int id)
-        {
-            LoadChunk(new ChunkID(id));
-        }
-
-        public void LoadChunk(ChunkID id)
+        public void LoadChunk(ChunkID id, int lodLevel)
         {
             if (!m_chunks.ContainsKey(id))
             {
@@ -134,17 +102,14 @@ namespace StreamDaddy.Streaming
             }
 
             Chunk chunk = m_chunks[id];
-            if (chunk.State == ChunkState.Loaded || chunk.State == ChunkState.Loading)
-                return;
-            
-            m_loadList.Add(chunk);
+            chunk.LoadChunk(0);
         }
 
         public void LoadChunks(List<ChunkID> chunkIDs)
         {
             for(int i = 0; i < chunkIDs.Count; i++)
             {
-                LoadChunk(chunkIDs[i]);
+                LoadChunk(chunkIDs[i], 0);
             }
         }
 
@@ -158,12 +123,12 @@ namespace StreamDaddy.Streaming
 
         public void UnloadChunk(int x, int y, int z)
         {
-            LoadChunk(new ChunkID(x, y, z));
+            UnloadChunk(new ChunkID(x, y, z));
         }
 
         public void UnloadChunk(Vector3Int id)
         {
-            LoadChunk(new ChunkID(id));
+            UnloadChunk(new ChunkID(id));
         }
 
         public void UnloadChunk(ChunkID id)
@@ -174,10 +139,7 @@ namespace StreamDaddy.Streaming
             }
 
             Chunk chunk = m_chunks[id];
-            if (chunk.State == ChunkState.Unloaded)
-                return;
-
-            m_unloadList.Add(chunk);
+            chunk.UnloadChunk();
         }
     }
 
