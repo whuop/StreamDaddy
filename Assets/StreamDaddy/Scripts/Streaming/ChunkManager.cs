@@ -105,19 +105,20 @@ namespace StreamDaddy.Streaming
             chunk.LoadChunk(0);
         }
 
-        public void LoadChunks(List<ChunkID> chunkIDs)
+        public void LoadChunks(List<ChunkLODLoader> chunkIDs)
         {
             for(int i = 0; i < chunkIDs.Count; i++)
             {
-                LoadChunk(chunkIDs[i], 0);
+                var lodLoader = chunkIDs[i];
+                LoadChunk(lodLoader.ChunkID, lodLoader.LodLevel);
             }
         }
 
-        public void UnloadChunks(List<ChunkID> chunkIDs)
+        public void UnloadChunks(List<ChunkLODLoader> chunkIDs)
         {
             for(int i = 0; i < chunkIDs.Count; i++)
             {
-                UnloadChunk(chunkIDs[i]);
+                UnloadChunk(chunkIDs[i].ChunkID);
             }
         }
 
