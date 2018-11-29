@@ -188,9 +188,10 @@ namespace StreamDaddy.Streaming
         
         private MonoBehaviour m_coroutineStarter = null;
         
-        //private ChunkLOD m_currentLoadedLOD = null;
-        //private ChunkLOD m_LODBeingLoaded = null;
-        private Queue<ChunkLOD> m_lodJobQueue = new Queue<ChunkLOD>();
+        private int m_currentlyLoadedLODLevel = -1;
+
+        private Queue<ChunkLOD> m_loadQueue = new Queue<ChunkLOD>();
+        private Queue<ChunkLOD> m_unloadQueue = new Queue<ChunkLOD>();
 
         public Chunk(AssetChunkData data, MonoBehaviour coroutineStarter)
         {
@@ -222,25 +223,10 @@ namespace StreamDaddy.Streaming
             switch(lod.State)
             {
                 case LoadState.Loaded:
-
-                    //var unloadLod = m_currentLoadedLOD;
-                    //m_currentLoadedLOD = lod;
-                    //m_LODBeingLoaded = null;
-
-                    //  Unload all other LODS
-                    UnloadAllLODS(lod.LodLevel);
-
-                    //if (unloadLod != null)
-                    //    m_lodJobQueue.Enqueue(unloadLod);
-
+                    m_currentlyLoadedLODLevel = lod.LodLevel;
                     break;
                 case LoadState.Unloaded:
-
-                    /*if (m_lodJobQueue.Count == 0)
-                    {
-                        m_currentLoadedLOD = null;
-                    }*/
-
+                    
                     break;
                 case LoadState.Loading:
                 case LoadState.Unloading:
@@ -248,6 +234,7 @@ namespace StreamDaddy.Streaming
                     break;
             }
 
+            UnloadAllLODS(m_currentlyLoadedLODLevel);
             CheckLODJobQueue();
         }
 
@@ -262,44 +249,53 @@ namespace StreamDaddy.Streaming
                 var lod = m_chunkLODs[i];
                 if (lod.State == LoadState.Loaded || lod.State == LoadState.Loading)
                 {
-                    m_lodJobQueue.Enqueue(lod);
+                    if (!m_unloadQueue.Contains(lod))
+                        m_unloadQueue.Enqueue(lod);
                 }
             }
         }
 
         private void CheckLODJobQueue()
         {
-            if (m_lodJobQueue.Count == 0)
-                return;
-            var nextJob = m_lodJobQueue.Peek();
-
-            if (nextJob == null)
+            //  If there is no Load job waiting, then go for the unload jobs.
+            if (m_loadQueue.Count == 0)
             {
                 Debug.LogError(string.Format("NextJob is null! Chunk {0}", m_chunkID.ToString()));
+
+                //  If there is nothing to unload then early exit
+                if (m_unloadQueue.Count == 0)
+                    return;
+
+                var nextUnload = m_unloadQueue.Peek();
+                //  If the lod is currently in loading, then dont do anything, we have to wait for that to finish.
+                if (nextUnload.State == LoadState.Loading)
+                {
+                    Debug.LogError(string.Format("Chunk {0} is in state {1}", m_chunkID.ToString(), nextUnload.State.ToString()));
+                    return;
+                }
+
+                m_unloadQueue.Dequeue();
+                m_coroutineStarter.StartCoroutine(nextUnload.Unload(OnFinishedChunkWork));
+                return;
             }
+
+            var nextLoad = m_loadQueue.Peek();
 
             //  If it is in between loaded or unloaded state, then do nothing. let the OnFinishedChunkWork callback handle calling this
             // again when it is done.
-            if (nextJob.State == LoadState.Loading || nextJob.State == LoadState.Unloading)
+            if (nextLoad.State == LoadState.Unloading)
             {
-                Debug.LogError(string.Format("Chunk {0} is in state {1}", m_chunkID.ToString(), nextJob.State.ToString()));
+                Debug.LogError(string.Format("Chunk {0} is in state {1}", m_chunkID.ToString(), nextLoad.State.ToString()));
                 return;
             }
-                
 
-            //  remove the job from the queue
-            m_lodJobQueue.Dequeue();
-
-           switch(nextJob.State)
+            m_loadQueue.Dequeue();
+            
+            switch (nextLoad.State)
             {
-                case LoadState.Loaded:
-                    Debug.LogError(string.Format("Unloading chunk {0}", m_chunkID.ToString()));
-                    m_coroutineStarter.StartCoroutine(nextJob.Unload(OnFinishedChunkWork));
-                    break;
                 case LoadState.Unloaded:
                     Debug.LogError(string.Format("Loading chunk {0}", m_chunkID.ToString()));
-                    //m_LODBeingLoaded = nextJob;
-                    m_coroutineStarter.StartCoroutine(nextJob.Load(OnFinishedChunkWork));
+                    m_coroutineStarter.StartCoroutine(nextLoad.Load(OnFinishedChunkWork));
                     break;
             }
         }
@@ -317,8 +313,9 @@ namespace StreamDaddy.Streaming
                 Debug.LogError("Is already loaded or in loading!");
                 return;
             }
-            
-            m_lodJobQueue.Enqueue(lod);
+
+            if (!m_loadQueue.Contains(lod))
+                m_loadQueue.Enqueue(lod);
             CheckLODJobQueue();
         }
 
@@ -328,6 +325,7 @@ namespace StreamDaddy.Streaming
         /// </summary>
         public void UnloadChunk()
         {
+            m_currentlyLoadedLODLevel = -1;
             UnloadAllLODS();
             CheckLODJobQueue();
         }
