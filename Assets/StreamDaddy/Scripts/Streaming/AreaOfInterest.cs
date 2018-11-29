@@ -154,15 +154,13 @@ namespace StreamDaddy.Streaming
 
                     m_positiveDelta.Add(new ChunkLODLoader { ChunkID = posDelta, LodLevel = m_chunks[i].LodLevel } );
                 }
-
-                int numDeltas = 0;
+                
                 for (int i = 0; i < m_chunks.Length; i++)
                 {
                     var negDelta = new ChunkLODLoader { ChunkID = m_lastChunkPosition + m_chunks[i].ChunkID, LodLevel = m_chunks[i].LodLevel };
                     if (!m_positiveDelta.Contains(negDelta))
                     {
                         m_negativeDelta.Add(negDelta);
-                        numDeltas++;
                     }
                 }
             }

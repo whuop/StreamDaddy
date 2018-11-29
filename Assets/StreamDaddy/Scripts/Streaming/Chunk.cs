@@ -141,6 +141,8 @@ namespace StreamDaddy.Streaming
                 }
             }
 
+            Debug.LogError("UNLOADING CHUNK!!");
+
             if (m_terrain != null)
                 m_terrain.gameObject.SetActive(false);
 
@@ -186,8 +188,8 @@ namespace StreamDaddy.Streaming
         
         private MonoBehaviour m_coroutineStarter = null;
         
-        private ChunkLOD m_currentLoadedLOD = null;
-        private ChunkLOD m_LODBeingLoaded = null;
+        //private ChunkLOD m_currentLoadedLOD = null;
+        //private ChunkLOD m_LODBeingLoaded = null;
         private Queue<ChunkLOD> m_lodJobQueue = new Queue<ChunkLOD>();
 
         public Chunk(AssetChunkData data, MonoBehaviour coroutineStarter)
@@ -221,20 +223,23 @@ namespace StreamDaddy.Streaming
             {
                 case LoadState.Loaded:
 
-                    var unloadLod = m_currentLoadedLOD;
-                    m_LODBeingLoaded = null;
-                    m_currentLoadedLOD = lod;
+                    //var unloadLod = m_currentLoadedLOD;
+                    //m_currentLoadedLOD = lod;
+                    //m_LODBeingLoaded = null;
 
-                    if (unloadLod != null)
-                        m_lodJobQueue.Enqueue(unloadLod);
+                    //  Unload all other LODS
+                    UnloadAllLODS(lod.LodLevel);
+
+                    //if (unloadLod != null)
+                    //    m_lodJobQueue.Enqueue(unloadLod);
 
                     break;
                 case LoadState.Unloaded:
 
-                    if (m_lodJobQueue.Count == 0)
+                    /*if (m_lodJobQueue.Count == 0)
                     {
                         m_currentLoadedLOD = null;
-                    }
+                    }*/
 
                     break;
                 case LoadState.Loading:
@@ -244,6 +249,22 @@ namespace StreamDaddy.Streaming
             }
 
             CheckLODJobQueue();
+        }
+
+        private void UnloadAllLODS(int excludeLOD = -1)
+        {
+            int len = m_chunkLODs.Length;
+            for(int i = 0; i < len; i++)
+            {
+                if (excludeLOD == i)
+                    continue;
+
+                var lod = m_chunkLODs[i];
+                if (lod.State == LoadState.Loaded || lod.State == LoadState.Loading)
+                {
+                    m_lodJobQueue.Enqueue(lod);
+                }
+            }
         }
 
         private void CheckLODJobQueue()
@@ -277,7 +298,7 @@ namespace StreamDaddy.Streaming
                     break;
                 case LoadState.Unloaded:
                     Debug.LogError(string.Format("Loading chunk {0}", m_chunkID.ToString()));
-                    m_LODBeingLoaded = nextJob;
+                    //m_LODBeingLoaded = nextJob;
                     m_coroutineStarter.StartCoroutine(nextJob.Load(OnFinishedChunkWork));
                     break;
             }
@@ -307,10 +328,7 @@ namespace StreamDaddy.Streaming
         /// </summary>
         public void UnloadChunk()
         {
-            if (m_currentLoadedLOD != null)
-                m_lodJobQueue.Enqueue(m_currentLoadedLOD);
-            else if (m_LODBeingLoaded != null)
-                m_lodJobQueue.Enqueue(m_LODBeingLoaded);
+            UnloadAllLODS();
             CheckLODJobQueue();
         }
     }
