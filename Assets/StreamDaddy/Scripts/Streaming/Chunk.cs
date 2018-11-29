@@ -296,9 +296,7 @@ namespace StreamDaddy.Streaming
                 Debug.LogError("Is already loaded or in loading!");
                 return;
             }
-
-            Debug.LogError("Setting chunk up for work");
-
+            
             m_lodJobQueue.Enqueue(lod);
             CheckLODJobQueue();
         }

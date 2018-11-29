@@ -209,9 +209,7 @@ namespace StreamDaddy.Editor.Tasks
             assetPath = assetPath.Replace(fileFormat, "") + "/";
             //  Add file name
             assetPath = assetPath + mesh.name;
-
-            LogError("AssetPath: " + assetPath);
-
+            
             string lod0Path = assetPath + "_LOD0.asset";
             string lod1Path = assetPath + "_LOD1.asset";
             string lod2Path = assetPath + "_LOD2.asset";

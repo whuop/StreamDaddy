@@ -102,7 +102,7 @@ namespace StreamDaddy.Streaming
             }
 
             Chunk chunk = m_chunks[id];
-            chunk.LoadChunk(0);
+            chunk.LoadChunk(lodLevel);
         }
 
         public void LoadChunks(List<ChunkLODLoader> chunkIDs)

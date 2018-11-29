@@ -1,6 +1,4 @@
 ﻿using StreamDaddy.Chunking;
-using StreamDaddy.Streaming;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -75,6 +73,8 @@ namespace StreamDaddy.Streaming
         private bool m_debugLod3 = false;
         [SerializeField]
         private bool m_debugNegativeDelta = false;
+        [SerializeField]
+        private bool m_debugPositiveDelta = false;
 
         /// <summary>
         /// The combined depth is the max depth of the search for all the different LOD levels to load.
@@ -130,16 +130,22 @@ namespace StreamDaddy.Streaming
             }
         }
 
-        public void UpdateChunkPosition()
+        /// <summary>
+        /// Updates the chunk position of the area of interest. This means that it checks if 
+        /// this area of interest has moved from one chunk to another.
+        /// </summary>
+        /// <returns>True if chunk position has changed, false otherwise.</returns>
+        public bool UpdateChunkPosition()
         {
-            m_negativeDelta.Clear();
-            m_positiveDelta.Clear();
-
             m_lastChunkPosition = m_chunkPosition;
             m_chunkPosition = ChunkID.FromVector3(transform.position, m_streamer.ChunkSize);
+            bool positionChanged = false;
 
             if (m_lastChunkPosition != m_chunkPosition)
             {
+                positionChanged = true;
+                m_negativeDelta.Clear();
+                m_positiveDelta.Clear();
                 Debug.Log(string.Format("Switched chunk from {0} to {1}", m_lastChunkPosition, m_chunkPosition));
 
                 for (int i = 0; i < m_chunks.Length; i++)
@@ -159,8 +165,8 @@ namespace StreamDaddy.Streaming
                         numDeltas++;
                     }
                 }
-                Debug.LogError("Found " + numDeltas + " Negative deltas out of " + m_positiveDelta.Count + " positives!");
             }
+            return positionChanged;
         }
 
         private void CalculateAreaSize()
@@ -174,7 +180,7 @@ namespace StreamDaddy.Streaming
             queue.Enqueue(null);
 
             int depth = 0;
-            while (queue.Count > 0 && depth <= m_combinedDepth)
+            while (queue.Count > 0 && depth < m_combinedDepth)
             {
                 current = queue.Dequeue();
 
@@ -212,8 +218,6 @@ namespace StreamDaddy.Streaming
             int i = 0;
             foreach(var c in visited)
             {
-                if (c.ID.X == 0 && c.ID.Y == 0 && c.ID.Z == 0)
-                    Debug.LogError("Has: " + c.ID.ToString() + " : " + c.Depth);
                 m_chunks[i] = new ChunkLODLoader { ChunkID = c.ID, LodLevel = GetLodLevelFromDepth(c.Depth) };
                 i++;
             }
@@ -311,21 +315,44 @@ namespace StreamDaddy.Streaming
                 }
             }
 
-            foreach(var c in m_negativeDelta)
+            if (m_debugPositiveDelta)
             {
-                Vector3 chunkPos = c.ChunkID.AsVector3();
-                Vector3 chunkSize = m_streamer.ChunkSize;
-                chunkPos.x *= chunkSize.x;
-                chunkPos.y *= chunkSize.y;
-                chunkPos.z *= chunkSize.z;
-                chunkPos += chunkSize * 0.5f;
+                foreach (var c in m_positiveDelta)
+                {
+                    Vector3 chunkPos = c.ChunkID.AsVector3();
+                    Vector3 chunkSize = m_streamer.ChunkSize;
+                    chunkPos.x *= chunkSize.x;
+                    chunkPos.y *= chunkSize.y;
+                    chunkPos.z *= chunkSize.z;
+                    chunkPos += chunkSize * 0.5f;
 
-                if (c.ChunkID.Y > 0 || c.ChunkID.Y < 0)
-                    continue;
-                
-                Gizmos.color = new Color(0.0f, 1.0f, 1.0f, alpha);
-                Gizmos.DrawCube(chunkPos, chunkSize);
+                    if (c.ChunkID.Y > 0 || c.ChunkID.Y < 0)
+                        continue;
+
+                    Gizmos.color = new Color(1.0f, 0.0f, 1.0f, alpha);
+                    Gizmos.DrawCube(chunkPos, chunkSize);
+                }
             }
+
+            if (m_debugNegativeDelta)
+            {
+                foreach (var c in m_negativeDelta)
+                {
+                    Vector3 chunkPos = c.ChunkID.AsVector3();
+                    Vector3 chunkSize = m_streamer.ChunkSize;
+                    chunkPos.x *= chunkSize.x;
+                    chunkPos.y *= chunkSize.y;
+                    chunkPos.z *= chunkSize.z;
+                    chunkPos += chunkSize * 0.5f;
+
+                    if (c.ChunkID.Y > 0 || c.ChunkID.Y < 0)
+                        continue;
+
+                    Gizmos.color = new Color(0.0f, 1.0f, 1.0f, alpha);
+                    Gizmos.DrawCube(chunkPos, chunkSize);
+                }
+            }
+            
 
             Gizmos.color = color;
         }

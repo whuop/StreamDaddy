@@ -108,10 +108,14 @@ namespace StreamDaddy.Streaming
                 for (int i = 0; i < m_areasOfInterest.Count; i++)
                 {
                     AreaOfInterest areaOfInterest = m_areasOfInterest[i];
-                    areaOfInterest.UpdateChunkPosition();
+                    bool changed = areaOfInterest.UpdateChunkPosition();
 
-                    m_chunkManager.LoadChunks(areaOfInterest.PositiveDelta);
-                    m_chunkManager.UnloadChunks(areaOfInterest.NegativeDelta);
+                    if (changed)
+                    {
+                        m_chunkManager.LoadChunks(areaOfInterest.PositiveDelta);
+                        m_chunkManager.UnloadChunks(areaOfInterest.NegativeDelta);
+                    }
+                    
                     yield return new WaitForEndOfFrame();
                 }
                 yield return new WaitForSeconds(m_areaOfInterestCheckTime);
