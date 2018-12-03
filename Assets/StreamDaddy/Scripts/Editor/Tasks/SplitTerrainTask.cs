@@ -1,5 +1,4 @@
 ﻿using StreamDaddy.Editor.TerrainTools;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -10,6 +9,7 @@ namespace StreamDaddy.Editor.Tasks
         public struct SplitTerrainResult
         {
             public List<Terrain> TerrainSplits;
+            public Texture2D SplatMap;
         }
 
         public SplitTerrainTask() : base("Split Terrain")
@@ -28,9 +28,8 @@ namespace StreamDaddy.Editor.Tasks
             {
                 LogError("World name is null or empty, task failed!");
             }
-
+            
             result.TerrainSplits = TerrainSplitter.SplitIntoChunks(chunkSize.x, chunkSize.z, terrain, EditorPaths.GetSplitTerrainPath(worldName));
-
             return true;
         }
     }

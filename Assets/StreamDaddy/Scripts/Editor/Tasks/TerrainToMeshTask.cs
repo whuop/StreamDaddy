@@ -1,5 +1,4 @@
 ﻿using StreamDaddy.Editor.Utils;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
@@ -13,7 +12,7 @@ namespace StreamDaddy.Editor.Tasks
 
         }
 
-        public bool Execute(string worldName, List<Terrain> terrains, Material terrainMaterial)
+        public bool Execute(string worldName, Terrain sourceTerrain, List<Terrain> terrains, Material terrainMaterial)
         {
             if (terrains.Count == 0)
             {
@@ -33,29 +32,51 @@ namespace StreamDaddy.Editor.Tasks
                 return false;
             }
                 
-
             AssetDatabase.StartAssetEditing();
 
-            for(int i = 0; i < terrains.Count; i++)
+            //  Start off by exporting the splat map.
+            Texture2D splatmap = TerrainToMesh.Editor.TerrainToMesh.ExportSplatMap(sourceTerrain);
+
+            //  Save splatmap texture
+            string splatPath = EditorPaths.GetTerrainMeshSplatPath(worldName) + "splatmap" + ".asset";
+            AssetDatabaseUtils.CreateOrReplaceAsset<Texture2D>(splatmap, splatPath);
+
+            //  Set the splatmap texture on the terrain mesh material
+            terrainMaterial.SetTexture("_Control", AssetDatabase.LoadAssetAtPath<Texture2D>(splatPath));
+
+            for (int i = 0; i < terrains.Count; i++)
             {
                 Terrain terrain = terrains[i];
 
-                var result = StreamDaddy.TerrainToMesh.Editor.TerrainToMesh.CreateMeshFromTerrain(terrain, terrainMaterial);
+                var result = StreamDaddy.TerrainToMesh.Editor.TerrainToMesh.CreateMeshFromTerrain(terrain, sourceTerrain, terrainMaterial);
 
                 //  Save mesh
                 string meshPath = EditorPaths.GetTerrainMeshPath(worldName) + result.Mesh.name + ".asset";
                 AssetDatabaseUtils.CreateOrReplaceAsset<Mesh>(result.Mesh, meshPath);
 
-                //  Save control splat texture
-                string splatPath = EditorPaths.GetTerrainMeshSplatPath(worldName) + result.Mesh.name + ".asset";
-                AssetDatabaseUtils.CreateOrReplaceAsset<Texture2D>(result.Splat, splatPath);
+                CreateTerrainMeshGameObject(result.Mesh, terrainMaterial, terrain.transform.position);
             }
 
             AssetDatabase.SaveAssets();
             AssetDatabase.StopAssetEditing();
-            
+
+            AssetDatabase.Refresh();
+
 
             return true;
+        }
+
+        private void CreateTerrainMeshGameObject(Mesh terrainMesh, Material terrainMaterial, Vector3 position)
+        {
+            GameObject terrainGO = new GameObject(terrainMesh.name, typeof(MeshRenderer), typeof(MeshFilter));
+
+            var renderer = terrainGO.GetComponent<MeshRenderer>();
+            var filter = terrainGO.GetComponent<MeshFilter>();
+
+            filter.sharedMesh = terrainMesh;
+            renderer.sharedMaterial = terrainMaterial;
+
+            terrainGO.transform.position = position;
         }
     }
 }

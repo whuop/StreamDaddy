@@ -99,10 +99,7 @@ namespace StreamDaddy.Editor
 
             if (GUILayout.Button("Terrain To Mesh"))
             {
-                List<Terrain> terrains = new List<Terrain>();
-                terrains.Add(m_terrainToSplit);
-                
-                new TerrainToMeshTask().Execute(m_worldNameProp.stringValue, terrains, m_terrainMeshMaterial);
+                new TerrainToMeshTask().Execute(m_worldNameProp.stringValue, m_terrainToSplit, m_splitTerrainResult.TerrainSplits, m_terrainMeshMaterial);
             }
             
             if (GUILayout.Button("Chunk World"))

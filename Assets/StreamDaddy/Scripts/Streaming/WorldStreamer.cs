@@ -74,7 +74,7 @@ namespace StreamDaddy.Streaming
         private void OnFinishedLoadingLayouts(List<AssetChunkData> chunkLayouts)
         {
             Debug.Log("Finished loading layouts!!");
-            m_chunkManager.PreWarmChunks(chunkLayouts);
+            m_chunkManager.PreWarmChunks(chunkLayouts, m_worldTerrains);
 
             for(int i = 0; i < chunkLayouts.Count; i++)
             {

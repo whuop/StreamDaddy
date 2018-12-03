@@ -6,11 +6,6 @@ using UnityEngine;
 
 namespace StreamDaddy.Streaming
 {
-    public struct ChunkLoadRequest
-    {
-        public int LodLevel;
-    }
-
     public class ChunkManager
     {
         private Dictionary<ChunkID, Chunk> m_chunks = new Dictionary<ChunkID, Chunk>();
@@ -35,7 +30,7 @@ namespace StreamDaddy.Streaming
             return m_chunks.Count;
         }
 
-        public void PreWarmChunks(List<AssetChunkData> chunkData/*, List<Terrain> terrains*/)
+        public void PreWarmChunks(List<AssetChunkData> chunkData, List<Terrain> terrains)
         {
             for(int i = 0; i < chunkData.Count; i++)
             {
@@ -46,14 +41,19 @@ namespace StreamDaddy.Streaming
             }
 
             //Inject terrains into the chunks.
-            /*for(int i = 0; i < terrains.Count; i++)
+            for(int i = 0; i < terrains.Count; i++)
             {
                 Terrain terrain = terrains[i];
                 GameObject terrainGO = terrain.gameObject;
+                var bounds = terrain.terrainData.bounds;
+
+                Vector3 terrainWorldCenter = terrainGO.transform.position;
+                terrainWorldCenter += bounds.extents;
+
                 //  Round to approximate chunk position
-                float x = terrainGO.transform.position.x / (float)m_chunkSize.x;
-                float y = terrainGO.transform.position.y / (float)m_chunkSize.y;
-                float z = terrainGO.transform.position.z / (float)m_chunkSize.z;
+                float x = terrainWorldCenter.x / (float)m_chunkSize.x;
+                float y = terrainWorldCenter.y / (float)m_chunkSize.y;
+                float z = terrainWorldCenter.z / (float)m_chunkSize.z;
 
                 //  Floor to chunk position ID ( chunk index in EditorChunkManager )
                 int cx = (int)Mathf.Floor(x);
@@ -65,11 +65,12 @@ namespace StreamDaddy.Streaming
                 ChunkID chunkKey = new ChunkID((int)cx, (int)cy, (int)cz);
                 if (!m_chunks.ContainsKey(chunkKey))
                 {
-                    m_chunks.Add(chunkKey,new Chunk(chunkKey));
+                    m_chunks.Add(chunkKey,new Chunk(chunkKey, m_coroutineStarter));
                 }
 
-                m_chunks[chunkKey].SetTerrain(terrain);
-            }*/
+                //  Only set the terrain for LOD level 0, which is the one with the highest resolution.
+                m_chunks[chunkKey].SetTerrain(terrain, 0);
+            }
         }
 
         public void AddChunk(ChunkID id, AssetChunkData data)

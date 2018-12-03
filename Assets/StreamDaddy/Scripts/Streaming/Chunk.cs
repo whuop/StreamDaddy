@@ -1,7 +1,5 @@
 ﻿using StreamDaddy.AssetManagement;
 using StreamDaddy.Chunking;
-using StreamDaddy.Pooling;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -13,151 +11,6 @@ namespace StreamDaddy.Streaming
         Unloading = 1,
         Loading = 2,
         Loaded = 3
-    }
-
-    public class ChunkLOD
-    {
-        private LoadState m_loadState = LoadState.Unloaded;
-        public LoadState State { get { return m_loadState; } }
-
-        private List<Renderable> m_renderers = new List<Renderable>();
-        private List<MeshCollideable> m_meshColliders = new List<MeshCollideable>();
-        private List<BoxCollideable> m_boxColliders = new List<BoxCollideable>();
-        private List<SphereCollideable> m_sphereColliders = new List<SphereCollideable>();
-
-        private Terrain m_terrain;
-
-        private AssetChunkData m_chunkData;
-        private int m_lodLevel;
-        public int LodLevel { get { return m_lodLevel; } }
-
-        //  Delegates
-        public delegate void OnFinishedDelegate(int lodLevel);
-        
-        public ChunkLOD(AssetChunkData chunkData, int lodLevel)
-        {
-            m_chunkData = chunkData;
-            m_lodLevel = lodLevel;
-        }
-
-        public void SetTerrain(Terrain terrain)
-        {
-            m_terrain = terrain;
-        }
-
-        public IEnumerator Load(OnFinishedDelegate onFinished)
-        {
-            m_loadState = LoadState.Loading;
-
-            if (m_terrain != null)
-                m_terrain.gameObject.SetActive(true);
-
-            if (m_chunkData != null)
-            {
-                //  Fetch the meshes for the LOD level to load
-                var layer = m_chunkData.MeshLayers[m_lodLevel];
-                for (int i = 0; i < layer.Meshes.Length; i++)
-                {
-                    yield return new WaitForEndOfFrame();
-                    var meshData = layer.Meshes[i];
-                    var materialsData = m_chunkData.MeshMaterials[i];
-                    var transform = m_chunkData.MeshTransforms[i];
-
-                    var mesh = AddressablesLoader.GetMesh(meshData.MeshReference.RuntimeKey);
-                    Material[] materials = new Material[materialsData.MaterialReferences.Length];
-                    for (int j = 0; j < materials.Length; j++)
-                    {
-                        materials[j] = AddressablesLoader.GetMaterial(materialsData.MaterialReferences[j].RuntimeKey);
-                    }
-
-                    Renderable renderer = GameObjectPool.GetRenderer(mesh, materials, transform.Position, transform.Rotation, transform.Scale);
-                    m_renderers.Add(renderer);
-                }
-
-                for (int i = 0; i < m_chunkData.BoxColliders.Length; i++)
-                {
-                    yield return new WaitForEndOfFrame();
-
-                    BoxColliderData data = m_chunkData.BoxColliders[i];
-                    BoxCollideable collideable = GameObjectPool.GetBoxCollider(data.Position, data.Rotation, data.Scale, data.Center, data.Size);
-
-                    m_boxColliders.Add(collideable);
-                }
-
-                for (int i = 0; i < m_chunkData.SphereColliders.Length; i++)
-                {
-                    yield return new WaitForEndOfFrame();
-
-                    SphereColliderData data = m_chunkData.SphereColliders[i];
-                    SphereCollideable collideable = GameObjectPool.GetSphereCollider(data.Position, data.Rotation, data.Scale, data.Center, data.Radius);
-                    m_sphereColliders.Add(collideable);
-                }
-
-                var colliderLayer = m_chunkData.MeshColliderLayers[m_lodLevel];
-                for (int i = 0; i < colliderLayer.Meshes.Length; i++)
-                {
-                    yield return new WaitForEndOfFrame();
-                    MeshData data = colliderLayer.Meshes[i];
-                    TransformData transform = m_chunkData.MeshColliderTransforms[i];
-
-                    Mesh mesh = AddressablesLoader.GetMesh(data.MeshReference.RuntimeKey);
-                    MeshCollideable collideable = GameObjectPool.GetMeshCollider(transform.Position, transform.Rotation, transform.Scale, mesh);
-                    m_meshColliders.Add(collideable);
-                }
-            }
-
-            m_loadState = LoadState.Loaded;
-
-            //  Call the on finished callback
-            onFinished?.Invoke(m_lodLevel);
-
-            yield return null;
-        }
-
-        public IEnumerator Unload(OnFinishedDelegate onFinished)
-        {
-            m_loadState = LoadState.Unloading;
-
-            if (m_chunkData != null)
-            {
-                for (int i = 0; i < m_renderers.Count; i++)
-                {
-                    GameObjectPool.ReturnRenderer(m_renderers[i]);
-                }
-
-                for (int i = 0; i < m_boxColliders.Count; i++)
-                {
-                    GameObjectPool.ReturnBoxCollideable(m_boxColliders[i]);
-                }
-
-                for (int i = 0; i < m_sphereColliders.Count; i++)
-                {
-                    GameObjectPool.ReturnSphereCollideable(m_sphereColliders[i]);
-                }
-
-                for (int i = 0; i < m_meshColliders.Count; i++)
-                {
-                    GameObjectPool.ReturnMeshCollider(m_meshColliders[i]);
-                }
-            }
-
-            Debug.LogError("UNLOADING CHUNK!!");
-
-            if (m_terrain != null)
-                m_terrain.gameObject.SetActive(false);
-
-            m_renderers.Clear();
-            m_boxColliders.Clear();
-            m_sphereColliders.Clear();
-            m_meshColliders.Clear();
-
-            m_loadState = LoadState.Unloaded;
-
-            //  Call the onfinished callback
-            onFinished?.Invoke(m_lodLevel);
-
-            yield return null;
-        }
     }
     
     public class Chunk
@@ -174,12 +27,6 @@ namespace StreamDaddy.Streaming
             public JobType JobType;
         }
 
-        /// <summary>
-        /// Terrain associated with this chunk.
-        /// Each chunk can have 1 terrain piece each.
-        /// </summary>
-        private Terrain m_terrain;
-
         private ChunkID m_chunkID;
         public ChunkID ID { get { return m_chunkID; } }
 
@@ -190,30 +37,44 @@ namespace StreamDaddy.Streaming
         
         private int m_currentlyLoadedLODLevel = -1;
 
-        private Queue<ChunkLOD> m_loadQueue = new Queue<ChunkLOD>();
-        private Queue<ChunkLOD> m_unloadQueue = new Queue<ChunkLOD>();
+        private Queue<ChunkLOD> m_jobQueue = new Queue<ChunkLOD>();
+
+        //private Queue<ChunkLOD> m_loadQueue = new Queue<ChunkLOD>();
+        //private Queue<ChunkLOD> m_unloadQueue = new Queue<ChunkLOD>();
 
         public Chunk(AssetChunkData data, MonoBehaviour coroutineStarter)
         {
             m_chunkID = new ChunkID(data.ChunkID);
             m_coroutineStarter = coroutineStarter;
 
-            m_chunkLODs = new ChunkLOD[m_lodLevels];
+            InitializeChunkLODs(m_lodLevels, data);
+        }
+
+        public Chunk(ChunkID id, MonoBehaviour coroutineStarter)
+        {
+            m_chunkID = id;
+            m_coroutineStarter = coroutineStarter;
+            InitializeChunkLODs(m_lodLevels, null);
+        }
+
+        private void InitializeChunkLODs(int lodLevels, AssetChunkData data)
+        {
+            m_chunkLODs = new ChunkLOD[lodLevels];
             //  Initialize Chunk LODS
-            for(int i = 0; i < m_lodLevels; i++)
+            for (int i = 0; i < m_lodLevels; i++)
             {
                 m_chunkLODs[i] = new ChunkLOD(data, i);
             }
         }
 
-        public Chunk(ChunkID id)
+        public void SetTerrain(Terrain terrain, int lodLevel)
         {
-            m_chunkID = id;
+            m_chunkLODs[lodLevel].SetTerrain(terrain);
         }
 
-        public void SetTerrain(Terrain terrain)
+        public void SetTerrainMesh(Mesh terrainMesh, int lodLevel)
         {
-            m_terrain = terrain;
+            m_chunkLODs[lodLevel].SetTerrainMesh(terrainMesh);
         }
 
         private void OnFinishedChunkWork(int lodLevel)
@@ -223,7 +84,7 @@ namespace StreamDaddy.Streaming
             switch(lod.State)
             {
                 case LoadState.Loaded:
-                    m_currentlyLoadedLODLevel = lod.LodLevel;
+                    //UnloadAllLODS(m_currentlyLoadedLODLevel);
                     break;
                 case LoadState.Unloaded:
                     
@@ -233,13 +94,16 @@ namespace StreamDaddy.Streaming
                     Debug.LogError("Chunk should never be in Loading or Unloading state when OnFinished is reached!");
                     break;
             }
-
-            UnloadAllLODS(m_currentlyLoadedLODLevel);
+            
             CheckLODJobQueue();
         }
 
         private void UnloadAllLODS(int excludeLOD = -1)
         {
+            //  If thre aren't any LOD layers, then just return.
+            if (m_chunkLODs == null)
+                return;
+
             int len = m_chunkLODs.Length;
             for(int i = 0; i < len; i++)
             {
@@ -249,19 +113,46 @@ namespace StreamDaddy.Streaming
                 var lod = m_chunkLODs[i];
                 if (lod.State == LoadState.Loaded || lod.State == LoadState.Loading)
                 {
-                    if (!m_unloadQueue.Contains(lod))
-                        m_unloadQueue.Enqueue(lod);
+                    if (!m_jobQueue.Contains(lod))
+                        m_jobQueue.Enqueue(lod);
                 }
             }
         }
 
         private void CheckLODJobQueue()
         {
-            //  If there is no Load job waiting, then go for the unload jobs.
-            if (m_loadQueue.Count == 0)
+            //  If there are no jobs in the queue, simply return.
+            if (m_jobQueue.Count == 0)
             {
-                Debug.LogError(string.Format("NextJob is null! Chunk {0}", m_chunkID.ToString()));
+                return;
+            }
 
+            var nextJob = m_jobQueue.Peek();
+
+            if (nextJob.State == LoadState.Loading || nextJob.State == LoadState.Unloading)
+            {
+                //  Return if one of the states is currently executing work.
+                //  Allowing it to finish the work before starting the next work.
+                return;
+            }
+
+            //  Remove the job from the queue, it's now allowed to run the job.
+            m_jobQueue.Dequeue();
+
+            switch(nextJob.State)
+            {
+                case LoadState.Loaded:
+                    m_coroutineStarter.StartCoroutine(nextJob.Unload(OnFinishedChunkWork));
+                    break;
+                case LoadState.Unloaded:
+                    m_coroutineStarter.StartCoroutine(nextJob.Load(OnFinishedChunkWork));
+                    break;
+            }
+            
+
+            //  If there is no Load job waiting, then go for the unload jobs.
+            /*if (m_loadQueue.Count == 0)
+            {
                 //  If there is nothing to unload then early exit
                 if (m_unloadQueue.Count == 0)
                     return;
@@ -270,7 +161,7 @@ namespace StreamDaddy.Streaming
                 //  If the lod is currently in loading, then dont do anything, we have to wait for that to finish.
                 if (nextUnload.State == LoadState.Loading)
                 {
-                    Debug.LogError(string.Format("Chunk {0} is in state {1}", m_chunkID.ToString(), nextUnload.State.ToString()));
+                    //Debug.LogError(string.Format("Chunk {0} is in state {1}", m_chunkID.ToString(), nextUnload.State.ToString()));
                     return;
                 }
 
@@ -294,10 +185,10 @@ namespace StreamDaddy.Streaming
             switch (nextLoad.State)
             {
                 case LoadState.Unloaded:
-                    Debug.LogError(string.Format("Loading chunk {0}", m_chunkID.ToString()));
+                    //Debug.LogError(string.Format("Loading chunk {0}", m_chunkID.ToString()));
                     m_coroutineStarter.StartCoroutine(nextLoad.Load(OnFinishedChunkWork));
                     break;
-            }
+            }*/
         }
 
         public void LoadChunk(int lodLevel)
@@ -307,15 +198,24 @@ namespace StreamDaddy.Streaming
                 return;
 
             var lod = m_chunkLODs[lodLevel];
+
+            m_jobQueue.Clear();
+            m_currentlyLoadedLODLevel = lodLevel;
+
             //  If the LOD has already begun loading or has finished loading then do nothing
             if (lod.State == LoadState.Loaded || lod.State == LoadState.Loading)
             {
                 Debug.LogError("Is already loaded or in loading!");
-                return;
+            }
+            else
+            {
+                if (!m_jobQueue.Contains(lod))
+                {
+                    m_jobQueue.Enqueue(lod);
+                }
             }
 
-            if (!m_loadQueue.Contains(lod))
-                m_loadQueue.Enqueue(lod);
+            UnloadAllLODS(lod.LodLevel);
             CheckLODJobQueue();
         }
 
