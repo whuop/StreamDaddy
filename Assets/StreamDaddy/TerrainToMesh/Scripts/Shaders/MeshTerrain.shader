@@ -65,10 +65,10 @@ Shader "Custom/MeshTerrain" {
 				half2 yUV = IN.worldPos.xz;
 				fixed4 splat_control = tex2D(_Control, IN.uv_Control);
 				fixed3 col;
-				col = splat_control.r; //* tex2D(_Splat0, yUV / _Splat0_ST.xy).rgb;
-				col += splat_control.g; //* tex2D(_Splat1, yUV / _Splat1_ST.xy).rgb;
-				col += splat_control.b; //* tex2D(_Splat2, yUV / _Splat2_ST.xy).rgb;
-				col += splat_control.a; //* tex2D(_Splat3, yUV / _Splat3_ST.xy).rgb;
+				col = splat_control.r * tex2D(_Splat0, yUV / _Splat0_ST.xy).rgb;
+				col += splat_control.g * tex2D(_Splat1, yUV / _Splat1_ST.xy).rgb;
+				col += splat_control.b * tex2D(_Splat2, yUV / _Splat2_ST.xy).rgb;
+				col += splat_control.a * tex2D(_Splat3, yUV / _Splat3_ST.xy).rgb;
 
 				o.Albedo = col;
 			}

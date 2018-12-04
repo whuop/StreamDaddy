@@ -57,6 +57,20 @@ namespace StreamDaddy.Editor.Tasks
                 CreateTerrainMeshGameObject(result.Mesh, terrainMaterial, terrain.transform.position);
             }
 
+            //  Create lods
+            for (int i = 0; i < terrains.Count; i++)
+            {
+                Terrain terrain = terrains[i];
+                
+                var mesh = TerrainToMesh.Editor.TerrainToMesh.CreateTerrainMeshWithResolution(sourceTerrain, terrain, terrain.terrainData.heightmapWidth / 7, terrain.terrainData.heightmapHeight / 7);
+
+                //  Save mesh
+                string meshPath = EditorPaths.GetTerrainMeshPath(worldName) + mesh.name + "_LOD1" + ".asset";
+                AssetDatabaseUtils.CreateOrReplaceAsset<Mesh>(mesh, meshPath);
+
+                CreateTerrainMeshGameObject(mesh, terrainMaterial, terrain.transform.position, "_LOD1");
+            }
+
             AssetDatabase.SaveAssets();
             AssetDatabase.StopAssetEditing();
 
@@ -66,9 +80,9 @@ namespace StreamDaddy.Editor.Tasks
             return true;
         }
 
-        private void CreateTerrainMeshGameObject(Mesh terrainMesh, Material terrainMaterial, Vector3 position)
+        private void CreateTerrainMeshGameObject(Mesh terrainMesh, Material terrainMaterial, Vector3 position, string postfix = "")
         {
-            GameObject terrainGO = new GameObject(terrainMesh.name, typeof(MeshRenderer), typeof(MeshFilter));
+            GameObject terrainGO = new GameObject(terrainMesh.name + postfix, typeof(MeshRenderer), typeof(MeshFilter));
 
             var renderer = terrainGO.GetComponent<MeshRenderer>();
             var filter = terrainGO.GetComponent<MeshFilter>();

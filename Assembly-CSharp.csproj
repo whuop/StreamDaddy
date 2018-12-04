@@ -66,6 +66,7 @@
     <Compile Include="Assets\StreamDaddy\Scripts\Pooling\GameObjectPool.cs" />
     <Compile Include="Assets\StreamDaddy\Scripts\Streaming\AreaOfInterest.cs" />
     <Compile Include="Assets\StreamDaddy\Scripts\Streaming\Chunk.cs" />
+    <Compile Include="Assets\StreamDaddy\Scripts\Streaming\ChunkLOD.cs" />
     <Compile Include="Assets\StreamDaddy\Scripts\Streaming\ChunkManager.cs" />
     <Compile Include="Assets\StreamDaddy\Scripts\Streaming\WorldStream.cs" />
     <Compile Include="Assets\StreamDaddy\Scripts\Streaming\WorldStreamer.cs" />

@@ -23,6 +23,8 @@ namespace StreamDaddy.TerrainToMesh.Editor
 
             CopySplatReferencesToMaterial(terrainData, terrainMaterial);
 
+            
+
             //  Extract the vertices of the terrain into a 1-dimensional array.
             for (int z = 0; z < terrainHeight; z++)
             {
@@ -66,8 +68,7 @@ namespace StreamDaddy.TerrainToMesh.Editor
 
             var result = new TerrainToMeshResult();
             result.Mesh = mesh;
-            //result.Splat = splatMap;
-
+            
             return result;
         }
 
@@ -109,6 +110,71 @@ namespace StreamDaddy.TerrainToMesh.Editor
             }
             return splatmap;
         }
+
+        public static Mesh CreateTerrainMeshWithResolution(Terrain sourceTerrain, Terrain terrain, int samplesX, int samplesZ)
+        {
+            float terrainWorldWidth = terrain.terrainData.size.x;
+            float terrainWorldHeight = terrain.terrainData.size.z;
+
+            Debug.LogError("Lodding with terrain size X/Y: " + terrainWorldWidth + "/" + terrainWorldHeight);
+
+            Debug.LogError("Lodding with samplesX: " + samplesX + " SamplesZ: " + samplesZ);
+
+            float sampleSizeX = terrainWorldWidth / (float)samplesX;
+            float sampleSizeZ = terrainWorldHeight / (float)samplesZ;
+            Debug.LogError("Lodding with Sample Size X/Z:" + sampleSizeX + "/" + sampleSizeZ);
+
+            List<Vector3> vertices = new List<Vector3>();
+            List<int> indices = new List<int>();
+
+            samplesZ++;
+            samplesX++;
+
+            for (int z = 0; z < samplesZ; z++)
+            {
+                for(int x = 0; x < samplesX; x++)
+                {
+                    Vector3 pos = new Vector3(z * sampleSizeZ, 0.0f, x * sampleSizeX);
+                    pos.y = terrain.terrainData.GetInterpolatedHeight(pos.x / terrainWorldWidth, pos.z / terrainWorldHeight);
+
+                    //Debug.Log("PosY: " + pos.y);
+                    vertices.Add(pos);
+                }
+            }
+
+            int len = vertices.Count - samplesX - 1;
+            for (int i = 0; i < len; i++)
+            {
+                if ((i + 1) % samplesX == 0)
+                    continue;
+                int tv0 = i;
+                int tv1 = i + 1;
+                int tv2 = i + samplesX;
+
+                int vv0 = i + 1;
+                int vv1 = i + samplesX + 1;
+                int vv2 = tv2;
+
+                indices.Add(tv0);
+                indices.Add(tv1);
+                indices.Add(tv2);
+
+                indices.Add(vv0);
+                indices.Add(vv1);
+                indices.Add(vv2);
+
+            }
+
+            Mesh mesh = new Mesh();
+            mesh.name = terrain.gameObject.name;
+            mesh.SetVertices(new List<Vector3>(vertices));
+            mesh.SetTriangles(indices, 0);
+
+            GenerateControlUVs(sourceTerrain, terrain,mesh, samplesX, samplesZ);
+
+            return mesh;
+        }
+
 
         /// <summary>
         /// Creates the splat map for given TerrainData. 
@@ -205,9 +271,6 @@ namespace StreamDaddy.TerrainToMesh.Editor
             int terrainWidth = data.heightmapWidth;
             int terrainHeight = data.heightmapHeight;
             
-            //float sampleWidth = 1.0f / (float)terrainWidth;
-            //float sampleHeight = 1.0f / (float)terrainHeight;
-
             //  Get the offset of the splat from the number of the mesh, which is in the name
             string terrainNumbers = terrainMesh.name.Substring(terrainMesh.name.Length - 3, 3);
 
@@ -230,6 +293,38 @@ namespace StreamDaddy.TerrainToMesh.Editor
             }
 
             terrainMesh.SetUVs(0, uvs);
+        }
+
+        private static void GenerateControlUVs(Terrain sourceTerrain, Terrain terrainChunk, Mesh terrainMesh, int samplesX, int samplesZ)
+        {
+            var sourceTerrainSize = sourceTerrain.terrainData.size;
+            var terrainChunkSize = terrainChunk.terrainData.size;
+
+            float numChunksX = (int)(sourceTerrainSize.x / terrainChunkSize.x);
+            float numChunksZ = (int)(sourceTerrainSize.z / terrainChunkSize.z);
+
+            Debug.Log("Chunks X/Y: " + numChunksX + "/" + numChunksZ);
+
+            float textureAreaX = 1.0f / numChunksX;
+            float textureAreaZ = 1.0f / numChunksZ;
+            
+            /*string terrainNumbers = terrainMesh.name.Substring(terrainMesh.name.Length - 3, 3);
+
+            int yOffset = int.Parse(terrainNumbers.Substring(0, 1));
+            int xOffset = int.Parse(terrainNumbers.Substring(2, 1));
+            
+            List<Vector2> uvs = new List<Vector2>();
+            
+            for(int y = 0; y < terrainHeight; y++)
+            {
+                for(int x = 0; x < terrainHeight; x++)
+                {
+                    float u = (xOffset * sourceSampleWidth) + (x * sourceSampleWidth * meshSampleScaleX);
+                    float v = (yOffset * sourceSampleHeight) + (y * sourceSampleHeight * meshSampleScaleY);
+                }
+            }
+
+            terrainMesh.SetUVs(0, uvs);*/
         }
     }
 
