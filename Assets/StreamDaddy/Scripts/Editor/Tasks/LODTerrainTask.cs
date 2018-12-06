@@ -68,6 +68,8 @@ namespace StreamDaddy.Editor.Tasks
                 for (int i = 0; i < terrains.Count; i++)
                 {
                     Terrain terrain = terrains[i];
+
+                    Debug.LogError("Terrain Size: " + terrain.terrainData.size.x + "/" + terrain.terrainData.size.z);
                     
                     int samplesX = Mathf.RoundToInt((float)terrain.terrainData.heightmapWidth * splitAmount);
                     int samplesY = Mathf.RoundToInt((float)terrain.terrainData.heightmapHeight * splitAmount);
@@ -82,7 +84,7 @@ namespace StreamDaddy.Editor.Tasks
                     switch(lodLevel)
                     {
                         case 1:
-                            taskResult.LOD1.Add(new TerrainMeshResult {Mesh = mesh, Position = terrain.transform.position });
+                            taskResult.LOD1.Add(new TerrainMeshResult { Mesh = mesh, Position = terrain.transform.position });
                             break;
                         case 2:
                             taskResult.LOD2.Add(new TerrainMeshResult { Mesh = mesh, Position = terrain.transform.position });

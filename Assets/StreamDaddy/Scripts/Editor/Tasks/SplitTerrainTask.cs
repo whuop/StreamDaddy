@@ -28,7 +28,9 @@ namespace StreamDaddy.Editor.Tasks
             {
                 LogError("World name is null or empty, task failed!");
             }
-            
+
+            Debug.LogError("Splitting terrain with ChunkSize: " + chunkSize.x + "/" + chunkSize.z);
+
             result.TerrainSplits = TerrainSplitter.SplitIntoChunks(chunkSize.x, chunkSize.z, terrain, EditorPaths.GetSplitTerrainPath(worldName));
             return true;
         }

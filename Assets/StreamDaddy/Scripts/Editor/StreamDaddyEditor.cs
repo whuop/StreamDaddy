@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 using StreamDaddy.Editor.Tasks;
-using UnityEditor.SceneManagement;
 using static StreamDaddy.Editor.Tasks.GenerateMeshLodsTask;
 
 namespace StreamDaddy.Editor

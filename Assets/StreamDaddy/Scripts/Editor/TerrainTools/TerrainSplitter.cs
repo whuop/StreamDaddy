@@ -16,6 +16,8 @@ namespace StreamDaddy.Editor.TerrainTools
             int numSplitsX = Mathf.CeilToInt(origTerrain.terrainData.size.x / chunkSizeX);
             int numSplitsZ = Mathf.CeilToInt(origTerrain.terrainData.size.z / chunkSizeZ);
 
+            Debug.LogError("NumSplits X/Z: " + numSplitsX + "/" + numSplitsZ);
+
             int heightResolution = origTerrain.terrainData.heightmapResolution / numSplitsX;
             int splatResolution = origTerrain.terrainData.alphamapResolution / numSplitsX;
             int detailResolution = origTerrain.terrainData.detailResolution / numSplitsX;

@@ -104,7 +104,7 @@ namespace StreamDaddy.Editor.Chunking
         public void Draw()
         {
             Color tempColor = Handles.color;
-
+            
             Vector3 center = new Vector3(
                 m_boundingBox.center.x * m_boundingBox.size.x + m_boundingBox.size.x * 0.5f,
                 m_boundingBox.center.y * m_boundingBox.size.y + m_boundingBox.size.y * 0.5f,
