@@ -30,7 +30,7 @@ namespace StreamDaddy.Editor.Tasks
 
         }
         
-        public bool Execute(string worldName, LodFormat lodFormat, List<EditorChunk> chunks, ref BuildChunkLayoutResult result)
+        public bool Execute(string worldName, LodFormat lodFormat, List<EditorChunk> chunks, LODTerrainTask.Result terrains, ref BuildChunkLayoutResult result)
         {
             if (chunks == null || chunks.Count == 0)
             {
@@ -164,11 +164,45 @@ namespace StreamDaddy.Editor.Tasks
                 meshColliderLayers[2].Meshes = cLod2.ToArray();
                 meshColliderLayers[3].Meshes = cLod3.ToArray();
 
+                //  Create the list that holds all the terrain meshes
+                List<TerrainMeshData> terrainMeshes = new List<TerrainMeshData>();
+                foreach(var t in terrains.LOD1)
+                {
+                    string assetPath = AssetDatabase.GetAssetPath(t.Mesh.GetInstanceID());
+                    string assetGuid = AssetDatabase.AssetPathToGUID(assetPath);
+                    var meshReference = new AssetReference(assetGuid);
+                    var terrainData = CreateTerrainMeshData(meshReference, t.Position);
+                    terrainMeshes.Add(terrainData);
+
+                    assetSettings.CreateOrMoveEntry(assetGuid, chunkAssetsGroup);
+                }
+
+                foreach (var t in terrains.LOD2)
+                {
+                    string assetPath = AssetDatabase.GetAssetPath(t.Mesh.GetInstanceID());
+                    string assetGuid = AssetDatabase.AssetPathToGUID(assetPath);
+                    var meshReference = new AssetReference(assetGuid);
+                    var terrainData = CreateTerrainMeshData(meshReference, t.Position);
+                    terrainMeshes.Add(terrainData);
+
+                    assetSettings.CreateOrMoveEntry(assetGuid, chunkAssetsGroup);
+                }
+
+                foreach (var t in terrains.LOD3)
+                {
+                    string assetPath = AssetDatabase.GetAssetPath(t.Mesh.GetInstanceID());
+                    string assetGuid = AssetDatabase.AssetPathToGUID(assetPath);
+                    var meshReference = new AssetReference(assetGuid);
+                    var terrainData = CreateTerrainMeshData(meshReference, t.Position);
+                    terrainMeshes.Add(terrainData);
+
+                    assetSettings.CreateOrMoveEntry(assetGuid, chunkAssetsGroup);
+                }
 
                 string chunkAssetName = "chunklayout_" + chunk.ChunkID.X + "_" + chunk.ChunkID.Y + "_" + chunk.ChunkID.Z;
                 
                 //  Create the scriptable object for this chunk layout
-                var chunkLayout = CreateChunkLayout(meshLayers.ToArray(), meshMaterials.ToArray(), meshTransforms.ToArray(), boxColliderData.ToArray(), sphereColliderData.ToArray(), meshColliderLayers.ToArray(), meshColliderTransforms.ToArray(), chunk.ChunkID);
+                var chunkLayout = CreateChunkLayout(meshLayers.ToArray(), meshMaterials.ToArray(), meshTransforms.ToArray(), boxColliderData.ToArray(), sphereColliderData.ToArray(), meshColliderLayers.ToArray(), meshColliderTransforms.ToArray(), terrainMeshes.ToArray(), chunk.ChunkID);
 
                 AssetDatabase.StartAssetEditing();
                 SaveChunkLayout(worldName, chunkAssetName, chunkLayout);
@@ -306,7 +340,7 @@ namespace StreamDaddy.Editor.Tasks
             return data;
         }
 
-        private AssetChunkData CreateChunkLayout(MeshLayerData[] meshLayers, MaterialData[] meshMaterials, TransformData[] meshTransforms, BoxColliderData[] boxColliders, SphereColliderData[] sphereColliders, MeshLayerData[] meshColliderLayers, TransformData[] meshColliderTransforms, ChunkID chunkID)
+        private AssetChunkData CreateChunkLayout(MeshLayerData[] meshLayers, MaterialData[] meshMaterials, TransformData[] meshTransforms, BoxColliderData[] boxColliders, SphereColliderData[] sphereColliders, MeshLayerData[] meshColliderLayers, TransformData[] meshColliderTransforms, TerrainMeshData[] terrainMeshes, ChunkID chunkID)
         {
             AssetChunkData asset = ScriptableObject.CreateInstance<AssetChunkData>();
             asset.MeshLayers = meshLayers;
@@ -316,6 +350,7 @@ namespace StreamDaddy.Editor.Tasks
             asset.SphereColliders = sphereColliders;
             asset.MeshColliderLayers = meshColliderLayers;
             asset.MeshColliderTransforms = meshColliderTransforms;
+            asset.TerrainMeshes = terrainMeshes;
             asset.ChunkID = chunkID.ID;
 
             return asset;
@@ -369,6 +404,15 @@ namespace StreamDaddy.Editor.Tasks
             return data;
         }
 
+        private TerrainMeshData CreateTerrainMeshData(AssetReference meshReference, Vector3 position)
+        {
+            TerrainMeshData data = new TerrainMeshData();
+
+            data.MeshReference = meshReference;
+            data.Position = position;
+
+            return data;
+        }
     }
 }
 

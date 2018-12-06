@@ -6,7 +6,7 @@ namespace StreamDaddy.Editor.Tasks
 {
     public class SplitTerrainTask : Task
     {
-        public struct SplitTerrainResult
+        public struct Result
         {
             public List<Terrain> TerrainSplits;
             public Texture2D SplatMap;
@@ -17,7 +17,7 @@ namespace StreamDaddy.Editor.Tasks
 
         }
 
-        public bool Execute(string worldName, Terrain terrain, Vector3Int chunkSize, ref SplitTerrainResult result)
+        public bool Execute(string worldName, Terrain terrain, Vector3Int chunkSize, ref Result result)
         {
             if (terrain == null)
             {

@@ -1,6 +1,4 @@
 ﻿using StreamDaddy.Editor.Chunking;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
@@ -13,7 +11,7 @@ namespace StreamDaddy.Editor.Tasks
 
         }
 
-        public bool Execute(EditorChunkManager chunkManager)
+        public bool Execute(EditorChunkManager chunkManager, SplitTerrainTask.Result splitTerrainResult)
         {
             var allMeshes = GameObject.FindObjectsOfType<MeshFilter>();
             var allBoxColliders = GameObject.FindObjectsOfType<BoxCollider>();
@@ -61,7 +59,12 @@ namespace StreamDaddy.Editor.Tasks
                 chunkManager.AddCollider(meshCol, meshCol.gameObject.transform.position);
                 i++;
             }
-
+            
+            foreach (var terrain in splitTerrainResult.TerrainSplits)
+            {
+                chunkManager.SetTerrain(terrain, terrain.transform.position);
+            }
+            
             LogInfo(string.Format("Added {0} GameObjects to Chunks", i));
 
             EditorUtility.ClearProgressBar();

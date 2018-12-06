@@ -10,10 +10,12 @@ namespace StreamDaddy.Editor.Chunking
         public List<EditorChunk> Chunks { get { return new List<EditorChunk>(m_chunks.Values); } }
 
         private Vector3Int m_chunkSize;
+        private string m_worldName;
 
-        public EditorChunkManager(Vector3Int chunkSize)
+        public EditorChunkManager(Vector3Int chunkSize, string worldName)
         {
             m_chunkSize = chunkSize;
+            m_worldName = worldName;
         }
 
         public void ClearAllChunks(Vector3Int newChunkSize)
@@ -35,6 +37,13 @@ namespace StreamDaddy.Editor.Chunking
             chunk.AddCollider(collider);
         }
 
+        public void SetTerrain(Terrain terrain, Vector3 position)
+        {
+            EditorChunk chunk = CreateChunkIfMissing(position);
+
+            chunk.SetTerrain(terrain);
+        }
+
         private EditorChunk CreateChunkIfMissing(Vector3 position)
         {
             //  Round to approximate chunk position
@@ -51,7 +60,7 @@ namespace StreamDaddy.Editor.Chunking
             //  Create a new chunk if no chunk exists with the given key
             if (!m_chunks.ContainsKey(chunkKey))
             {
-                m_chunks.Add(chunkKey, new EditorChunk(chunkKey, m_chunkSize));
+                m_chunks.Add(chunkKey, new EditorChunk(chunkKey, m_chunkSize, m_worldName));
             }
 
             return m_chunks[chunkKey];

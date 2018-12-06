@@ -19,6 +19,11 @@ namespace StreamDaddy.AssetManagement
         public TransformData[] MeshTransforms;
 
         /// <summary>
+        /// All the different Terrain LODs.
+        /// </summary>
+        public TerrainMeshData[] TerrainMeshes;
+
+        /// <summary>
         /// Colliders
         /// </summary>
         public BoxColliderData[] BoxColliders;
@@ -85,53 +90,15 @@ namespace StreamDaddy.AssetManagement
         [SerializeField]
         public float Radius;
     }
-    /*
-#if UNITY_EDITOR
 
-    [CustomEditor(typeof(AssetChunkData))]
-    public class AssetChunkDataEditor : Editor
+    [System.Serializable]
+    public class TerrainMeshData
     {
-        private AssetChunkData m_chunkData;
-
-        private bool[] m_meshLayerFoldouts;
-
-        public void OnEnable()
-        {
-            m_chunkData = (AssetChunkData)target;
-
-            m_meshLayerFoldouts = new bool[m_chunkData.MeshLayers.Length];
-            for(int i = 0; i < m_meshLayerFoldouts.Length; i++)
-            {
-                m_meshLayerFoldouts[i] = false;
-            }
-        }
-
-        public override void OnInspectorGUI()
-        {
-            EditorGUILayout.LabelField("Mesh Layers");
-            var assetSettings = UnityEditor.AddressableAssets.AddressableAssetSettingsDefaultObject.Settings;
-
-            EditorGUI.indentLevel = 1;
-            for (int i = 0; i < m_chunkData.MeshLayers.Length; i++)
-            {
-                m_meshLayerFoldouts[i] = EditorGUILayout.Foldout(m_meshLayerFoldouts[i], "LOD " + i);
-                if (m_meshLayerFoldouts[i])
-                {
-                    for(int j = 0; j < m_chunkData.MeshLayers[i].Meshes.Length; j++)
-                    {
-                        var meshData = m_chunkData.MeshLayers[i].Meshes[j];
-                        
-                        EditorGUILayout.LabelField(meshData.MeshReference.ToString());
-                    }
-                }
-            }
-            EditorGUI.indentLevel = 0;
-
-        }
+        [SerializeField]
+        public AssetReference MeshReference;
+        [SerializeField]
+        public Vector3 Position;
     }
-
-#endif
-*/
 }
 
 

@@ -75,10 +75,10 @@
     <Compile Include="Assets\StreamDaddy\Scripts\Editor\Tasks\CreateStreamedSceneTask.cs" />
     <Compile Include="Assets\StreamDaddy\Scripts\Editor\Tasks\ExportChunkAssetsTask.cs" />
     <Compile Include="Assets\StreamDaddy\Scripts\Editor\Tasks\GenerateMeshLodsTask.cs" />
+    <Compile Include="Assets\StreamDaddy\Scripts\Editor\Tasks\LODTerrainTask.cs" />
     <Compile Include="Assets\StreamDaddy\Scripts\Editor\Tasks\SplitTerrainTask.cs" />
     <Compile Include="Assets\StreamDaddy\Scripts\Editor\Tasks\Task.cs" />
     <Compile Include="Assets\StreamDaddy\Scripts\Editor\Tasks\TaskChain.cs" />
-    <Compile Include="Assets\StreamDaddy\Scripts\Editor\Tasks\TerrainToMeshTask.cs" />
     <Compile Include="Assets\StreamDaddy\Scripts\Editor\TerrainTools\TerrainSplitter.cs" />
     <Compile Include="Assets\StreamDaddy\Scripts\Editor\Utils\AssetDatabaseUtils.cs" />
     <Compile Include="Assets\StreamDaddy\Scripts\Editor\Utils\PathUtils.cs" />

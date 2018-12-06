@@ -32,7 +32,8 @@ namespace StreamDaddy.Editor
 
         private TaskChain m_taskChain;
 
-        private SplitTerrainTask.SplitTerrainResult m_splitTerrainResult;
+        private LODTerrainTask.Result m_lodTerrainResult;
+        private SplitTerrainTask.Result m_splitTerrainResult;
         private BuildChunkLayoutTask.BuildChunkLayoutResult m_chunkLayoutResult;
 
         public Mesh m_mesh;
@@ -93,19 +94,19 @@ namespace StreamDaddy.Editor
             
             if (GUILayout.Button("Split Terrain"))
             {
-                m_splitTerrainResult = new SplitTerrainTask.SplitTerrainResult();
+                m_splitTerrainResult = new SplitTerrainTask.Result();
                 new SplitTerrainTask().Execute(m_worldNameProp.stringValue, m_terrainToSplit, m_chunkSizeProp.vector3IntValue, ref m_splitTerrainResult);
             }
 
             if (GUILayout.Button("Terrain To Mesh"))
             {
-                new TerrainToMeshTask().Execute(m_worldNameProp.stringValue, m_terrainToSplit, m_splitTerrainResult.TerrainSplits, m_terrainMeshMaterial);
+                new LODTerrainTask().Execute(m_worldNameProp.stringValue, m_terrainToSplit, m_splitTerrainResult.TerrainSplits, m_terrainMeshMaterial, ref m_lodTerrainResult);
             }
             
             if (GUILayout.Button("Chunk World"))
             {
-                m_chunkManager = new EditorChunkManager(m_chunkSizeProp.vector3IntValue);
-                new ChunkWorldTask().Execute(m_chunkManager);
+                m_chunkManager = new EditorChunkManager(m_chunkSizeProp.vector3IntValue, m_worldNameProp.stringValue);
+                new ChunkWorldTask().Execute(m_chunkManager, m_splitTerrainResult);
                 GUI.changed = true;
             }
 
@@ -117,7 +118,7 @@ namespace StreamDaddy.Editor
             if (GUILayout.Button("Export Chunk Layouts"))
             {
                 m_chunkLayoutResult = new BuildChunkLayoutTask.BuildChunkLayoutResult();
-                new BuildChunkLayoutTask().Execute(m_worldNameProp.stringValue, m_lodFormat, m_chunkManager.Chunks, ref m_chunkLayoutResult);
+                new BuildChunkLayoutTask().Execute(m_worldNameProp.stringValue, m_lodFormat, m_chunkManager.Chunks, m_lodTerrainResult, ref m_chunkLayoutResult);
             }
 
             if (GUILayout.Button("Export World Stream"))
@@ -136,8 +137,8 @@ namespace StreamDaddy.Editor
             if (GUILayout.Button("Full Export (excluding terrain split)"))
             {
                 //  Chunk World
-                m_chunkManager = new EditorChunkManager(m_chunkSizeProp.vector3IntValue);
-                new ChunkWorldTask().Execute(m_chunkManager);
+                m_chunkManager = new EditorChunkManager(m_chunkSizeProp.vector3IntValue, m_worldNameProp.stringValue);
+                new ChunkWorldTask().Execute(m_chunkManager, m_splitTerrainResult);
                 GUI.changed = true;
 
                 //  Generate LODs
@@ -145,7 +146,7 @@ namespace StreamDaddy.Editor
 
                 //  Export chunk layouts
                 m_chunkLayoutResult = new BuildChunkLayoutTask.BuildChunkLayoutResult();
-                new BuildChunkLayoutTask().Execute(m_worldNameProp.stringValue, m_lodFormat, m_chunkManager.Chunks, ref m_chunkLayoutResult);
+                new BuildChunkLayoutTask().Execute(m_worldNameProp.stringValue, m_lodFormat, m_chunkManager.Chunks, m_lodTerrainResult,ref m_chunkLayoutResult);
 
                 //  Export Assets
                 new ExportChunkAssetsTask().Execute(m_worldNameProp.stringValue, m_chunkManager.Chunks);
@@ -165,12 +166,12 @@ namespace StreamDaddy.Editor
             if (GUILayout.Button("Full Export (including terrain split)"))
             {
                 //  Split terrain into chunks
-                m_splitTerrainResult = new SplitTerrainTask.SplitTerrainResult();
+                m_splitTerrainResult = new SplitTerrainTask.Result();
                 new SplitTerrainTask().Execute(m_worldNameProp.stringValue, m_terrainToSplit, m_chunkSizeProp.vector3IntValue, ref m_splitTerrainResult);
 
                 //  Chunk World
-                m_chunkManager = new EditorChunkManager(m_chunkSizeProp.vector3IntValue);
-                new ChunkWorldTask().Execute(m_chunkManager);
+                m_chunkManager = new EditorChunkManager(m_chunkSizeProp.vector3IntValue, m_worldNameProp.stringValue);
+                new ChunkWorldTask().Execute(m_chunkManager, m_splitTerrainResult);
                 GUI.changed = true;
 
                 //  Generate LODs
@@ -178,7 +179,7 @@ namespace StreamDaddy.Editor
 
                 //  Export chunk layouts
                 m_chunkLayoutResult = new BuildChunkLayoutTask.BuildChunkLayoutResult();
-                new BuildChunkLayoutTask().Execute(m_worldNameProp.stringValue, m_lodFormat, m_chunkManager.Chunks, ref m_chunkLayoutResult);
+                new BuildChunkLayoutTask().Execute(m_worldNameProp.stringValue, m_lodFormat, m_chunkManager.Chunks, m_lodTerrainResult,ref m_chunkLayoutResult);
 
                 //  Export Assets
                 new ExportChunkAssetsTask().Execute(m_worldNameProp.stringValue, m_chunkManager.Chunks);
