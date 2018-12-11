@@ -77,17 +77,16 @@ namespace StreamDaddy.Editor.TerrainTools
                     float proportionsX = (xMax - xMin) / (float)chunkSizeX;
                     float proportionsY = (zMax - zMin) / (float)chunkSizeZ;
 
-                    Debug.LogError("Proportions X/Z: " + proportionsX + "/" + proportionsY);
 
-                    int splatResolution = 0;
-                    int detailResolution = 0;
+                    int splatResolution = 512;
+                    int detailResolution = 512;
 
                     //Debug.LogError("Took X/Y:" + takenX + "/" + takenZ);
                     //Debug.LogError("Taken X/Y: " + totalTakenX + "/" + totalTakenZ);
 
                     Vector2Int actualHeightmapResolution = new Vector2Int((int)((float)wantedHeightmapResolution.x * proportionsX), (int)((float)wantedHeightmapResolution.y * proportionsY));
 
-                    Debug.LogError("Height X/Y: " + actualHeightmapResolution.x + "/" + actualHeightmapResolution.y);
+                    //Debug.LogError("Height X/Y: " + actualHeightmapResolution.x + "/" + actualHeightmapResolution.y);
 
                     CopyTerrain(origTerrain, terrains, string.Format("{0}{1}_{2}", origTerrain.name, x, z), terrainSavePath, xMin, xMax, zMin, zMax, wantedHeightmapResolution, actualHeightmapResolution, detailResolution, splatResolution, x, z);
                     x++;
@@ -97,6 +96,7 @@ namespace StreamDaddy.Editor.TerrainTools
                 totalTakenX = 0.0f;
                 xMin = 0.0f;
                 xMax = 0.0f;
+                x = 0;
                 z++;
             }
 
@@ -168,23 +168,23 @@ namespace StreamDaddy.Editor.TerrainTools
             }*/
             if (detailResolution < 0 || detailResolution > 4048)
             {
-                Debug.Log("Invalid detailResolution " + detailResolution);
+                Debug.LogError("Invalid detailResolution " + detailResolution);
                 return;
             }
             if (alphamapResolution < 16 || alphamapResolution > 2048)
             {
-                Debug.Log("Invalid alphamapResolution " + alphamapResolution);
+                Debug.LogError("Invalid alphamapResolution " + alphamapResolution);
                 return;
             }
 
             if (xMin < 0 || xMin > xMax || xMax > origTerrain.terrainData.size.x)
             {
-                Debug.Log("Invalid xMin or xMax");
+                Debug.LogError("Invalid xMin or xMax");
                 return;
             }
             if (zMin < 0 || zMin > zMax || zMax > origTerrain.terrainData.size.z)
             {
-                Debug.Log("Invalid zMin or zMax");
+                Debug.LogError("Invalid zMin or zMax");
                 return;
             }
 
@@ -278,7 +278,8 @@ namespace StreamDaddy.Editor.TerrainTools
             float zMaxNorm = zMax / origTerrain.terrainData.size.z;
 
             // Height
-            CalculateSubHeightmap(td, wantedHeightmapResolution, actualHeightmapResolution, origTerrain, chunkX, chunkZ);
+            Vector2 newTerrainSize = new Vector2(xMax - xMin, zMax - zMin);
+            CalculateSubHeightmap(td, wantedHeightmapResolution, actualHeightmapResolution, origTerrain, chunkX, chunkZ, newTerrainSize);
 
             // Detail
             /*td.SetDetailResolution(detailResolution, 8); // Default? Haven't messed with resolutionPerPatch
@@ -336,7 +337,7 @@ namespace StreamDaddy.Editor.TerrainTools
             AssetDatabase.SaveAssets();
         }
 
-        private static void CalculateSubHeightmap(TerrainData newTerrainData, Vector2Int wantedHeightmapResolution,Vector2Int actualHeightmapResolution, Terrain origTerrain, int chunkX, int chunkZ)
+        private static void CalculateSubHeightmap(TerrainData newTerrainData, Vector2Int wantedHeightmapResolution,Vector2Int actualHeightmapResolution, Terrain origTerrain, int chunkX, int chunkZ, Vector2 terrainSize)
         {
             newTerrainData.heightmapResolution = (actualHeightmapResolution.x > actualHeightmapResolution.y) ? actualHeightmapResolution.x : actualHeightmapResolution.y;
             float[,] newHeights = new float[actualHeightmapResolution.x, actualHeightmapResolution.y];
@@ -346,11 +347,26 @@ namespace StreamDaddy.Editor.TerrainTools
             int xOffset = chunkX * wantedHeightmapResolution.x;
             int zOffset = chunkZ * wantedHeightmapResolution.y;
 
+            Debug.LogError("Chunk X/Z: " + chunkX + "/" + chunkZ);
+            Debug.LogError("XOffset: " + xOffset);
+            Debug.LogError("ZOffset: " + zOffset);
+
+            float sampleSizeX = terrainSize.x / actualHeightmapResolution.x;
+            float sampleSizeZ = terrainSize.y / actualHeightmapResolution.y;
+            Debug.LogError("Terrain Size X/Z: " + terrainSize.x + "/" + terrainSize.y);
+            Debug.LogError("Actual Resolution X/Z: " + actualHeightmapResolution.x + "/" + actualHeightmapResolution.y);
+            Debug.LogError("Sample Size X/Z: " + sampleSizeX + "/" + sampleSizeZ);
+
             for(int x = 0; x < actualHeightmapResolution.x; x++)
             {
                 for(int z = 0; z < actualHeightmapResolution.y; z++)
                 {
-                    newHeights[x, z] = origTerrain.
+                    float posX = xOffset + (x * sampleSizeX);
+                    float posY = zOffset + (z * sampleSizeZ);
+
+                    Debug.LogError("Pos X/Z: " + posX + "/" + posY);
+                    newHeights[x, z] = origTerrain.terrainData.GetInterpolatedHeight(posX, posY);
+                    //newHeights[x, z] = origTerrain.
                 }
             }
 
