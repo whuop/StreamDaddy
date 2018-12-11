@@ -88,7 +88,9 @@ namespace StreamDaddy.Editor.TerrainTools
 
                     //Debug.LogError("Height X/Y: " + actualHeightmapResolution.x + "/" + actualHeightmapResolution.y);
 
-                    CopyTerrain(origTerrain, terrains, string.Format("{0}{1}_{2}", origTerrain.name, x, z), terrainSavePath, xMin, xMax, zMin, zMax, wantedHeightmapResolution, actualHeightmapResolution, detailResolution, splatResolution, x, z);
+                    //  Switched X for Z in CopyTerrain. Not really sure why that has to be done currently, but if i dont everything is mirrored all weird, so i think it's just that the 
+                    //  x and z index of the loop does not correspond to the order they are being looped.
+                    CopyTerrain(origTerrain, terrains, string.Format("{0}{1}_{2}", origTerrain.name, x, z), terrainSavePath, xMin, xMax, zMin, zMax, wantedHeightmapResolution, actualHeightmapResolution, detailResolution, splatResolution, z, x);
                     x++;
                 }
 
@@ -340,33 +342,44 @@ namespace StreamDaddy.Editor.TerrainTools
         private static void CalculateSubHeightmap(TerrainData newTerrainData, Vector2Int wantedHeightmapResolution,Vector2Int actualHeightmapResolution, Terrain origTerrain, int chunkX, int chunkZ, Vector2 terrainSize)
         {
             newTerrainData.heightmapResolution = (actualHeightmapResolution.x > actualHeightmapResolution.y) ? actualHeightmapResolution.x : actualHeightmapResolution.y;
-            float[,] newHeights = new float[actualHeightmapResolution.x, actualHeightmapResolution.y];
+            float[,] newHeights = new float[newTerrainData.heightmapResolution, newTerrainData.heightmapResolution];
 
-            var origHeights = origTerrain.terrainData.GetHeights(0, 0, origTerrain.terrainData.heightmapWidth, origTerrain.terrainData.heightmapHeight);
+            //var origHeights = origTerrain.terrainData.GetHeights(0, 0, origTerrain.terrainData.heightmapWidth, origTerrain.terrainData.heightmapHeight);
 
-            int xOffset = chunkX * wantedHeightmapResolution.x;
-            int zOffset = chunkZ * wantedHeightmapResolution.y;
+            float chunkSizeNormalized = ((float)newTerrainData.heightmapResolution - 1) / ((float)origTerrain.terrainData.heightmapResolution - 1);
+            float sampleSizeNormalized = chunkSizeNormalized / ((float)newTerrainData.heightmapResolution - 1);
+
+            Debug.Log("ChunkSizeNorm: " + chunkSizeNormalized);
+            Debug.Log("SampleSizeNormalized: " + sampleSizeNormalized);
+
+            float xOffset = chunkX * (newTerrainData.heightmapResolution - 1);
+            float zOffset = chunkZ * (newTerrainData.heightmapResolution - 1);
 
             Debug.LogError("Chunk X/Z: " + chunkX + "/" + chunkZ);
-            Debug.LogError("XOffset: " + xOffset);
-            Debug.LogError("ZOffset: " + zOffset);
+            //Debug.LogError("XOffset: " + xOffset);
+            //Debug.LogError("ZOffset: " + zOffset);
 
-            float sampleSizeX = terrainSize.x / actualHeightmapResolution.x;
-            float sampleSizeZ = terrainSize.y / actualHeightmapResolution.y;
+            //float sampleSizeX = terrainSize.x / newTerrainData.heightmapResolution;
+            //float sampleSizeZ = terrainSize.y / newTerrainData.heightmapResolution;
             Debug.LogError("Terrain Size X/Z: " + terrainSize.x + "/" + terrainSize.y);
-            Debug.LogError("Actual Resolution X/Z: " + actualHeightmapResolution.x + "/" + actualHeightmapResolution.y);
-            Debug.LogError("Sample Size X/Z: " + sampleSizeX + "/" + sampleSizeZ);
+            //Debug.LogError("Actual Resolution X/Z: " + actualHeightmapResolution.x + "/" + actualHeightmapResolution.y);
+            //Debug.LogError("Sample Size X/Z: " + sampleSizeX + "/" + sampleSizeZ);
+            
 
-            for(int x = 0; x < actualHeightmapResolution.x; x++)
+            for(int x = 0; x < newTerrainData.heightmapResolution; x++)
             {
-                for(int z = 0; z < actualHeightmapResolution.y; z++)
+                for(int z = 0; z < newTerrainData.heightmapResolution; z++)
                 {
-                    float posX = xOffset + (x * sampleSizeX);
-                    float posY = zOffset + (z * sampleSizeZ);
+                    float posZ = xOffset + (x * sampleSizeNormalized);
+                    float posX = zOffset + (z * sampleSizeNormalized);
 
-                    Debug.LogError("Pos X/Z: " + posX + "/" + posY);
-                    newHeights[x, z] = origTerrain.terrainData.GetInterpolatedHeight(posX, posY);
+                    float height = origTerrain.terrainData.GetInterpolatedHeight(posX, posZ);
+
+                    //Debug.LogError("Pos X/Z: " + posZ + "/" + posX + " Height: " + height);
+                    newHeights[x, z] = height / origTerrain.terrainData.size.y;
                     //newHeights[x, z] = origTerrain.
+
+                    Debug.DrawLine(new Vector3(posX * origTerrain.terrainData.size.x, height, posZ * origTerrain.terrainData.size.z), new Vector3(posX * origTerrain.terrainData.size.x, height + 1.0f, posZ * origTerrain.terrainData.size.z), Color.red, 20.0f);
                 }
             }
 
