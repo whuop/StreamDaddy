@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
-using UnityEngine.Assertions;
 
 namespace StreamDaddy.Editor.TerrainTools
 {
@@ -28,16 +27,6 @@ namespace StreamDaddy.Editor.TerrainTools
             //  Create folder structure
             PathUtils.EnsurePathExists(terrainSavePath);
             
-            //Debug.LogError("NumSplits X/Z: " + numSplitsX + "/" + numSplitsZ);
-
-            //int splatResolution = origTerrain.terrainData.alphamapResolution / numSplitsX;
-            //int detailResolution = origTerrain.terrainData.detailResolution / numSplitsX;
-
-            //  Increase height map resolution by 1 to account for edge extrude
-            //heightResolution += 1;
-
-            Vector2Int wantedHeightmapResolution = new Vector2Int(chunkSizeX, chunkSizeZ);
-
             if (origTerrain == null)
             {
                 Debug.LogWarning("No terrain found on transform");
@@ -49,6 +38,9 @@ namespace StreamDaddy.Editor.TerrainTools
             float totalAllotedSizeX = origTerrain.terrainData.size.x;
             float totalAllotedSizeZ = origTerrain.terrainData.size.z;
 
+            int numChunksX = Mathf.FloorToInt(totalAllotedSizeX / (float)chunkSizeX);
+            int numChunksZ = Mathf.FloorToInt(totalAllotedSizeZ / (float)chunkSizeZ);
+
             float totalTakenX = 0.0f;
             float totalTakenZ = 0.0f;
 
@@ -59,47 +51,62 @@ namespace StreamDaddy.Editor.TerrainTools
 
             int x = 0;
             int z = 0;
-            while(totalAllotedSizeZ > 0)
+            while(totalAllotedSizeX > 0)
             {
-                float takenZ = SubtractFromAndReturn(ref totalAllotedSizeZ, (float)chunkSizeZ);
-                zMin = totalTakenZ;
-                totalTakenZ += takenZ;
-                zMax = totalTakenZ;
-                while (totalAllotedSizeX > 0)
+                float takenX = SubtractFromAndReturn(ref totalAllotedSizeX, (float)chunkSizeX);
+                
+
+                xMin = totalTakenX;
+                totalTakenX += takenX;
+                xMax = totalTakenX;
+
+                
+                while (totalAllotedSizeZ > 0)
                 {
                     //EditorUtility.DisplayProgressBar("Splitting Terrain", "Copying heightmap, detail, splat, and trees", (float)((x * numSplitsZ) + z) / (numSplitsX * numSplitsZ));
-                    float takenX = SubtractFromAndReturn(ref totalAllotedSizeX, (float)chunkSizeX);
+                    float takenZ = SubtractFromAndReturn(ref totalAllotedSizeZ, (float)chunkSizeZ);
+
+                    zMin = totalTakenZ;
+                    totalTakenZ += takenZ;
+                    zMax = totalTakenZ;
+
+                    float cSizeX = (xMax - xMin);
+                    float cSizeZ = (zMax - zMin);
                     
-                    xMin = totalTakenX;
-                    totalTakenX += takenX;
-                    xMax = totalTakenX;
+                    float chunkSizePercentX = cSizeX / origTerrain.terrainData.size.x;
+                    float chunkSizePercentZ = cSizeZ /origTerrain.terrainData.size.z;
 
-                    float proportionsX = (xMax - xMin) / (float)chunkSizeX;
-                    float proportionsY = (zMax - zMin) / (float)chunkSizeZ;
+                    float largestPercent = (chunkSizePercentX > chunkSizePercentZ) ? chunkSizePercentX : chunkSizePercentZ;
 
+                    Debug.LogError("Largest Percent: " + largestPercent);
+                    Debug.LogError("ChunkSizePercent X/Z: " + chunkSizePercentX + "/" + chunkSizePercentZ);
 
-                    int splatResolution = 512;
-                    int detailResolution = 512;
+                    int heightmapResolution = Mathf.RoundToInt((float)origTerrain.terrainData.heightmapResolution * largestPercent);
+                    heightmapResolution = NearestPoT(heightmapResolution) + 1;
 
-                    //Debug.LogError("Took X/Y:" + takenX + "/" + takenZ);
-                    //Debug.LogError("Taken X/Y: " + totalTakenX + "/" + totalTakenZ);
+                    int splatResolution = Mathf.RoundToInt((float)origTerrain.terrainData.alphamapResolution * largestPercent);
+                    splatResolution = NearestPoT(splatResolution) + 1;
 
-                    Vector2Int actualHeightmapResolution = new Vector2Int((int)((float)wantedHeightmapResolution.x * proportionsX), (int)((float)wantedHeightmapResolution.y * proportionsY));
+                    int detailResolution = Mathf.RoundToInt((float)origTerrain.terrainData.detailResolution * largestPercent);
+                    detailResolution = NearestPoT(detailResolution) + 1;
 
-                    //Debug.LogError("Height X/Y: " + actualHeightmapResolution.x + "/" + actualHeightmapResolution.y);
+                    Debug.LogError("Heightmap Resolution: " + heightmapResolution);
+                    Debug.LogError("Splat Resolution: " + splatResolution);
+                    Debug.LogError("Detail Resolution: " + detailResolution);
+                    
 
                     //  Switched X for Z in CopyTerrain. Not really sure why that has to be done currently, but if i dont everything is mirrored all weird, so i think it's just that the 
                     //  x and z index of the loop does not correspond to the order they are being looped.
-                    CopyTerrain(origTerrain, terrains, string.Format("{0}{1}_{2}", origTerrain.name, x, z), terrainSavePath, xMin, xMax, zMin, zMax, wantedHeightmapResolution, actualHeightmapResolution, detailResolution, splatResolution, z, x);
-                    x++;
+                    CopyTerrain(origTerrain, terrains, string.Format("{0}{1}_{2}", origTerrain.name, x, z), terrainSavePath, xMin, xMax, zMin, zMax, heightmapResolution, detailResolution, splatResolution, x, z);
+                    z++;
                 }
 
-                totalAllotedSizeX = origTerrain.terrainData.size.x;
-                totalTakenX = 0.0f;
-                xMin = 0.0f;
-                xMax = 0.0f;
-                x = 0;
-                z++;
+                totalAllotedSizeZ = origTerrain.terrainData.size.z;
+                totalTakenZ = 0.0f;
+                zMin = 0.0f;
+                zMax = 0.0f;
+                z = 0;
+                x++;
             }
 
 
@@ -116,64 +123,24 @@ namespace StreamDaddy.Editor.TerrainTools
                 }
             }*/
             //EditorUtility.ClearProgressBar();
-
-            /*for (int x = 0; x < numSplitsX; x++)
-            {
-                for (int z = 0; z < numSplitsZ; z++)
-                {
-                    GameObject center = GameObject.Find(string.Format("{0}{1}_{2}", origTerrain.name, x, z));
-                    GameObject right = GameObject.Find(string.Format("{0}{1}_{2}", origTerrain.name, x + 1, z));
-                    GameObject top = GameObject.Find(string.Format("{0}{1}_{2}", origTerrain.name, x, z + 1));
-                    GameObject topRight = GameObject.Find(string.Format("{0}{1}_{2}", origTerrain.name, x + 1, z + 1));
-                    GameObject left = GameObject.Find(string.Format("{0}{1}_{2}", origTerrain.name, x - 1, z));
-                    GameObject bottom = GameObject.Find(string.Format("{0}{1}_{2}", origTerrain.name, x, z - 1));
-
-                    if (center == null)
-                        continue;
-
-                    Terrain centerT = center.GetComponent<Terrain>();
-                    if (centerT == null)
-                        continue;
-
-                    Terrain rightT = null;
-                    Terrain topT = null;
-                    Terrain topRightT = null;
-                    Terrain leftT = null;
-                    Terrain bottomT = null;
-
-                    if (right != null)
-                        rightT = right.GetComponent<Terrain>();
-                    if (top != null)
-                        topT = top.GetComponent<Terrain>();
-                    if (topRight != null)
-                        topRightT = topRight.GetComponent<Terrain>();
-                    if (left != null)
-                        leftT = left.GetComponent<Terrain>();
-                    if (bottom != null)
-                        bottomT = bottom.GetComponent<Terrain>();
-
-                    StitchTopAndRight(centerT, topT, rightT, topRightT, heightResolution);
-                    centerT.SetNeighbors(leftT, topT, rightT, bottomT);
-                }
-            }*/
+            
 
             return terrains;
         }
 
-        static void CopyTerrain(Terrain origTerrain, List<Terrain> splits, string newName, string savePath, float xMin, float xMax, float zMin, float zMax, Vector2Int wantedHeightmapResolution, Vector2Int actualHeightmapResolution, int detailResolution, int alphamapResolution, int chunkX, int chunkZ)
+        static void CopyTerrain(Terrain origTerrain, List<Terrain> splits, string newName, string savePath, float xMin, float xMax, float zMin, float zMax, int heightmapResolution, int detailResolution, int alphamapResolution, int chunkX, int chunkZ)
         {
-            /*if (heightmapResolution.x < 33 || heightmapResolution.x > 4097 ||
-                heightmapResolution.y < 33 || heightmapResolution.y > 4097)
+            if (heightmapResolution < 33 || heightmapResolution > 4097)
             {
-                Debug.Log("Invalid heightmap resolution");
+                Debug.Log("Invalid heightmap resolution " + heightmapResolution);
                 return;
-            }*/
-            if (detailResolution < 0 || detailResolution > 4048)
+            }
+            if (detailResolution < 17 || detailResolution > 4048)
             {
                 Debug.LogError("Invalid detailResolution " + detailResolution);
                 return;
             }
-            if (alphamapResolution < 16 || alphamapResolution > 2048)
+            if (alphamapResolution < 17 || alphamapResolution > 2048)
             {
                 Debug.LogError("Invalid alphamapResolution " + alphamapResolution);
                 return;
@@ -263,7 +230,7 @@ namespace StreamDaddy.Editor.TerrainTools
             var splats = origTerrain.terrainData.splatPrototypes;
             foreach (var splat in splats)
             {
-                splat.tileOffset = new Vector2((wantedHeightmapResolution.x - 1) * chunkX, (wantedHeightmapResolution.y - 1) * chunkZ);
+                splat.tileOffset = new Vector2((heightmapResolution - 1) * chunkX, (heightmapResolution - 1) * chunkZ);
             }
             td.splatPrototypes = splats;
 
@@ -281,7 +248,7 @@ namespace StreamDaddy.Editor.TerrainTools
 
             // Height
             Vector2 newTerrainSize = new Vector2(xMax - xMin, zMax - zMin);
-            CalculateSubHeightmap(td, wantedHeightmapResolution, actualHeightmapResolution, origTerrain, chunkX, chunkZ, newTerrainSize);
+            CalculateSubHeightmap(td, heightmapResolution, origTerrain, chunkX, chunkZ);
 
             // Detail
             /*td.SetDetailResolution(detailResolution, 8); // Default? Haven't messed with resolutionPerPatch
@@ -339,98 +306,41 @@ namespace StreamDaddy.Editor.TerrainTools
             AssetDatabase.SaveAssets();
         }
 
-        private static void CalculateSubHeightmap(TerrainData newTerrainData, Vector2Int wantedHeightmapResolution,Vector2Int actualHeightmapResolution, Terrain origTerrain, int chunkX, int chunkZ, Vector2 terrainSize)
+        private static void CalculateSubHeightmap(TerrainData newTerrainData, int heightmapResolution, Terrain origTerrain, int chunkX, int chunkZ)
         {
-            newTerrainData.heightmapResolution = (actualHeightmapResolution.x > actualHeightmapResolution.y) ? actualHeightmapResolution.x : actualHeightmapResolution.y;
-            float[,] newHeights = new float[newTerrainData.heightmapResolution, newTerrainData.heightmapResolution];
+            newTerrainData.heightmapResolution = heightmapResolution;
+            float[,] newHeights = new float[heightmapResolution, heightmapResolution];
 
-            //var origHeights = origTerrain.terrainData.GetHeights(0, 0, origTerrain.terrainData.heightmapWidth, origTerrain.terrainData.heightmapHeight);
+            float chunkSizeNormalized = ((float)heightmapResolution - 1.0f) / ((float)origTerrain.terrainData.heightmapResolution - 1.0f);
+            float sampleSizeNormalized = chunkSizeNormalized / ((float)heightmapResolution - 1);
 
-            float chunkSizeNormalized = ((float)newTerrainData.heightmapResolution - 1) / ((float)origTerrain.terrainData.heightmapResolution - 1);
-            float sampleSizeNormalized = chunkSizeNormalized / ((float)newTerrainData.heightmapResolution - 1);
+            float xOffset = chunkX * chunkSizeNormalized;
+            float zOffset = chunkZ * chunkSizeNormalized;
 
-            Debug.Log("ChunkSizeNorm: " + chunkSizeNormalized);
-            Debug.Log("SampleSizeNormalized: " + sampleSizeNormalized);
-
-            float xOffset = chunkX * (newTerrainData.heightmapResolution - 1);
-            float zOffset = chunkZ * (newTerrainData.heightmapResolution - 1);
-
-            Debug.LogError("Chunk X/Z: " + chunkX + "/" + chunkZ);
-            //Debug.LogError("XOffset: " + xOffset);
-            //Debug.LogError("ZOffset: " + zOffset);
-
-            //float sampleSizeX = terrainSize.x / newTerrainData.heightmapResolution;
-            //float sampleSizeZ = terrainSize.y / newTerrainData.heightmapResolution;
-            Debug.LogError("Terrain Size X/Z: " + terrainSize.x + "/" + terrainSize.y);
-            //Debug.LogError("Actual Resolution X/Z: " + actualHeightmapResolution.x + "/" + actualHeightmapResolution.y);
-            //Debug.LogError("Sample Size X/Z: " + sampleSizeX + "/" + sampleSizeZ);
-            
-
-            for(int x = 0; x < newTerrainData.heightmapResolution; x++)
+            Color col = new Color(1, 0, 0);
+            float colorInc = 1.0f / (float)heightmapResolution;
+            for(int z = 0; z < heightmapResolution; z++)
             {
-                for(int z = 0; z < newTerrainData.heightmapResolution; z++)
+                col.b = 0.0f;
+                for(int x = 0; x < heightmapResolution; x++)
                 {
-                    float posZ = xOffset + (x * sampleSizeNormalized);
-                    float posX = zOffset + (z * sampleSizeNormalized);
+                    float posX = xOffset + (x * sampleSizeNormalized);
+                    float posZ = zOffset + (z * sampleSizeNormalized);
 
-                    float height = origTerrain.terrainData.GetInterpolatedHeight(posX, posZ);
+                    float height = origTerrain.terrainData.GetInterpolatedHeight( posX, posZ);
 
-                    //Debug.LogError("Pos X/Z: " + posZ + "/" + posX + " Height: " + height);
-                    newHeights[x, z] = height / origTerrain.terrainData.size.y;
-                    //newHeights[x, z] = origTerrain.
+                    newHeights[z, x] = height / origTerrain.terrainData.size.y;
 
-                    Debug.DrawLine(new Vector3(posX * origTerrain.terrainData.size.x, height, posZ * origTerrain.terrainData.size.z), new Vector3(posX * origTerrain.terrainData.size.x, height + 1.0f, posZ * origTerrain.terrainData.size.z), Color.red, 20.0f);
+                    Debug.DrawLine(new Vector3(posX * origTerrain.terrainData.size.x, height, posZ * origTerrain.terrainData.size.z), new Vector3(posX * origTerrain.terrainData.size.x, height + 1.0f, posZ * origTerrain.terrainData.size.z), col, 20.0f);
                 }
             }
 
-            /*for (int i = 0; i < heightmapResolution.x - 1; i++)
-            {
-                for (int j = 0; j < heightmapResolution.y - 1; j++)
-                {
-                    newHeights[i, j] = origHeights[chunkX * (heightmapResolution.x - 1) + i, chunkZ * (heightmapResolution.y - 1) + j];
-                }
-            }*/
             newTerrainData.SetHeightsDelayLOD(0, 0, newHeights);
         }
 
-        static void StitchTopAndRight(Terrain cur, Terrain top, Terrain right, Terrain topRight, int heightResolution)
+        public static int NearestPoT(int num)
         {
-            float[,] newHeights = new float[heightResolution, heightResolution];
-            float[,] topHeights = new float[heightResolution, heightResolution];
-            float[,] rightHeights = new float[heightResolution, heightResolution];
-            float[,] topRightHeights = new float[heightResolution, heightResolution];
-
-            if (cur == null)
-                return;
-
-            newHeights = cur.terrainData.GetHeights(0, 0, heightResolution, heightResolution);
-
-            if (top != null)
-                topHeights = top.terrainData.GetHeights(0, 0, heightResolution, heightResolution);
-            if (right != null)
-                rightHeights = right.terrainData.GetHeights(0, 0, heightResolution, heightResolution);
-            if (topRight != null)
-                topRightHeights = topRight.terrainData.GetHeights(0, 0, heightResolution, heightResolution);
-
-            for (int i = 0; i < heightResolution; i++)
-            {
-                if (right != null)
-                {
-                    newHeights[i, heightResolution - 1] = rightHeights[i, 0];
-                }
-
-                if (top != null)
-                {
-                    newHeights[heightResolution - 1, i] = topHeights[0, i];
-                }
-            }
-
-            if (topRight != null)
-            {
-                newHeights[heightResolution - 1, heightResolution - 1] = topRightHeights[0, 0];
-            }
-
-            cur.terrainData.SetHeights(0, 0, newHeights);
+            return (int)Mathf.Pow(2, Mathf.Round(Mathf.Log(num) / Mathf.Log(2)));
         }
     }
 }
