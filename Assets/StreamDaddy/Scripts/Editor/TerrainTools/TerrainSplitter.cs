@@ -88,10 +88,10 @@ namespace StreamDaddy.Editor.TerrainTools
                     heightmapResolution = NearestPoT(heightmapResolution) + 1;
 
                     int splatResolution = Mathf.RoundToInt((float)origTerrain.terrainData.alphamapResolution * chunkSizeRatio);
-                    splatResolution = NearestPoT(splatResolution) + 1;
+                    splatResolution = NearestPoT(splatResolution);
 
                     int detailResolution = Mathf.RoundToInt((float)origTerrain.terrainData.detailResolution * chunkSizeRatio);
-                    detailResolution = NearestPoT(detailResolution) + 1;
+                    detailResolution = NearestPoT(detailResolution);
 
                     Debug.LogError("Heightmap Resolution: " + heightmapResolution);
                     Debug.LogError("Splat Resolution: " + splatResolution);
@@ -253,6 +253,9 @@ namespace StreamDaddy.Editor.TerrainTools
             Vector2 newTerrainSize = new Vector2(xMax - xMin, zMax - zMin);
             CalculateSubHeightmap(td, heightmapResolution, origTerrain, chunkOffsetX, chunkOffsetZ, chunkWidthRatio, chunkDepthRatio,chunkX, chunkZ);
 
+            // Splat
+            CalculateSubSplatmaps(td, origTerrain, alphamapResolution, chunkOffsetX, chunkOffsetZ, chunkWidthRatio, chunkDepthRatio, chunkX, chunkZ);
+
             // Detail
             /*td.SetDetailResolution(detailResolution, 8); // Default? Haven't messed with resolutionPerPatch
             for (int layer = 0; layer < origTerrain.terrainData.detailPrototypes.Length; layer++)
@@ -269,23 +272,9 @@ namespace StreamDaddy.Editor.TerrainTools
                 td.SetDetailLayer(0, 0, layer, newDetailLayer);
             }*/
 
-            // Splat
-            /*td.alphamapResolution = alphamapResolution;
-            float[,,] alphamaps = origTerrain.terrainData.GetAlphamaps(0, 0, origTerrain.terrainData.alphamapWidth, origTerrain.terrainData.alphamapHeight);
-            float[,,] newAlphamaps = new float[alphamapResolution, alphamapResolution, alphamaps.GetLength(2)];
 
-            for (int x = 0; x < newAlphamaps.GetLength(0); x++)
-            {
-                for (int z = 0; z < newAlphamaps.GetLength(1); z++)
-                {
-                    for (int k = 0; k < newAlphamaps.GetLength(2); k++)
-                    {
-                        newAlphamaps[z, x, k] = alphamaps[chunkZ * (alphamapResolution) + z, chunkX * (alphamapResolution) + x, k];
-                    }
-                }
-            }
-            td.SetAlphamaps(0, 0, newAlphamaps);
-            */
+
+
             // Tree
             /*for (int i = 0; i < origTerrain.terrainData.treeInstanceCount; i++)
             {
@@ -320,10 +309,9 @@ namespace StreamDaddy.Editor.TerrainTools
             float xOffset = chunkOffsetX;
             float zOffset = chunkOffsetZ;
 
-            Color col = new Color(Random.Range(0.0f, 1.0f), Random.Range(0.0f, 1.0f), Random.Range(0.0f, 1.0f));
+            //Color col = new Color(Random.Range(0.0f, 1.0f), Random.Range(0.0f, 1.0f), Random.Range(0.0f, 1.0f));
             for(int z = 0; z < heightmapResolution; z++)
             {
-                col.b = 0.0f;
                 for(int x = 0; x < heightmapResolution; x++)
                 {
                     float posX = xOffset + (x * sampleSizeNormalizedX);
@@ -333,10 +321,55 @@ namespace StreamDaddy.Editor.TerrainTools
                     
                     newHeights[z, x] = height / origTerrain.terrainData.size.y;
 
-                    Debug.DrawLine(new Vector3(posX * origTerrain.terrainData.size.x, height, posZ * origTerrain.terrainData.size.z), new Vector3(posX * origTerrain.terrainData.size.x, height + 1.0f, posZ * origTerrain.terrainData.size.z), col, 20.0f);
+                    //Debug.DrawLine(new Vector3(posX * origTerrain.terrainData.size.x, height, posZ * origTerrain.terrainData.size.z), new Vector3(posX * origTerrain.terrainData.size.x, height + 1.0f, posZ * origTerrain.terrainData.size.z), col, 20.0f);
                 }
             }
             newTerrainData.SetHeightsDelayLOD(0, 0, newHeights);
+        }
+
+        private static void CalculateSubSplatmaps(TerrainData newTerrainData, Terrain origTerrain, int splatmapResolution, float chunkOffsetX, float chunkOffsetZ, float chunkWidthRatio, float chunkDepthRatio, int chunkX, int chunkZ)
+        {
+            newTerrainData.alphamapResolution = splatmapResolution;
+            float[,,] alphamaps = origTerrain.terrainData.GetAlphamaps(0, 0, origTerrain.terrainData.alphamapWidth, origTerrain.terrainData.alphamapHeight);
+            float[,,] newAlphamaps = new float[splatmapResolution, splatmapResolution, alphamaps.GetLength(2)];
+            
+
+            
+
+            float sampleSizeNormalizedChunkX = chunkWidthRatio / (float)splatmapResolution;
+            float sampleSizeNormalizedChunkZ = chunkDepthRatio / (float)splatmapResolution;
+
+            float sampleSizeNormalizedTerrainX = 1.0f / origTerrain.terrainData.alphamapResolution;
+            float sampleSizeNormalizedTerrainZ = 1.0f / origTerrain.terrainData.alphamapResolution;
+
+            float chunkTerrainRatio =  sampleSizeNormalizedTerrainX / sampleSizeNormalizedChunkX;
+            
+
+            float xOffset = splatmapResolution * chunkX * sampleSizeNormalizedChunkX * chunkTerrainRatio;
+            xOffset *= origTerrain.terrainData.alphamapResolution;
+            float zOffset = splatmapResolution * chunkZ * sampleSizeNormalizedChunkZ * chunkTerrainRatio;
+            zOffset *= origTerrain.terrainData.alphamapResolution;
+
+            Debug.Log("Sample Size Chunk X/Z: " + sampleSizeNormalizedChunkX + "/" + sampleSizeNormalizedChunkZ);
+            Debug.Log("Sample Size Terrain X/Z: " + sampleSizeNormalizedTerrainX + "/" + sampleSizeNormalizedTerrainZ);
+            Debug.Log("Chunk Terrain Ratio: " + chunkTerrainRatio);
+            Debug.Log("Chunk sample weight: " + splatmapResolution * 4 * sampleSizeNormalizedChunkX * chunkTerrainRatio * origTerrain.terrainData.alphamapWidth);
+            Debug.Log("XOFfset: " + xOffset);
+            Debug.Log("ZOffset: " + zOffset);
+
+            for (int k = 0; k < newAlphamaps.GetLength(2); k++)
+            {
+                for (int x = 0; x < newAlphamaps.GetLength(0); x++)
+                {
+                    for (int z = 0; z < newAlphamaps.GetLength(1); z++)
+                    {
+                        Debug.Log("Chunk Sample WeightX: " + xOffset + (x * sampleSizeNormalizedChunkZ * chunkTerrainRatio * origTerrain.terrainData.alphamapWidth));
+
+                        newAlphamaps[z, x, k] = alphamaps[chunkZ * (splatmapResolution) + z, chunkX * (splatmapResolution) + x, k];
+                    }
+                }
+            }
+            newTerrainData.SetAlphamaps(0, 0, newAlphamaps);
         }
 
         public static int NearestPoT(int num)
