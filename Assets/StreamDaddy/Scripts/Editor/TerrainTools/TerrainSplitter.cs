@@ -96,11 +96,31 @@ namespace StreamDaddy.Editor.TerrainTools
                     Debug.LogError("Heightmap Resolution: " + heightmapResolution);
                     Debug.LogError("Splat Resolution: " + splatResolution);
                     Debug.LogError("Detail Resolution: " + detailResolution);
+
+                    float[,,] srcAlphamap = origTerrain.terrainData.GetAlphamaps(0, 0, origTerrain.terrainData.alphamapWidth, origTerrain.terrainData.alphamapHeight);
+                    
+                    for(int i = 0; i < srcAlphamap.GetLength(2); i++)
+                    {
+                        float[,] resizeMap = new float[srcAlphamap.GetLength(0), srcAlphamap.GetLength(1)];
+                        for(int xx = 0; xx < srcAlphamap.GetLength(0); xx++)
+                        {
+                            for(int yy = 0; yy < srcAlphamap.GetLength(1); yy++)
+                            {
+                                resizeMap[xx, yy] = srcAlphamap[xx, yy, i];
+                            }
+                        }
+
+                        float[,] dstAlphamap = new float[splatResolution, splatResolution];
+                        FloatArrayRescaler.RescaleArray(resizeMap, dstAlphamap);
+                    }
+
+                    
+
                     
 
                     //  Switched X for Z in CopyTerrain. Not really sure why that has to be done currently, but if i dont everything is mirrored all weird, so i think it's just that the 
                     //  x and z index of the loop does not correspond to the order they are being looped.
-                    CopyTerrain(origTerrain, terrains, string.Format("{0}{1}_{2}", origTerrain.name, x, z), terrainSavePath, xMin, xMax, zMin, zMax, heightmapResolution, detailResolution, splatResolution, chunkOffsetX, chunkOffsetZ, chunkWidthRatio, chunkDepthRatio, x, z);
+                    //CopyTerrain(origTerrain, terrains, string.Format("{0}{1}_{2}", origTerrain.name, x, z), terrainSavePath, xMin, xMax, zMin, zMax, heightmapResolution, detailResolution, splatResolution, chunkOffsetX, chunkOffsetZ, chunkWidthRatio, chunkDepthRatio, x, z);
                     z++;
                 }
 
@@ -250,8 +270,8 @@ namespace StreamDaddy.Editor.TerrainTools
             float zMaxNorm = zMax / origTerrain.terrainData.size.z;
 
             // Height
-            Vector2 newTerrainSize = new Vector2(xMax - xMin, zMax - zMin);
-            CalculateSubHeightmap(td, heightmapResolution, origTerrain, chunkOffsetX, chunkOffsetZ, chunkWidthRatio, chunkDepthRatio,chunkX, chunkZ);
+            //Vector2 newTerrainSize = new Vector2(xMax - xMin, zMax - zMin);
+            //CalculateSubHeightmap(td, heightmapResolution, origTerrain, chunkOffsetX, chunkOffsetZ, chunkWidthRatio, chunkDepthRatio,chunkX, chunkZ);
 
             // Detail
             /*td.SetDetailResolution(detailResolution, 8); // Default? Haven't messed with resolutionPerPatch
@@ -309,7 +329,7 @@ namespace StreamDaddy.Editor.TerrainTools
             AssetDatabase.SaveAssets();
         }
 
-        private static void CalculateSubHeightmap(TerrainData newTerrainData, int heightmapResolution, Terrain origTerrain, float chunkOffsetX, float chunkOffsetZ, float chunkWidthRatio, float chunkDepthRatio, int chunkX, int chunkZ)
+        /*private static void CalculateSubHeightmap(TerrainData newTerrainData, int heightmapResolution, Terrain origTerrain, float chunkOffsetX, float chunkOffsetZ, float chunkWidthRatio, float chunkDepthRatio, int chunkX, int chunkZ)
         {
             newTerrainData.heightmapResolution = heightmapResolution;
             float[,] newHeights = new float[heightmapResolution, heightmapResolution];
@@ -337,7 +357,7 @@ namespace StreamDaddy.Editor.TerrainTools
                 }
             }
             newTerrainData.SetHeightsDelayLOD(0, 0, newHeights);
-        }
+        }*/
 
         public static int NearestPoT(int num)
         {
