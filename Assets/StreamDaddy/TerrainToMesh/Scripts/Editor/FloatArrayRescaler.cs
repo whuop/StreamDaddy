@@ -33,8 +33,8 @@ public static class FloatArrayRescaler
                 float normalizedPosX = samplePosX / (float)srcSamplesX;
                 float normalizedPosY = samplePosY / (float)srcSamplesY;
 
-                Debug.LogError("Pos X/Y: " + samplePosX + "/" + samplePosY);
-                Debug.LogError("Normalized Pos X/Y: " + normalizedPosX + "/" + normalizedPosY);
+                //Debug.LogError("Pos X/Y: " + samplePosX + "/" + samplePosY);
+                //Debug.LogError("Normalized Pos X/Y: " + normalizedPosX + "/" + normalizedPosY);
 
                 int prevSampleX = Mathf.FloorToInt(samplePosX);
                 int nextSampleX = Mathf.CeilToInt(samplePosX);
@@ -42,8 +42,15 @@ public static class FloatArrayRescaler
                 int prevSampleY = Mathf.FloorToInt(samplePosY);
                 int nextSampleY = Mathf.CeilToInt(samplePosY);
 
+                //Debug.LogError("Current Value X/Y)
                 Debug.LogError("Prev/Next X: " + prevSampleX + "/" + nextSampleX);
                 Debug.LogError("Prev/Next Y: " + prevSampleY + "/" + nextSampleY);
+
+                //  Interpolate value between next and current point depending on where the sample is between the 2 source points.
+                float deltaX = samplePosX - (float)prevSampleX;
+                float deltaY = samplePosY - (float)prevSampleY;
+
+                Debug.LogError("Delta X/Y: " + deltaX + "/" + deltaY);
             }
         }
 
