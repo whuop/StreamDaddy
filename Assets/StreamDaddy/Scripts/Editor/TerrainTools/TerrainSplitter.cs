@@ -51,6 +51,8 @@ namespace StreamDaddy.Editor.TerrainTools
 
             int x = 0;
             int z = 0;
+
+            int destSplatResolution = 0;
             while(totalAllotedSizeX > 0)
             {
                 float takenX = SubtractFromAndReturn(ref totalAllotedSizeX, (float)chunkSizeX);
@@ -130,6 +132,14 @@ namespace StreamDaddy.Editor.TerrainTools
                 zMax = 0.0f;
                 z = 0;
                 x++;
+            }
+            
+            for(int xx = 0; xx < x; xx++)
+            {
+                for(int yy = 0; yy < y; yy++)
+                {
+
+                }
             }
 
 
