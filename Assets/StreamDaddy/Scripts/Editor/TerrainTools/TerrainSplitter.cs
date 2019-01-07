@@ -100,7 +100,7 @@ namespace StreamDaddy.Editor.TerrainTools
                     Debug.LogError("Heightmap Resolution: " + heightmapResolution);
                     Debug.LogError("Splat Resolution: " + splatResolution);
                     Debug.LogError("Detail Resolution: " + detailResolution);
-                    
+
 
 
                     /*float[,,] srcAlphamap = origTerrain.terrainData.GetAlphamaps(0, 0, origTerrain.terrainData.alphamapWidth, origTerrain.terrainData.alphamapHeight);
@@ -119,7 +119,7 @@ namespace StreamDaddy.Editor.TerrainTools
                         float[,] dstAlphamap = new float[splatResolution, splatResolution];
                         FloatArrayRescaler.RescaleArray(resizeMap, dstAlphamap);
                     }*/
-                    
+                    return terrains;
                     z++;
                 }
 
@@ -286,10 +286,10 @@ namespace StreamDaddy.Editor.TerrainTools
 
             // Height
             //Vector2 newTerrainSize = new Vector2(xMax - xMin, zMax - zMin);
-            //CalculateSubHeightmap(td, heightmapResolution, origTerrain, chunkOffsetX, chunkOffsetZ, chunkWidthRatio, chunkDepthRatio,chunkX, chunkZ);
+            CalculateSubHeightmap(td, heightmapResolution, origTerrain, chunkOffsetX, chunkOffsetZ, chunkWidthRatio, chunkDepthRatio,chunkX, chunkZ);
 
             // Splat
-            CalculateSubSplatmaps(td, origTerrain, alphamapResolution, chunkX, chunkZ, startSamples, endSamples);
+            CalculateSubSplatmaps(td, origTerrain, alphamapResolution, chunkX, chunkZ, startSamples, endSamples, chunkWidthRatio, chunkDepthRatio, chunkOffsetX, chunkOffsetZ);
 
             // Detail
             /*td.SetDetailResolution(detailResolution, 8); // Default? Haven't messed with resolutionPerPatch
@@ -362,7 +362,7 @@ namespace StreamDaddy.Editor.TerrainTools
             newTerrainData.SetHeightsDelayLOD(0, 0, newHeights);
         }
 
-        private static void CalculateSubSplatmaps(TerrainData newTerrainData, Terrain origTerrain, int splatmapResolution, int chunkX, int chunkZ, Vector2 startSamples, Vector2 endSamples)
+        private static void CalculateSubSplatmaps(TerrainData newTerrainData, Terrain origTerrain, int splatmapResolution, int chunkX, int chunkZ, Vector2 startSamples, Vector2 endSamples, float chunkWidthRatio, float chunkDepthRatio, float chunkOffsetX, float chunkOffsetZ)
         {
             //  Get the splat map from the larger source terrain.
             var sourceSplats = origTerrain.terrainData.GetAlphamaps(0, 0, origTerrain.terrainData.alphamapWidth, origTerrain.terrainData.alphamapHeight);
@@ -374,37 +374,53 @@ namespace StreamDaddy.Editor.TerrainTools
             float srcSamplesX = endSamples.x - startSamples.x;
             float srcSAmplesZ = endSamples.y - startSamples.y;
 
+            float sampleSizeNormalizedX = chunkWidthRatio / ((float)splatmapResolution);
+            float sampleSizeNormalizedZ = chunkDepthRatio / ((float)splatmapResolution);
+
+            Debug.LogError("Splat Res: " + splatmapResolution);
+            Debug.LogError("ChunkWidthR: " + chunkWidthRatio);
+            Debug.LogError("ChunkDepthR: " + chunkDepthRatio);
+
             Debug.LogError("SrcSampples X/Z: " + srcSamplesX + "/" + srcSAmplesZ);
             Debug.LogError("Dst Samples: " + splatmapResolution);
 
             Vector2 dstSampleToSrcSampleRatio = new Vector2(
-                srcSamplesX / splatmapResolution,
-                srcSAmplesZ / splatmapResolution
+                sampleSizeNormalizedX,
+                sampleSizeNormalizedZ
                 );
-
+            
             Debug.LogError("Sample Scale Ratio: " + dstSampleToSrcSampleRatio.x + "/" + dstSampleToSrcSampleRatio.y);
             
-            for(int x = 0; x < splatmapResolution; x++)
+            for(int i = 0; i < sourceSplats.GetLength(2); i++)
             {
-                for(int z = 0; z < splatmapResolution; z++)
+                for (int x = 0; x < splatmapResolution; x++)
                 {
-                    float srcPositionX = x * dstSampleToSrcSampleRatio.x;
-                    float srcPositionZ = z * dstSampleToSrcSampleRatio.y;
-
-                    Debug.LogError("Src Position: " + srcPositionX + "/" + srcPositionZ);
-                }
-            }
-
-            /*for(int i = 0; i < sourceSplats.GetLength(2); i++)
-            {
-                for(int x = 0; x < splatmapResolution; x++)
-                {
-                    for(int z = 0; z < splatmapResolution; x++)
+                    for (int z = 0; z < splatmapResolution; z++)
                     {
+                        float srcPositionX = chunkOffsetX + (x * dstSampleToSrcSampleRatio.x);
+                        float srcPositionZ = chunkOffsetZ + (z * dstSampleToSrcSampleRatio.y);
 
+                        int posX = Mathf.RoundToInt(srcPositionX);
+                        int posZ = Mathf.RoundToInt(srcPositionZ);
+
+                        float valAtPos = sourceSplats[posX, posZ, i];
+
+                        // MÅSTE TÄNKA OM ALGORITMEN. Måste translera positionerna till sample space igen ( inte normaliserat ), just nu är alla värden i sample space ( normaliserat ).
+                        
+                        //float lengthToNextX = srcPositionX - Mathf.Floor(srcPositionX);
+                        //float lengthToNextZ = srcPositionZ - Mathf.Floor(srcPositionZ);
+
+                        
+                        //if (x == 0 || z == 0 || x == splatmapResolution - 1 || z == splatmapResolution - 1)
+                        //{
+                        Debug.Log("Source Sample X/Z: " + x + "/" + z);
+                        Debug.Log("Target Sample X/Z/Val: " + srcPositionX + "/" + srcPositionZ + "/" + valAtPos);
+                        Debug.Log("Ratio X/Z: " + dstSampleToSrcSampleRatio.x + "/" + dstSampleToSrcSampleRatio.y);
+                        //}
                     }
                 }
-            }*/
+            }
+            
 
 
             //newTerrainData.SetAlphamaps(0, 0, newAlphamaps);
@@ -416,4 +432,3 @@ namespace StreamDaddy.Editor.TerrainTools
         }
     }
 }
-
