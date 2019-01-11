@@ -1,6 +1,6 @@
-﻿using StreamDaddy.Editor.TerrainTools;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
+using Landfall.Editor;
 
 namespace StreamDaddy.Editor.Tasks
 {
@@ -31,7 +31,7 @@ namespace StreamDaddy.Editor.Tasks
 
             Debug.LogError("Splitting terrain with ChunkSize: " + chunkSize.x + "/" + chunkSize.z);
 
-            result.TerrainSplits = TerrainSplitter.SplitIntoChunks(chunkSize.x, chunkSize.z, terrain, EditorPaths.GetSplitTerrainPath(worldName));
+            result.TerrainSplits = TerrainDivider.SplitIntoChunks(chunkSize.x, chunkSize.z, terrain, EditorPaths.GetSplitTerrainPath(worldName));
             return true;
         }
     }

@@ -9,6 +9,7 @@ using UnityEditor;
 using UnityEditor.AddressableAssets;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
+using Landfall.Editor;
 using static StreamDaddy.Editor.Tasks.GenerateMeshLodsTask;
 
 namespace StreamDaddy.Editor.Tasks
@@ -324,7 +325,8 @@ namespace StreamDaddy.Editor.Tasks
             }
             catch (Exception e)
             {
-                assetGroup = settings.CreateGroup(groupName, false, false, true);
+                assetGroup = settings.CreateGroup(groupName, false, false, true, new List<AddressableAssetGroupSchema>());
+                //assetGroup = settings.CreateGroup(groupName, false, false, true);
             }
             return assetGroup;
         }
